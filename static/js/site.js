@@ -7,7 +7,15 @@
         //console.log(button);
         button.toggleClass('fa-arrow-left').toggleClass('fa-arrow-right');
     });
+    var path = window.location.pathname;
+    path = path.split('/')[1].toLowerCase();
     
+    $('ul.metismenu > li').each(function(){
+      var matchingpath = $(this).text().trim().toLowerCase();      
+      if(matchingpath === path){
+        $(this).find('a').addClass('active');
+      }
+    })
     $('.clockpicker').clockpicker();
 });
 const calculatingWorkingHours = function(starttime, endtime) {

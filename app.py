@@ -3,6 +3,7 @@ from modules import convert_to_dict, make_ordinal
 from models import GetProjects, GetEmplyees, insert_employee_data
 from flask_cors import CORS
 
+# app = Flask(__name__, template_folder='template')
 app = Flask(__name__)
 application = app
 
@@ -30,8 +31,11 @@ def index():
 
 @app.route('/timesheet')
 def timesheet():
-    return render_template('timesheet.html', the_title="Presidents Index", weektitle="")
+    return render_template('timesheet.html', the_title="Ai DOM - Time Sheet", weektitle="")
 
+@app.route('/report')
+def reportpage():
+    return render_template('report.html', the_title="Ai DOM - Reports", weektitle="")
 
 @app.route("/get_projects", methods=['GET'])
 def get_projects():

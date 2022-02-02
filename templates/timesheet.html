@@ -1,288 +1,156 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-<div id="page-wrapper" class="gray-bg dashbard-1">
-    <div class="row border-bottom">
-        <nav class="navbar navbar-fixed-top custom-nav-pad" role="navigation" style="margin-bottom: 0;">
-            <div class="navbar-header flex flex-start">
-                <!-- <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a> -->
-                <div class="m-auto page-title"> Time Sheet </div>
+<div id="timesheet-page" class="m-1">
+    <div class="flex align-between">
+        <div class="event-date">
+            <template v-if="isDay">
+                <p style="font-size: 18px;"><b>[[showWeekend]]</b>  [[showDate]]</p>
+            </template>
+            <template v-else>
+                <p style="font-size: 18px;">[[weektitle.startdate]] - [[weektitle.enddate]]</p>
+            </template>
+        </div>
+        <div class="date-events">
+            <div class="day-change mr-1">
+                <template v-if="isDay">
+                    <a class="btn btn-default btn-right-no-border" @click="prevDay"><i class="fas fa-chevron-left"></i> </a>
+                    <p class="day-title"> Today </p>
+                    <a class="btn btn-default btn-left-no-border" @click="nextDay"><i class="fas fa-chevron-right"></i> </a>
+                </template>
+                <template v-else>
+                    <a class="btn btn-default" @click="prevWeek"><i class="fas fa-chevron-left"></i> </a>
+                    <p class="day-title"> Week </p>
+                    <a class="btn btn-default" @click="nextWeek"><i class="fas fa-chevron-right"></i> </a>
+                </template>
             </div>
-            <ul class="nav navbar-top-links navbar-right">           
-                <li class="dropdown">
-                    <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-                        <i class="fa fa-cog"></i>  <span class="label label-warning"></span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-messages">
-                        <li>
-                            <div class="dropdown-messages-box">
-                                <a href="profile.html" class="pull-left">
-                                    <img alt="image" class="img-circle" src="images/a7.jpg">
-                                </a>
-                                <div class="media-body">
-                                    <small class="pull-right">46h ago</small>
-                                    <strong>Mike Loreipsum</strong> started following <strong>Monica Smith</strong>. <br>
-                                    <small class="text-muted">3 days ago at 7:58 pm - 10.06.2014</small>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <div class="dropdown-messages-box">
-                                <a href="profile.html" class="pull-left">
-                                    <img alt="image" class="img-circle" src="images/a4.jpg">
-                                </a>
-                                <div class="media-body ">
-                                    <small class="pull-right text-navy">5h ago</small>
-                                    <strong>Chris Johnatan Overtunk</strong> started following <strong>Monica Smith</strong>. <br>
-                                    <small class="text-muted">Yesterday 1:21 pm - 11.06.2014</small>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <div class="dropdown-messages-box">
-                                <a href="profile.html" class="pull-left">
-                                    <img alt="image" class="img-circle" src="images/profile.jpg">
-                                </a>
-                                <div class="media-body ">
-                                    <small class="pull-right">23h ago</small>
-                                    <strong>Monica Smith</strong> love <strong>Kim Smith</strong>. <br>
-                                    <small class="text-muted">2 days ago at 2:30 am - 11.06.2014</small>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <div class="text-center link-block">
-                                <a href="mailbox.html">
-                                    <i class="fa fa-envelope"></i> <strong>Read All Messages</strong>
-                                </a>
-                            </div>
-                        </li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-                        <i class="fa fa-bell"></i>  <span class="label label-primary">8</span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-alerts">
-                        <li>
-                            <a href="mailbox.html">
-                                <div>
-                                    <i class="fa fa-envelope fa-fw"></i> You have 16 messages
-                                    <span class="pull-right text-muted small">4 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="profile.html">
-                                <div>
-                                    <i class="fa fa-twitter fa-fw"></i> 3 New Followers
-                                    <span class="pull-right text-muted small">12 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="grid_options.html">
-                                <div>
-                                    <i class="fa fa-upload fa-fw"></i> Server Rebooted
-                                    <span class="pull-right text-muted small">4 minutes ago</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <div class="text-center link-block">
-                                <a href="notifications.html">
-                                    <strong>See All Alerts</strong>
-                                    <i class="fa fa-angle-right"></i>
-                                </a>
-                            </div>
-                        </li>
-                    </ul>
-                </li>
-    
-    
-                <li>
-                    <a href="login.html">
-                        <i class="fas fa-sign-out-alt"></i>
-                    </a>
-                </li>            
-            </ul>
-    
-        </nav>
-    </div>
-    <div class="row" >
-        <div class="col-lg-12">
-            <div class="wrapper wrapper-content animated fadeInRight">
-                <div id="timesheet-page" class="m-1">
-                    <div class="flex align-between">
-                        <div class="event-date">
-                            <template v-if="isDay">
-                                <p style="font-size: 18px;"><b>{{showWeekend}}</b>  {{showDate}}</p>
-                            </template>
-                            <template v-else>
-                                <p style="font-size: 18px;">{{weektitle.startdate}} - {{weektitle.enddate}}</p>
-                            </template>
-                        </div>
-                        <div class="date-events">
-                            <div class="day-change mr-1">
-                                <template v-if="isDay">
-                                    <a class="btn btn-default btn-right-no-border" @click="prevDay"><i class="fas fa-chevron-left"></i> </a>
-                                    <p class="day-title"> Today </p>
-                                    <a class="btn btn-default btn-left-no-border" @click="nextDay"><i class="fas fa-chevron-right"></i> </a>
-                                </template>
-                                <template v-else>
-                                    <a class="btn btn-default" @click="prevWeek"><i class="fas fa-chevron-left"></i> </a>
-                                    <p class="day-title"> Week </p>
-                                    <a class="btn btn-default" @click="nextWeek"><i class="fas fa-chevron-right"></i> </a>
-                                </template>
-                            </div>
-                            <div class="mr-1">
-                                <button class="btn btn-default btn-calender" @click="loadCalender"><i class="fas fa-calendar-alt"></i></button>
-                                <div id="j-calender"></div>
-                            </div>
-                            <div id="day-week" class="mr-1" style="z-index: 999;">
-                                <a :class="['btn', 'btn-default', 'join-btn-first',(isDay===true ? 'active' : '')]" @click="SetDayWiseView(true)">Day</a>
-                                <a :class="['btn', 'btn-default', 'join-btn-last',(isDay===true ? '' : 'active')]" @click="SetDayWiseView(false)">Week</a>
-                            </div>
-                            <div class="mr-1">
-                                <a class="btn btn-primary" href="new_timesheet_entry.html"><i class="fa fa-plus"></i> Entry</a>
-                            </div>
-                        </div>
-                    </div>
-                    <template v-if="isDay">
-                        <div id="day-wise">
-                            <div id="button-calender">
-                                <ul class="flex align-evenly time-button-group">
-                                    <li v-for="(value, index) in daywiseDisplaylogList">
-                                        <a :class="['btn','btn-default',(index === 0 ? 'join-btn-first' : 'join-btn-middle'),(selectedDayArr[0] === value.weekShortName ? 'active' : '')]">
-                                            <span><b>{{value.weekShortName}}</b></span>
-                                            <span>{{value.grandworkinghour}}</span>
-                                        </a>
-                                    </li>
-                                    <li><a class="btn btn-default join-btn-last"><span>Total: </span><span><b>{{weeklytotal}}</b></span></a></li> 
-                                </ul>
-                            </div>
-                            <div class="flex flex-start">
-                                <p class="group-title m-auto">ACTUAL TIME</p>
-                                <hr class="group-break col-md-11" />
-                            </div>            
-                            <template v-if="displaylog.workinglog.length > 0">
-                                <ul class="sortable-list connectList agile-list ui-sortable col-md-12" id="todo">
-                                    <template v-for="(log, name, index) in displaylog.workinglog">
-                                        <li class="warning-element ui-sortable-handle" v-if="log.entry_date === selectedDayStr">
-                                            <div class="agile-detail flex">
-                                                <div class="col-md-9">
-                                                    <div class="flex">
-                                                        <p class="agile-head">{{log.Task.Project.project_name}}</p>
-                                                        <p class="agile-desc">&nbsp;</p>
-                                                    </div>
-                                                    <div class="flex">
-                                                        <p class="category-title mr-1"><i class="far fa-folder-open"></i> {{log.Category.category_name}}</p>
-                                                        <p class="task-title"><i class="fas fa-list"></i> {{log.Task.task_name}}</p>
-                                                    </div>
-                                                    <div class="flex">
-                                                        <p class="note">{{log.notes}}</p>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="flex">
-                                                        <p class="working-hour col-md-4 m-auto">{{log.total_hours}}</p>
-                                                        <button class="btn btn-default"><i class="far fa-edit"></i></button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </template>
-                                </ul>
-                                <div class="col-md-offset-9 col-md-3">
-                                    <p style="font-size:22px;"> Total   :   <span style="padding-left:20px;">{{displaylog.grandworkinghour}}</span>  </p>
-                                </div>
-                            </template>
-                            <template v-else>
-                                <div id="section-blank" class="content-toggler">
-                                    <div class="ibox">
-                                        <div class="ibox-content">
-                                            <div class="flex align-evenly">
-                                                <div class="flex pt-2 pb-2">
-                                                    <p>No Timesheets here yet. </p>
-                                                    <a class="pl-1"> Add Entry </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </template>
-                        </div>
-                    </template>
-                    <template v-else>
-                        <div id="week-wise" class="flex row mt-2">
-                            <div class="col-lg-12">
-                                <div class="ibox">
-                                    <div class="ibox-content">
-                                        <div class="table-responsive">
-                                            <div class="feed-activity-list">
-                                                <template v-for="(taskobject, index) in weekwiseDisplaylogList">
-                                                    <div class="feed-element">
-                                                        <div class="media-body">
-                                                            <template v-if="index === 0">
-                                                                <div class="col-md-5"></div>
-                                                            </template>
-                                                            <template v-else>
-                                                                <div class="col-md-5"><p>{{taskobject.Task.Project.project_name}}</p><p>{{taskobject.Task.task_name}} - demo</p></div>
-                                                            </template>
-                                                            <div class="col-md-7 flex">
-                                                                <template v-for="(v,i) in taskobject.hourlog">
-                                                                    <div class="day-workinghour" v-if="index===0">
-                                                                        <span><b>{{v.weekShortName}}</b></span>
-                                                                        <span>{{v.entrydate}}</span>
-                                                                    </div>
-                                                                    <div class="box-workinghour" v-else>{{v.totalhours}}</div>
-                                                                </template>
-                                                                <div class="day-workinghour-2" v-if="index===0"><span>&nbsp;</span></div>
-                                                                <div class="day-workinghour-2" v-else><span><b>{{taskobject.GrandTotalHours}}</b></span></div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </template>
-                                                <div class="feed-element">
-                                                    <div class="media-body">
-                                                        <div class="col-md-5"></div>
-                                                        <div class="col-md-7 flex">
-                                                            <template v-for="(v,i) in weekwisecolumntotal">
-                                                                <div class="day-workinghour"><b>{{v}}</b></div>
-                                                            </template>
-                                                            <div class="day-workinghour-2"><span><b>{{weeklygrandworkingtotal}}</b></span></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </template>    
-                </div>
-            </div>                        
-            <div class="footer">
-                <div class="flex align-between flex-wrap">
-                    <div>
-                        <strong>Copyright</strong> AiDOM &copy; 2021-2022
-                    </div>
-                    <div>
-                        version <strong> 2.1 </strong>.
-                    </div>    
-                </div>
+            <div class="mr-1">
+                <button class="btn btn-default btn-calender" @click="loadCalender"><i class="fas fa-calendar-alt"></i></button>
+                <div id="j-calender"></div>
+            </div>
+            <div id="day-week" class="mr-1" style="z-index: 999;">
+                <a :class="['btn', 'btn-default', 'join-btn-first',(isDay===true ? 'active' : '')]" @click="SetDayWiseView(true)">Day</a>
+                <a :class="['btn', 'btn-default', 'join-btn-last',(isDay===true ? '' : 'active')]" @click="SetDayWiseView(false)">Week</a>
+            </div>
+            <div class="mr-1">
+                <a class="btn btn-primary" href="new_timesheet_entry.html"><i class="fa fa-plus"></i> Entry</a>
             </div>
         </div>
     </div>
-</div>  
+    <template v-if="isDay">
+        <div id="day-wise">
+            <div id="button-calender">
+                <ul class="flex align-evenly time-button-group">
+                    <li v-for="(value, index) in daywiseDisplaylogList">
+                        <a :class="['btn','btn-default',(index === 0 ? 'join-btn-first' : 'join-btn-middle'),(selectedDayArr[0] === value.weekShortName ? 'active' : '')]">
+                            <span><b>[[value.weekShortName]]</b></span>
+                            <span>[[value.grandworkinghour]]</span>
+                        </a>
+                    </li>
+                    <li><a class="btn btn-default join-btn-last"><span>Total: </span><span><b>[[weeklytotal]]</b></span></a></li> 
+                </ul>
+            </div>
+            <div class="flex flex-start">
+                <p class="group-title m-auto">ACTUAL TIME</p>
+                <hr class="group-break col-md-11" />
+            </div>            
+            <template v-if="displaylog.workinglog.length > 0">
+                <ul class="sortable-list connectList agile-list ui-sortable col-md-12" id="todo">
+                    <template v-for="(log, name, index) in displaylog.workinglog">
+                        <li class="warning-element ui-sortable-handle" v-if="log.entry_date === selectedDayStr">
+                            <div class="agile-detail flex">
+                                <div class="col-md-9">
+                                    <div class="flex">
+                                        <p class="agile-head">[[log.Task.Project.project_name]]</p>
+                                        <p class="agile-desc">&nbsp;</p>
+                                    </div>
+                                    <div class="flex">
+                                        <p class="category-title mr-1"><i class="far fa-folder-open"></i> [[log.Category.category_name]]</p>
+                                        <p class="task-title"><i class="fas fa-list"></i> [[log.Task.task_name]]</p>
+                                    </div>
+                                    <div class="flex">
+                                        <p class="note">[[log.notes]]</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="flex">
+                                        <p class="working-hour col-md-4 m-auto">[[log.total_hours]]</p>
+                                        <button class="btn btn-default"><i class="far fa-edit"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </template>
+                </ul>
+                <div class="col-md-offset-9 col-md-3">
+                    <p style="font-size:22px;"> Total   :   <span style="padding-left:20px;">[[displaylog.grandworkinghour]]</span>  </p>
+                </div>
+            </template>
+            <template v-else>
+                <div id="section-blank" class="content-toggler">
+                    <div class="ibox">
+                        <div class="ibox-content">
+                            <div class="flex align-evenly">
+                                <div class="flex pt-2 pb-2">
+                                    <p>No Timesheets here yet. </p>
+                                    <a class="pl-1"> Add Entry </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </template>
+    <template v-else>
+        <div id="week-wise" class="flex row mt-2">
+            <div class="col-lg-12">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        <div class="table-responsive">
+                            <div class="feed-activity-list">
+                                <template v-for="(taskobject, index) in weekwiseDisplaylogList">
+                                    <div class="feed-element">
+                                        <div class="media-body">
+                                            <template v-if="index === 0">
+                                                <div class="col-md-5"></div>
+                                            </template>
+                                            <template v-else>
+                                                <div class="col-md-5"><p>[[taskobject.Task.Project.project_name]]</p><p>[[taskobject.Task.task_name]] - demo</p></div>
+                                            </template>
+                                            <div class="col-md-7 flex">
+                                                <template v-for="(v,i) in taskobject.hourlog">
+                                                    <div class="day-workinghour" v-if="index===0">
+                                                        <span><b>[[v.weekShortName]]</b></span>
+                                                        <span>[[v.entrydate]]</span>
+                                                    </div>
+                                                    <div class="box-workinghour" v-else>[[v.totalhours]]</div>
+                                                </template>
+                                                <div class="day-workinghour-2" v-if="index===0"><span>&nbsp;</span></div>
+                                                <div class="day-workinghour-2" v-else><span><b>[[taskobject.GrandTotalHours]]</b></span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                                <div class="feed-element">
+                                    <div class="media-body">
+                                        <div class="col-md-5"></div>
+                                        <div class="col-md-7 flex">
+                                            <template v-for="(v,i) in weekwisecolumntotal">
+                                                <div class="day-workinghour"><b>[[v]]</b></div>
+                                            </template>
+                                            <div class="day-workinghour-2"><span><b>[[weeklygrandworkingtotal]]</b></span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>    
+</div>
 
 <script>
     function ShowSection(div, element) {
@@ -325,6 +193,7 @@
                 weeklygrandworkingtotal: '0:00'
             }
         },
+        delimiters: ['[[',']]'],
         mounted: function () {
             this.loadDefault();
         },

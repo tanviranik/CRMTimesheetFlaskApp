@@ -37,3 +37,45 @@ def GetProjects():
     cursor.close()
     conn.close()
     return data
+
+def GetEmplyees():
+    conn = pyodbc.connect(CONN_STR)
+    cursor = conn.cursor()
+    query = """SELECT [employee_id]
+                ,[employee_name]
+                ,[title]
+                ,[joining_date]
+                ,cast([hourly_rate] as float) as hourly_rate
+                ,[username]
+                ,[password]
+                ,[email]
+            FROM [dbo].[Employee]"""
+
+    cursor.execute(query)
+    data = dictfetchall(cursor)
+    cursor.close()
+    conn.close()
+    return data
+
+def insert_employee_data(employee_name, title, joining_date, hourly_rate, username, password, email):
+    try:
+        datarow = [employee_name, title, joining_date, hourly_rate, username, password, email]
+        conn = pyodbc.connect(CONN_STR)
+        cursor = conn.cursor()
+        sql_command = ("""INSERT INTO [dbo].[Employee]
+                            (
+                            [employee_name]
+                            ,[title]
+                            ,[joining_date]
+                            ,hourly_rate
+                            ,[username]
+                            ,[password]
+                            ,[email]
+                            ) 
+                        VALUES (?,?,?, ?, ?,?,?)""") 
+        cursor.execute(sql_command, datarow) 
+        conn.commit()
+        cursor.close()
+        conn.close()
+    except Exception as e:
+        print('Exception occured : ', e, '. For Datarow: ', datarow)

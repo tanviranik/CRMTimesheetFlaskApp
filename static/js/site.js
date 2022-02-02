@@ -28,6 +28,8 @@ const calculatingWorkingHours = function(starttime, endtime) {
     let startminute = parseInt(starttimeArr[1]);
     let endhour = parseInt(endtimeArr[0]);
     let endminute = parseInt(endtimeArr[1]);
+    if((starthour > endhour) || (starthour === endhour && startminute > endminute))
+      return '0:00';
     if(startminute > endminute){
         endminute = 60 + endminute;
         carry = 1;

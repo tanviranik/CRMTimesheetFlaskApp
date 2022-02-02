@@ -23,6 +23,7 @@ var helper = function () {
             async = true;
         }
         console.log(data);
+        console.log(async);
         _post('POST', async, url, data, callback);
     };
 
@@ -292,11 +293,11 @@ var helper = function () {
     var _post = function (type, async, url, data, callback) {        
         $.ajax({
             type: type,
-            async: async,
             url: url,
+            async: async,
             data: data,
-            crossDomain: true,
-            //contentType: "application/json; charset=utf-8",
+            contentType: "application/json; charset=utf-8",
+            dataType: 'json',
             success: function (response) {
                 callback(response);
             },

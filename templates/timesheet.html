@@ -33,7 +33,7 @@
                 <a :class="['btn', 'btn-default', 'join-btn-last',(isDay===true ? '' : 'active')]" @click="SetDayWiseView(false)">Week</a>
             </div>
             <div class="mr-1">
-                <a class="btn btn-primary" href="new_timesheet_entry.html"><i class="fa fa-plus"></i> Entry</a>
+                <a class="btn btn-primary" :href="'newtimesheet?selecteddate=' + selectedDayStr"><i class="fa fa-plus"></i> Entry</a>
             </div>
         </div>
     </div>

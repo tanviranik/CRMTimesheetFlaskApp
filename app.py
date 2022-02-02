@@ -1,7 +1,8 @@
 from flask import Flask, render_template, session, request, redirect, url_for, jsonify
 from modules import convert_to_dict, make_ordinal
-from models import GetProjects, GetEmplyees, insert_employee_data
+from models import GetProjects, GetEmplyees, insert_employee_data, GetTasks, GetCategories, insert_hour_logs
 from flask_cors import CORS
+import json
 
 # app = Flask(__name__, template_folder='template')
 app = Flask(__name__)
@@ -33,6 +34,32 @@ def index():
 def timesheet():
     return render_template('timesheet.html', the_title="Ai DOM - Time Sheet", weektitle="")
 
+@app.route('/newtimesheet')
+def newtimesheet():
+    selecteddate = request.args.get('selecteddate')
+    return render_template('new_timesheet_entry.html', the_title="Ai DOM - Time Sheet", start_date=selecteddate)
+
+@app.route('/save_timesheet', methods=['POST', 'GET'])
+def save_timesheet():
+    # timesheetdt = request.args.get('timesheetdata')
+    # timesheetdata = request.args.get('timesheetdata')
+    global data
+    if request.method == 'POST':
+        # print(request)
+        data = request.json
+        #request.form.get('word')
+        print(data)
+    reponseMsg = insert_hour_logs(data)
+    # timesheetdt = request.get_json(force=False)
+    # data = json.loads(request.data)
+    # timesheetdata = request.get_json()
+    # timesheetdata = json.loads(request.data, strict=False)
+    # print(timesheetdt)
+    # print(data)
+    response = jsonify({'status_code' : 200, 'data': reponseMsg})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
 @app.route('/report')
 def reportpage():
     return render_template('report.html', the_title="Ai DOM - Reports", weektitle="")
@@ -41,6 +68,17 @@ def reportpage():
 def get_projects():
     projects = GetProjects()
     response = jsonify({'status_code' : 200, 'data': projects})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
+@app.route("/get_supporting_data", methods=['GET'])
+def get_supporting_data():
+    context = {"projectlist": [], 'tasklist': [], 'categorylist': []}
+    context['projectlist'] = GetProjects()    
+    context['tasklist'] = GetTasks()
+    context['categorylist'] = GetCategories()
+    # print(context)
+    response = jsonify({'status_code' : 200, 'data': context})
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 

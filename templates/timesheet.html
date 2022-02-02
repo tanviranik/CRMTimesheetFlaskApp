@@ -1,0 +1,616 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div id="page-wrapper" class="gray-bg dashbard-1">
+    <div class="row border-bottom">
+        <nav class="navbar navbar-fixed-top custom-nav-pad" role="navigation" style="margin-bottom: 0;">
+            <div class="navbar-header flex flex-start">
+                <!-- <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a> -->
+                <div class="m-auto page-title"> Time Sheet </div>
+            </div>
+            <ul class="nav navbar-top-links navbar-right">           
+                <li class="dropdown">
+                    <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                        <i class="fa fa-cog"></i>  <span class="label label-warning"></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-messages">
+                        <li>
+                            <div class="dropdown-messages-box">
+                                <a href="profile.html" class="pull-left">
+                                    <img alt="image" class="img-circle" src="images/a7.jpg">
+                                </a>
+                                <div class="media-body">
+                                    <small class="pull-right">46h ago</small>
+                                    <strong>Mike Loreipsum</strong> started following <strong>Monica Smith</strong>. <br>
+                                    <small class="text-muted">3 days ago at 7:58 pm - 10.06.2014</small>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <div class="dropdown-messages-box">
+                                <a href="profile.html" class="pull-left">
+                                    <img alt="image" class="img-circle" src="images/a4.jpg">
+                                </a>
+                                <div class="media-body ">
+                                    <small class="pull-right text-navy">5h ago</small>
+                                    <strong>Chris Johnatan Overtunk</strong> started following <strong>Monica Smith</strong>. <br>
+                                    <small class="text-muted">Yesterday 1:21 pm - 11.06.2014</small>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <div class="dropdown-messages-box">
+                                <a href="profile.html" class="pull-left">
+                                    <img alt="image" class="img-circle" src="images/profile.jpg">
+                                </a>
+                                <div class="media-body ">
+                                    <small class="pull-right">23h ago</small>
+                                    <strong>Monica Smith</strong> love <strong>Kim Smith</strong>. <br>
+                                    <small class="text-muted">2 days ago at 2:30 am - 11.06.2014</small>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <div class="text-center link-block">
+                                <a href="mailbox.html">
+                                    <i class="fa fa-envelope"></i> <strong>Read All Messages</strong>
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                        <i class="fa fa-bell"></i>  <span class="label label-primary">8</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-alerts">
+                        <li>
+                            <a href="mailbox.html">
+                                <div>
+                                    <i class="fa fa-envelope fa-fw"></i> You have 16 messages
+                                    <span class="pull-right text-muted small">4 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="profile.html">
+                                <div>
+                                    <i class="fa fa-twitter fa-fw"></i> 3 New Followers
+                                    <span class="pull-right text-muted small">12 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="grid_options.html">
+                                <div>
+                                    <i class="fa fa-upload fa-fw"></i> Server Rebooted
+                                    <span class="pull-right text-muted small">4 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <div class="text-center link-block">
+                                <a href="notifications.html">
+                                    <strong>See All Alerts</strong>
+                                    <i class="fa fa-angle-right"></i>
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+    
+    
+                <li>
+                    <a href="login.html">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                </li>            
+            </ul>
+    
+        </nav>
+    </div>
+    <div class="row" >
+        <div class="col-lg-12">
+            <div class="wrapper wrapper-content animated fadeInRight">
+                <div id="timesheet-page" class="m-1">
+                    <div class="flex align-between">
+                        <div class="event-date">
+                            <template v-if="isDay">
+                                <p style="font-size: 18px;"><b>{{showWeekend}}</b>  {{showDate}}</p>
+                            </template>
+                            <template v-else>
+                                <p style="font-size: 18px;">{{weektitle.startdate}} - {{weektitle.enddate}}</p>
+                            </template>
+                        </div>
+                        <div class="date-events">
+                            <div class="day-change mr-1">
+                                <template v-if="isDay">
+                                    <a class="btn btn-default btn-right-no-border" @click="prevDay"><i class="fas fa-chevron-left"></i> </a>
+                                    <p class="day-title"> Today </p>
+                                    <a class="btn btn-default btn-left-no-border" @click="nextDay"><i class="fas fa-chevron-right"></i> </a>
+                                </template>
+                                <template v-else>
+                                    <a class="btn btn-default" @click="prevWeek"><i class="fas fa-chevron-left"></i> </a>
+                                    <p class="day-title"> Week </p>
+                                    <a class="btn btn-default" @click="nextWeek"><i class="fas fa-chevron-right"></i> </a>
+                                </template>
+                            </div>
+                            <div class="mr-1">
+                                <button class="btn btn-default btn-calender" @click="loadCalender"><i class="fas fa-calendar-alt"></i></button>
+                                <div id="j-calender"></div>
+                            </div>
+                            <div id="day-week" class="mr-1" style="z-index: 999;">
+                                <a :class="['btn', 'btn-default', 'join-btn-first',(isDay===true ? 'active' : '')]" @click="SetDayWiseView(true)">Day</a>
+                                <a :class="['btn', 'btn-default', 'join-btn-last',(isDay===true ? '' : 'active')]" @click="SetDayWiseView(false)">Week</a>
+                            </div>
+                            <div class="mr-1">
+                                <a class="btn btn-primary" href="new_timesheet_entry.html"><i class="fa fa-plus"></i> Entry</a>
+                            </div>
+                        </div>
+                    </div>
+                    <template v-if="isDay">
+                        <div id="day-wise">
+                            <div id="button-calender">
+                                <ul class="flex align-evenly time-button-group">
+                                    <li v-for="(value, index) in daywiseDisplaylogList">
+                                        <a :class="['btn','btn-default',(index === 0 ? 'join-btn-first' : 'join-btn-middle'),(selectedDayArr[0] === value.weekShortName ? 'active' : '')]">
+                                            <span><b>{{value.weekShortName}}</b></span>
+                                            <span>{{value.grandworkinghour}}</span>
+                                        </a>
+                                    </li>
+                                    <li><a class="btn btn-default join-btn-last"><span>Total: </span><span><b>{{weeklytotal}}</b></span></a></li> 
+                                </ul>
+                            </div>
+                            <div class="flex flex-start">
+                                <p class="group-title m-auto">ACTUAL TIME</p>
+                                <hr class="group-break col-md-11" />
+                            </div>            
+                            <template v-if="displaylog.workinglog.length > 0">
+                                <ul class="sortable-list connectList agile-list ui-sortable col-md-12" id="todo">
+                                    <template v-for="(log, name, index) in displaylog.workinglog">
+                                        <li class="warning-element ui-sortable-handle" v-if="log.entry_date === selectedDayStr">
+                                            <div class="agile-detail flex">
+                                                <div class="col-md-9">
+                                                    <div class="flex">
+                                                        <p class="agile-head">{{log.Task.Project.project_name}}</p>
+                                                        <p class="agile-desc">&nbsp;</p>
+                                                    </div>
+                                                    <div class="flex">
+                                                        <p class="category-title mr-1"><i class="far fa-folder-open"></i> {{log.Category.category_name}}</p>
+                                                        <p class="task-title"><i class="fas fa-list"></i> {{log.Task.task_name}}</p>
+                                                    </div>
+                                                    <div class="flex">
+                                                        <p class="note">{{log.notes}}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="flex">
+                                                        <p class="working-hour col-md-4 m-auto">{{log.total_hours}}</p>
+                                                        <button class="btn btn-default"><i class="far fa-edit"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </template>
+                                </ul>
+                                <div class="col-md-offset-9 col-md-3">
+                                    <p style="font-size:22px;"> Total   :   <span style="padding-left:20px;">{{displaylog.grandworkinghour}}</span>  </p>
+                                </div>
+                            </template>
+                            <template v-else>
+                                <div id="section-blank" class="content-toggler">
+                                    <div class="ibox">
+                                        <div class="ibox-content">
+                                            <div class="flex align-evenly">
+                                                <div class="flex pt-2 pb-2">
+                                                    <p>No Timesheets here yet. </p>
+                                                    <a class="pl-1"> Add Entry </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                    <template v-else>
+                        <div id="week-wise" class="flex row mt-2">
+                            <div class="col-lg-12">
+                                <div class="ibox">
+                                    <div class="ibox-content">
+                                        <div class="table-responsive">
+                                            <div class="feed-activity-list">
+                                                <template v-for="(taskobject, index) in weekwiseDisplaylogList">
+                                                    <div class="feed-element">
+                                                        <div class="media-body">
+                                                            <template v-if="index === 0">
+                                                                <div class="col-md-5"></div>
+                                                            </template>
+                                                            <template v-else>
+                                                                <div class="col-md-5"><p>{{taskobject.Task.Project.project_name}}</p><p>{{taskobject.Task.task_name}} - demo</p></div>
+                                                            </template>
+                                                            <div class="col-md-7 flex">
+                                                                <template v-for="(v,i) in taskobject.hourlog">
+                                                                    <div class="day-workinghour" v-if="index===0">
+                                                                        <span><b>{{v.weekShortName}}</b></span>
+                                                                        <span>{{v.entrydate}}</span>
+                                                                    </div>
+                                                                    <div class="box-workinghour" v-else>{{v.totalhours}}</div>
+                                                                </template>
+                                                                <div class="day-workinghour-2" v-if="index===0"><span>&nbsp;</span></div>
+                                                                <div class="day-workinghour-2" v-else><span><b>{{taskobject.GrandTotalHours}}</b></span></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                                <div class="feed-element">
+                                                    <div class="media-body">
+                                                        <div class="col-md-5"></div>
+                                                        <div class="col-md-7 flex">
+                                                            <template v-for="(v,i) in weekwisecolumntotal">
+                                                                <div class="day-workinghour"><b>{{v}}</b></div>
+                                                            </template>
+                                                            <div class="day-workinghour-2"><span><b>{{weeklygrandworkingtotal}}</b></span></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>    
+                </div>
+            </div>                        
+            <div class="footer">
+                <div class="flex align-between flex-wrap">
+                    <div>
+                        <strong>Copyright</strong> AiDOM &copy; 2021-2022
+                    </div>
+                    <div>
+                        version <strong> 2.1 </strong>.
+                    </div>    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>  
+
+<script>
+    function ShowSection(div, element) {
+        $('.content-toggler').css('display', 'none');
+        $('#day-week').find('a').removeClass('active');
+        $('.' + div).addClass('active');
+        $('#' + element).show();
+    }
+    
+    const timesheetapp = {
+        data() {
+            return {
+                pagetitle: '',
+                isDay: true,
+                selectedDay: new Date(),
+                selectedDayStr: '',
+                selectedDayArr: [],
+                showDate: '',
+                showWeekend: '',
+                weektitle: {
+                    'startdate': "",
+                    'enddate': ""
+                },
+                //firstDayOfWeek: new Date(),
+                //lastDayOfWeek: new Date(),
+                displaylogStartingDate: new Date(),
+                displaylogEndingDate: new Date(),
+                //selectedcalenderdate: '',
+                workinglog: [],
+                daywiseDisplaylogList: [],                
+                displaylog: {
+                    weekName: '',
+                    entrydate: '',
+                    grandworkinghour: '0:00',
+                    workinglog: []
+                },
+                weekwiseDisplaylogList: [],
+                weekwisecolumntotal: ['0:00', '0:00', '0:00', '0:00', '0:00', '0:00', '0:00'],
+                weeklytotal: '0:00',
+                weeklygrandworkingtotal: '0:00'
+            }
+        },
+        mounted: function () {
+            this.loadDefault();
+        },
+        methods: {
+            loadDefault() {
+                this.pagetitle = 'Time Sheet';
+                // convert date to string
+                this.selectedDayStr = getcalenderformat(this.selectedDay);
+                // split date to array
+                this.selectedDayArr = this.selectedDay.toString('en-us').split(' ');
+                // get selected date week name in full form for display on screen
+                this.showWeekend = getFullWeekend(this.selectedDayArr[0]);
+                // get formatted date for display on screen
+                this.showDate = getFormattedDate(this.selectedDayArr);
+                // get current date daywise work log
+                this.daywiseloadWorkLog(this.selectedDayStr);
+            },
+            daywiseloadWorkLog(selectedDayStr) {
+                var self = this;
+                // send selecteddaystr in your query string
+                //disable this code on server
+                let x = getdemodata();
+                self.workinglog = getdemodata();
+                self.daywiseProcessWorkingLog(self.workinglog);
+                self.getcurrentdateWorklog();
+                console.log(x);
+                // enable this code on server
+                // helper.get('url', {}, function (response) {
+                //     self.workinglog = response;
+                //     self.weekwiseProcessWorkingLog(response);
+                //     self.getcurrentdateWorklog();
+                // }, true);
+            },
+            weekwiseloadWorkLog(selectedDayStr) {
+                var self = this;
+                // send selecteddaystr in your query string
+                //disable this code on server
+                let x = getdemodata();
+                self.workinglog = getdemodata();
+                self.weekwiseProcessWorkingLog(self.workinglog);
+                self.getcurrentdateWorklog();
+                console.log(x);
+                // enable this code on server                    
+                // helper.get('/demo/daywise.json', {}, function (response) {
+                //     self.workinglog = response;
+                //     self.weekwiseProcessWorkingLog(response);
+                //     self.getcurrentdateWorklog();
+                // }, true);
+            },
+            getcurrentdateWorklog() {
+                var self = this;
+                let displaylogs = self.daywiseDisplaylogList.filter(function (element) {
+                    return element.entrydate === self.selectedDayStr;
+                });                
+                if (displaylogs.length > 0) {
+                    self.displaylog = displaylogs[0];
+                }
+                console.log(displaylogs);
+            },
+            daywiseProcessWorkingLog(worklog) {
+                console.log('daywise worklog processing...');
+                var self = this;
+                self.daywiseDisplaylogList = [];
+                self.weeklytotal = "0:00";
+                const dayno = getWeekDayNo(self.selectedDayArr[0]) - 1;
+                console.log('day no : ' + dayno);
+                let tempday = new Date(self.selectedDayStr);
+                tempday.setDate(tempday.getDate() - dayno);
+                console.log('starting date : ' + tempday);
+                self.displaylogStartingDate = new Date(self.selectedDayStr);
+                self.displaylogStartingDate.setHours(0, 0, 0, 0);
+                self.displaylogStartingDate.setDate(self.displaylogStartingDate.getDate() - dayno);
+                // set first date of selected week                
+                for (let i = 1; i <= 7; i++) {
+                    let startingday = getcalenderformat(tempday);
+                    let tempdayarr = tempday.toString('en-us').split(' ');
+                    let grandhours = '0:00';
+                    let displaylog = {
+                        weekShortName: tempdayarr[0],
+                        entrydate: startingday,
+                        grandworkinghour: '0:00',
+                        workinglog: []
+                    };
+                    displaylog.workinglog = worklog.filter(function (element) {
+                        if (element.entry_date === startingday) {
+                            grandhours = self.calculatingTotalHours(grandhours, element.total_hours);
+                        }                    
+                        return element.entry_date === startingday;
+                    });
+                    displaylog.grandworkinghour = grandhours;
+                    self.weeklytotal = self.calculatingTotalHours(self.weeklytotal, grandhours);
+                    self.daywiseDisplaylogList.push(displaylog);
+                    tempday.setDate(tempday.getDate() + 1);
+                }
+                self.displaylogEndingDate = new Date(tempday);
+                self.displaylogEndingDate.setDate(self.displaylogEndingDate.getDate() - 1);
+                self.displaylogEndingDate.setHours(0, 0, 0, 0);
+                console.log(self.daywiseDisplaylogList);
+                this.getcurrentdateWorklog();
+            },
+            weekwiseProcessWorkingLog(worklog) {
+                console.log('weekwise worklog processing...');
+                // remove conflict with javascript and vue
+                var self = this;
+                // initialize weekwise display log list
+                self.weekwiseDisplaylogList = [];
+                self.weekwisecolumntotal = ['0:00', '0:00', '0:00', '0:00', '0:00', '0:00', '0:00'];
+                // initialize weekly total working hours
+                self.weeklytotal = "0:00";
+                // initialize weekly grand working hours
+                self.weeklygrandworkingtotal = "0:00";
+                // find unique task id from the list
+                let uniquetasklist = worklog.map(item => item.task_id).filter((value, index, self) => self.indexOf(value) === index);
+                // find day difference from selected date to week starting date
+                const daydiff = getWeekDayNo(self.selectedDayArr[0]) - 1;
+                // create a copy of selected date
+                let weekstartingdate = new Date(self.selectedDayStr);
+                // set to week start date.
+                weekstartingdate.setDate(weekstartingdate.getDate() - daydiff);
+                // convert week start date to string
+                let weekstartingdatestr = getcalenderformat(weekstartingdate);
+                // set week start date as global copy
+                self.displaylogStartingDate = new Date(self.selectedDayStr);
+                self.displaylogStartingDate.setHours(0, 0, 0, 0);
+                self.displaylogStartingDate.setDate(self.displaylogStartingDate.getDate() - daydiff);
+                // set week start date as title
+                let startdayArr = self.displaylogStartingDate.toString('en-us').split(' ');
+                self.weektitle.startdate = nth(startdayArr[2]) + ' ' + startdayArr[1];
+                // processing data to visualize on screen
+                for (let i = 0; i <= uniquetasklist.length; i++) {
+                    let displaylog = {
+                        weekShortName: '',
+                        entrydate: '',
+                        totalhours: ''
+                    };
+                    // resetting incremental date
+                    let incrementalDate = new Date(weekstartingdatestr);
+
+                    let taskwisegrouping = [];
+                    let hourlog = [];
+                    taskobject = {};
+                    let rowwisegrandhours = '0:00';
+                    if (i > 0) {
+                        taskwisegrouping = worklog.filter(function (element) {
+                            if (element.Task.task_id === uniquetasklist[i - 1]) {
+                                rowwisegrandhours = self.calculatingTotalHours(rowwisegrandhours, element.total_hours);
+                            }
+                            return element.Task.task_id === uniquetasklist[i - 1];
+                        });
+                        // console.log(taskwisegrouping);
+                        taskobject.Task = taskwisegrouping[0].Task;
+                        taskobject.Category = taskwisegrouping[0].Category;
+                        taskobject.GrandTotalHours = rowwisegrandhours;
+                        self.weeklygrandworkingtotal = self.calculatingTotalHours(self.weeklygrandworkingtotal, rowwisegrandhours);
+                    }
+                    for (let j = 0; j < 7; j++) {
+                        let startingdaystr = getcalenderformat(incrementalDate);
+                        let startingdayarr = incrementalDate.toString('en-us').split(' ');
+                        let taskwisegrandhours = '0:00';                            
+                        if (i === 0) {
+                            displaylog = {
+                                weekShortName: startingdayarr[0],
+                                entrydate: getFormattedDate(startingdayarr),
+                                totalhours: ''
+                            };
+                        } else {                            
+                            let task = taskwisegrouping.filter(function (element) {
+                                if (element.entry_date === startingdaystr) {
+                                    taskwisegrandhours = self.calculatingTotalHours(taskwisegrandhours, element.total_hours);
+                                }
+                                return element.entry_date === startingdaystr;
+                            });
+                            displaylog = {
+                                weekShortName: startingdayarr[0],
+                                entrydate: getFormattedDate(startingdayarr),
+                                totalhours: (taskwisegrandhours === '0:00') ? '' : taskwisegrandhours,
+                            };
+                        }
+                        self.weekwisecolumntotal[j] = self.calculatingTotalHours(self.weekwisecolumntotal[j], taskwisegrandhours);
+                        incrementalDate.setDate(incrementalDate.getDate() + 1);
+                        hourlog.push(displaylog);
+                    }
+                    taskobject.hourlog = hourlog;
+                    console.log(taskobject);
+                    self.weekwiseDisplaylogList.push(taskobject);
+                }
+                
+                // set week end date as global copy
+                self.displaylogEndingDate = new Date(self.displaylogStartingDate);
+                self.displaylogEndingDate.setHours(0, 0, 0, 0);
+                self.displaylogEndingDate.setDate(self.displaylogEndingDate.getDate() + 6);                    
+                // set week end date as title
+                let enddayArr = self.displaylogEndingDate.toString('en-us').split(' ');
+                self.weektitle.enddate = nth(enddayArr[2]) + ' ' + enddayArr[1];
+            },
+            calculatingTotalHours(grandtotal, workinghours) {
+                let workinghoursArr = workinghours.split(':');
+                let grandtotalarr = grandtotal.split(':');
+                let workingminutes = parseInt(workinghoursArr[1]) + parseInt(grandtotalarr[1]);                
+                let mins = ((workingminutes % 60) < 10) ? ('0' + (workingminutes % 60)) : (workingminutes % 60);
+                let hours = parseInt(workinghoursArr[0]) + parseInt(grandtotalarr[0]) + Math.floor(workingminutes / 60);
+                return hours + ':' + mins;
+            },
+            SetDayWiseView(setdayflag) {
+                this.isDay = setdayflag;
+                if (setdayflag) {
+                    this.daywiseProcessWorkingLog(this.workinglog);
+                } else {
+                    this.weekwiseProcessWorkingLog(this.workinglog);
+                }
+            },
+            loadCalender() {
+                // seperate "this" operator from vue and jquery
+                var self = this;
+                // reset datepicker                    
+                $('.ui-datepicker').show();
+                $("#j-calender").datepicker({
+                    dateFormat: 'yy-mm-dd',
+                    firstDay: 1,
+                    onSelect: function (dateText, inst) {
+                        // assign selected date
+                        self.selectedDay = new Date(dateText);
+                        // assign selected date string
+                        self.selectedDayStr = dateText;
+                        // assign selected date array
+                        self.selectedDayArr = self.selectedDay.toString('en-us').split(' ');
+                        // get selected date week name in full form for display on screen
+                        self.showWeekend = getFullWeekend(self.selectedDayArr[0]);
+                        // get formatted date for display on screen
+                        self.showDate = getFormattedDate(self.selectedDayArr);
+                        // hide datepicker
+                        $('.ui-datepicker').hide();
+                        if (self.isDay) {
+                            self.daywiseloadWorkLog(self.selectedDayStr);
+                        } else {
+                            self.weekwiseloadWorkLog(self.selectedDayStr);
+                        }
+                    }
+                });
+            },
+            nextDay() {
+                this.selectedDay.setDate(this.selectedDay.getDate() + 1);
+                this.selectedDayStr = getcalenderformat(this.selectedDay);
+                this.selectedDayArr = this.selectedDay.toString('en-us').split(' ');
+                this.showWeekend = getFullWeekend(this.selectedDayArr[0]);
+                this.showDate = getFormattedDate(this.selectedDayArr);
+                if (this.displaylogEndingDate.setHours(0, 0, 0, 0) < this.selectedDay.setHours(0, 0, 0, 0)) {
+                    this.daywiseloadWorkLog();
+                } else {
+                    this.getcurrentdateWorklog();
+                }
+            },
+            prevDay() {
+                this.selectedDay.setDate(this.selectedDay.getDate() - 1);
+                this.selectedDayStr = getcalenderformat(this.selectedDay);
+                this.selectedDayArr = this.selectedDay.toString('en-us').split(' ');
+                this.showWeekend = getFullWeekend(this.selectedDayArr[0]);
+                this.showDate = getFormattedDate(this.selectedDayArr);
+                /*this.displaylogStartingDate = new Date(this.daywiseDisplaylogList[0].entrydate);*/
+                console.log(this.displaylogStartingDate);
+                if (this.displaylogStartingDate.setHours(0, 0, 0, 0) > this.selectedDay.setHours(0, 0, 0, 0)) {
+                    this.daywiseloadWorkLog();
+                } else {
+                    this.getcurrentdateWorklog();
+                }
+            },
+            nextWeek() {
+                this.selectedDay = new Date(this.displaylogEndingDate);
+                this.selectedDay.setDate(this.selectedDay.getDate() + 1);
+                console.log('next week : ' + this.selectedDay);
+                this.selectedDayStr = getcalenderformat(this.selectedDay);
+                this.selectedDayArr = this.selectedDay.toString('en-us').split(' ');
+                this.weekwiseProcessWorkingLog(this.workinglog);
+            },
+            prevWeek() {
+                this.selectedDay = new Date(this.displaylogStartingDate);
+                this.selectedDay.setDate(this.selectedDay.getDate() - 1);
+                this.selectedDayStr = getcalenderformat(this.selectedDay);
+                this.selectedDayArr = this.selectedDay.toString('en-us').split(' ');
+                this.weekwiseProcessWorkingLog(this.workinglog);
+            }
+        }
+    }
+    Vue.createApp(timesheetapp).mount('#timesheet-page')
+</script>
+
+{% endblock %}
+
+

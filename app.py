@@ -26,11 +26,11 @@ for p in presidents_list:
     pairs_list.append( (p['Presidency'], p['President']) )
 
 hourlogs_tbl_pros = '([employee_id],[task_id],[category_id],[notes],[insert_date],[entry_date],[start_time],[end_time],[total_hours])'
-category_tbl_pros = '([category_id],[category_name])'
-employee_tbl_pros = '([employee_id],[employee_name],[title],[joining_date],cast([hourly_rate] as float) as hourly_rate,[username],[password],[email])'
-project_tbl_pros = '([project_id],[project_name],[site_location],[is_active],[start_date])'
-task_tbl_pros = '([employee_id],[task_id],[category_id],[notes],[insert_date],[entry_date],[start_time],[end_time],[total_hours])'
-inventory_tbl_pros = '([inventory_tracker_id],[inventory_name],[quantity],[unit],[hourlog_id])'
+category_tbl_pros = '([category_name])'
+employee_tbl_pros = '([employee_name],[title],[joining_date],cast([hourly_rate] as float) as hourly_rate,[username],[password],[email])'
+project_tbl_pros = '([project_name],[site_location],[is_active],[start_date])'
+task_tbl_pros = '([task_id],[category_id],[notes],[insert_date],[entry_date],[start_time],[end_time],[total_hours])'
+inventory_tbl_pros = '([inventory_name],[quantity],[unit],[hourlog_id])'
 # first route
 
 @app.route('/')
@@ -58,14 +58,19 @@ def save_timesheet():
     # datadict = json.load(data)
     # print(datadict)
     print(data)
-    hourlogdt = [data["employee_id"], data["task_id"], data["category_id"], data["notes"], data["insert_date"], data["entry_date"], data["start_time"], data["end_time"], data['total_hours']]    
-    tablename = '[dbo].[HourLogs]'
-    norows = 9    
-    # reponseMsg = dbcontext.InsertIntoTable(tablename, hourlogs_tbl_pros, norows, hourlogdt)
+    hourlogdt = data['HourLogs']
+    hourlog_table = '[dbo].[HourLogs]'
+    array_no = 9
+    # reponseMsg = dbcontext.InsertIntoTable(hourlog_table, hourlogs_tbl_pros, array_no, hourlogdt)
     # InventoryTracker
-    inventory = data["InventoryTracker"]
-    print(inventory)
+    # print(data["InventoryTracker"])
+    # inventory = json.dumps(data["InventoryTracker"])
+    # print(inventory)
+    inventorydt = data['InventoryTracker']
+    inventory_table = '[dbo].[InventoryTracker]'
+    reponseMsg = dbcontext.BatchInsertIntoTable(inventory_table, inventory_tbl_pros, 4, inventorydt)
     dbcontext.Disconnect()
+    reponseMsg = 'debuging on'
     response = jsonify({'status_code' : 200, 'data': reponseMsg})
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response

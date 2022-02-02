@@ -91,11 +91,24 @@ class DataContext:
             print('inside GetAllbyId')
             return str(e)
 
-    def InsertIntoTable(self, tablename, tableproperties, norows, data):
+
+    def ConvertJsonToArray(self,jsonData):
+        x = []
+        for key in jsonData:
+            x.append(jsonData[key])
+        return x
+    
+    def ConvertJsonListToArrayList(self,jsonData):
+        x = []
+        for dt in jsonData:
+            x.append(self.ConvertJsonToArray(dt))
+        return x
+
+    def InsertIntoTable(self, tablename, tableproperties, array_no, data):
         cursor = self.connection.cursor()
-        print(data)
+        dataarray = self.ConvertJsonToArray(data)
         myvalues = '('
-        for x in range(0, norows):
+        for x in range(0, array_no):
             if x > 0:
                 myvalues = myvalues + ','
             myvalues = myvalues + '?'
@@ -103,30 +116,34 @@ class DataContext:
         try:
             sql = "INSERT INTO "+tablename+" "+tableproperties+" VALUES "+myvalues
             print(sql)
-            cursor.execute(sql, data)
+            cursor.execute(sql, dataarray)
             self.connection.commit()
             cursor.close()
             return '1'
         except Exception as e:
             print('inside InsertIntoTable exception')
+            print(str(e))
             return str(e)
 
-    def BatchInsertIntoTable(self, tablename, tableproperties, data):
+    def BatchInsertIntoTable(self, tablename, tableproperties, array_no, data):
         cursor = self.connection.cursor()
+        dataarray = self.ConvertJsonListToArrayList(data)
+        print(dataarray)
         myvalues = '('
-        for x in range(0, len(data[0])):
+        for x in range(0, array_no):
             if x > 0:
                 myvalues = myvalues + ','
             myvalues = myvalues + '?'
         myvalues = myvalues + ')'
         try:
             sql = "INSERT INTO "+tablename+" "+tableproperties+" VALUES "+myvalues
-            cursor.executemany(sql, data)
+            cursor.executemany(sql, dataarray)
             self.connection.commit()
             cursor.close()
             return '1'
         except Exception as e:
             print('inside BatchInsertIntoTable exception')
+            print(e)
             return str(e)
 
     def insert_hour_logs(data):

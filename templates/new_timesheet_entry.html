@@ -10,9 +10,9 @@
             <div class="form-horizontal">
                 <div class="form-group"><label class="col-sm-2 control-label">Project *</label>
                     <div class="col-sm-10">
-                        <input type="hidden" v-model="HourLogs.hourlog_id" />
-                        <input type="hidden" v-model="HourLogs.employee_id" />
-                        <select class="form-control m-b search-select" id="taskId" v-model="HourLogs.task_id">
+                        <!-- <input type="hidden" v-model="timeentry.HourLogs.hourlog_id" /> -->
+                        <input type="hidden" v-model="timeentry.HourLogs.employee_id" />
+                        <select class="form-control m-b search-select" id="taskId" v-model="timeentry.HourLogs.task_id">
                             <optgroup v-for="(proj) in tasklist" :label="proj.project_name">
                                 <option v-for="(task) in proj.tasks" :value="task.task_id">[[task.task_name]]</option>
                             </optgroup>
@@ -21,14 +21,14 @@
                 </div>                                        
                 <div class="form-group"><label class="col-sm-2 control-label">Category *</label>
                     <div class="col-sm-10">
-                        <select class="form-control m-b" id="categoryId" v-model="HourLogs.category_id">
+                        <select class="form-control m-b" id="categoryId" v-model="timeentry.HourLogs.category_id">
                             <option v-for="(cat) in categorylist" :value="cat.category_id">[[cat.category_name]]</option>
                         </select>
                     </div>
                 </div>
                 <!-- <div class="form-group"><label class="col-sm-2 control-label">Task *</label>
                     <div class="col-sm-10">
-                        <select class="form-control m-b"  v-model="HourLogs.task_id">
+                        <select class="form-control m-b"  v-model="timeentry.HourLogs.task_id">
                             <option value="">Select One</option>
                             <option value="1">Task 1</option>
                             <option value="2">Task 2</option>
@@ -39,7 +39,7 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Note</label>        
                     <div class="col-sm-10">
-                        <textarea class="form-control" name="notes" rows="3" v-model="HourLogs.notes"></textarea>
+                        <textarea class="form-control" name="notes" rows="3" v-model="timeentry.HourLogs.notes"></textarea>
                     </div>
                 </div>
                 <div class="hr-line-dashed"></div>
@@ -72,7 +72,7 @@
                     <div class="col-md-2"><label>Unit</label> </div>
                     <div class="col-md-1"><button @click="addInventory"><i class="fa fa-plus"></i></button></div>
                 </div>
-                <template v-for="(obj, index) in HourLogs.InventoryTracker">
+                <template v-for="(obj, index) in timeentry.InventoryTracker">
                     <div class="flex">
                         <div class="col-md-2">&nbsp;</div>
                         <div class="col-md-2">
@@ -107,19 +107,20 @@
                 pagetitle: 'New Timesheet',
                 unitlist:['KG','Pound','Liter','Pieces'],
                 inventorylist: ['Tissue','Engine Oil','Brash','Towel','Bin','Soup','Detergent'],
-                HourLogs: {
-                    hourlog_id: 0,
-                    employee_id: 1,
-                    task_id: 0,
-                    category_id: 0,
-                    notes: '',
-                    insert_date: new Date(),
-                    entry_date: '',
-                    start_time: '0:00',
-                    end_time: '0:00',
-                    total_hours: '0:00',
-                    InventoryTracker:[{inventory_name: '',quantity: '',unit: '',hourlog_id:0}],
-                    
+                timeentry:{
+                    HourLogs: {
+                        // hourlog_id: 0,
+                        employee_id: 1, // change employee_id: 1 to 0 on live server
+                        task_id: 0,
+                        category_id: 0,
+                        notes: '',
+                        insert_date: new Date(),
+                        entry_date: '',
+                        start_time: '0:00',
+                        end_time: '0:00',
+                        total_hours: '0:00'
+                    },
+                    InventoryTracker:[{inventory_name: '',quantity: '',unit: '',hourlog_id:8}]
                 },
                 tasklist: [],
                 categorylist: [],
@@ -136,14 +137,14 @@
                 maxDate: "+0D",
                 onSelect: function (dateText, inst) {
                     // assign selected date
-                    self.HourLogs.entry_date = dateText;
+                    self.timeentry.HourLogs.entry_date = dateText;
                 }
             });
             $("#startValue").on('change', function(){
-                self.HourLogs.start_time = this.value;
+                self.timeentry.HourLogs.start_time = this.value;
             });
             $("#endValue").on('change', function(){
-                self.HourLogs.end_time = this.value;
+                self.timeentry.HourLogs.end_time = this.value;
             });
             $('.search-select').select2();
             // to select selected data from select2 
@@ -152,8 +153,8 @@
             
             // Create an observer instance.
             var observer = new MutationObserver(function (mutations) {
-                if (self.HourLogs.task_id !== target.innerText) {
-                    self.HourLogs.task_id = parseInt($("select#taskId option").filter(":selected").val());
+                if (self.timeentry.HourLogs.task_id !== target.innerText) {
+                    self.timeentry.HourLogs.task_id = parseInt($("select#taskId option").filter(":selected").val());
                 };
             });
             var config = { attributes: true, childList: true, characterData: true };
@@ -181,17 +182,17 @@
             },
             SaveTimeSheet(){
                 let self = this;
-                if(self.HourLogs.entry_date === ''){
-                    self.HourLogs.entry_date = $("#StartDate").val();
+                if(self.timeentry.HourLogs.entry_date === ''){
+                    self.timeentry.HourLogs.entry_date = $("#StartDate").val();
                 }
-                data = JSON.stringify(self.HourLogs);
+                data = JSON.stringify(self.timeentry);
                 helper.post(self.saveurl, data, function (response) {
                     console.log(response);
                 }, false);
             },
             addInventory(){                    
-                let newinventory = {inventory_name: '',quantity: '',unit: '',hourlog_id:0};
-                this.HourLogs.InventoryTracker.push(newinventory);
+                let newinventory = {inventory_name: '',quantity: '',unit: '',hourlog_id:8}; // change hourlog_id: 8 to 0 on live server
+                this.timeentry.InventoryTracker.push(newinventory);
             }
         },
         computed: {
@@ -199,8 +200,8 @@
             totalhour() {
                 let self = this;
                 // `this` points to the vm instance
-                self.HourLogs.total_hours = calculatingWorkingHours(self.HourLogs.start_time, self.HourLogs.end_time)
-                return self.HourLogs.total_hours;
+                self.timeentry.HourLogs.total_hours = calculatingWorkingHours(self.timeentry.HourLogs.start_time, self.timeentry.HourLogs.end_time)
+                return self.timeentry.HourLogs.total_hours;
             }
         },
         delimiters: ['[[',']]'],

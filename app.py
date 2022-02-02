@@ -1,6 +1,8 @@
 from flask import Flask, render_template, session, request, redirect, url_for, jsonify
 from modules import convert_to_dict, make_ordinal
-from models import GetProjects, GetEmplyees, insert_employee_data, GetTasks, GetCategories, insert_hour_logs
+# from models import GetProjects, GetEmplyees, insert_employee_data, GetTasks, GetCategories, insert_hour_logs
+
+from models import DataContext
 from flask_cors import CORS
 import json
 
@@ -23,6 +25,12 @@ pairs_list = []
 for p in presidents_list:
     pairs_list.append( (p['Presidency'], p['President']) )
 
+hourlogs_tbl_pros = '([employee_id],[task_id],[category_id],[notes],[insert_date],[entry_date],[start_time],[end_time],[total_hours])'
+category_tbl_pros = '([category_id],[category_name])'
+employee_tbl_pros = '([employee_id],[employee_name],[title],[joining_date],cast([hourly_rate] as float) as hourly_rate,[username],[password],[email])'
+project_tbl_pros = '([project_id],[project_name],[site_location],[is_active],[start_date])'
+task_tbl_pros = '([employee_id],[task_id],[category_id],[notes],[insert_date],[entry_date],[start_time],[end_time],[total_hours])'
+inventory_tbl_pros = '([inventory_tracker_id],[inventory_name],[quantity],[unit],[hourlog_id])'
 # first route
 
 @app.route('/')
@@ -41,21 +49,23 @@ def newtimesheet():
 
 @app.route('/save_timesheet', methods=['POST', 'GET'])
 def save_timesheet():
-    # timesheetdt = request.args.get('timesheetdata')
-    # timesheetdata = request.args.get('timesheetdata')
+    dbcontext = DataContext('x','x','x','x')
+    dbcontext.Connect()
     global data
     if request.method == 'POST':
-        # print(request)
         data = request.json
-        #request.form.get('word')
-        print(data)
-    reponseMsg = insert_hour_logs(data)
-    # timesheetdt = request.get_json(force=False)
-    # data = json.loads(request.data)
-    # timesheetdata = request.get_json()
-    # timesheetdata = json.loads(request.data, strict=False)
-    # print(timesheetdt)
-    # print(data)
+    #request.form.get('word')
+    # datadict = json.load(data)
+    # print(datadict)
+    print(data)
+    hourlogdt = [data["employee_id"], data["task_id"], data["category_id"], data["notes"], data["insert_date"], data["entry_date"], data["start_time"], data["end_time"], data['total_hours']]    
+    tablename = '[dbo].[HourLogs]'
+    norows = 9    
+    # reponseMsg = dbcontext.InsertIntoTable(tablename, hourlogs_tbl_pros, norows, hourlogdt)
+    # InventoryTracker
+    inventory = data["InventoryTracker"]
+    print(inventory)
+    dbcontext.Disconnect()
     response = jsonify({'status_code' : 200, 'data': reponseMsg})
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
@@ -73,10 +83,13 @@ def get_projects():
 
 @app.route("/get_supporting_data", methods=['GET'])
 def get_supporting_data():
-    context = {"projectlist": [], 'tasklist': [], 'categorylist': []}
-    context['projectlist'] = GetProjects()    
-    context['tasklist'] = GetTasks()
-    context['categorylist'] = GetCategories()
+    dbcontext = DataContext('x','x','x','x')
+    dbcontext.Connect()
+    context = {"projectlist": [], 'tasklist': [], 'categorylist': []}    
+    context['projectlist'] = dbcontext.GetAll('Project')
+    context['tasklist'] = dbcontext.GetAll('Task')
+    context['categorylist'] = dbcontext.GetAll('Category')
+    dbcontext.Disconnect()
     # print(context)
     response = jsonify({'status_code' : 200, 'data': context})
     response.headers.add('Access-Control-Allow-Origin', '*')

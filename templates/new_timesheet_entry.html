@@ -184,7 +184,7 @@
                 if(self.HourLogs.entry_date === ''){
                     self.HourLogs.entry_date = $("#StartDate").val();
                 }
-                data = JSON.stringify(self.HourLogs)
+                data = JSON.stringify(self.HourLogs);
                 helper.post(self.saveurl, data, function (response) {
                     console.log(response);
                 }, false);

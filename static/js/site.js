@@ -19,7 +19,7 @@
     $('.clockpicker').clockpicker();
 });
 const calculatingWorkingHours = function(starttime, endtime) {
-    if(starttime === "0:00" || endtime === "0:00") return;
+    if(starttime === "0:00" || endtime === "0:00") return '0:00';
     let starttimeArr = starttime.split(':');
     let endtimeArr = endtime.split(':');
     let carry =0;

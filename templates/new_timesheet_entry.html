@@ -21,7 +21,7 @@
                 </div>                                        
                 <div class="form-group"><label class="col-sm-2 control-label">Category *</label>
                     <div class="col-sm-10">
-                        <select class="form-control m-b" id="categoryId" v-model="timeentry.HourLogs.category_id">
+                        <select class="form-control m-b search-select" id="categoryId" v-model="timeentry.HourLogs.category_id">
                             <option v-for="(cat) in categorylist" :value="cat.category_id">[[cat.category_name]]</option>
                         </select>
                     </div>
@@ -91,7 +91,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-1 align-middle">
-                                    <button @click="removeInventory" class="btn btn-danger"><i class="fa fa-minus"></i></button>
+                                    <button @click="removeInventory(index)" class="btn btn-danger"><i class="fa fa-minus"></i></button>
                                 </div>
                             </div>
                         </template>
@@ -146,7 +146,7 @@
                 categorylist: [],
                 supportingUrl: 'get_supporting_data',
                 saveurl: 'save_timesheet',
-                isAdmin: true,
+                isAdmin: false,
                 paymentCalculate: {
                     PaymentAmount: 0,
                     HourlyRate: 0
@@ -175,17 +175,17 @@
             $('.search-select').select2();
             // to select selected data from select2 
             // Select the target node.            
-            var target = document.querySelector('#select2-taskId-container');
+            // var target = document.querySelector('#select2-taskId-container');
             
-            // Create an observer instance.
-            var observer = new MutationObserver(function (mutations) {
-                if (self.timeentry.HourLogs.task_id !== target.innerText) {
-                    self.timeentry.HourLogs.task_id = parseInt($("select#taskId option").filter(":selected").val());
-                };
-            });
-            var config = { attributes: true, childList: true, characterData: true };
-            // Pass in the target node, as well as the observer options.
-            observer.observe(target, config);
+            // // Create an observer instance.
+            // var observer = new MutationObserver(function (mutations) {
+            //     if (self.timeentry.HourLogs.task_id !== target.innerText) {
+            //         self.timeentry.HourLogs.task_id = parseInt($("select#taskId option").filter(":selected").val());
+            //     };
+            // });
+            // var config = { attributes: true, childList: true, characterData: true };
+            // // Pass in the target node, as well as the observer options.
+            // observer.observe(target, config);
         },
         methods: {
             loadDefault() {
@@ -208,19 +208,23 @@
             },
             SaveTimeSheet(){
                 let self = this;
+                self.timeentry.HourLogs.task_id = parseInt($("select#taskId option").filter(":selected").val()) ;
+                self.timeentry.HourLogs.category_id = parseInt($("select#categoryId option").filter(":selected").val());
+                console.log(self.timeentry);
                 if(self.timeentry.HourLogs.entry_date === ''){
                     self.timeentry.HourLogs.entry_date = $("#StartDate").val();
                 }
-                data = JSON.stringify(self.timeentry);
-                helper.post(self.saveurl, data, function (response) {
-                    console.log(response);
-                }, false);
+                // data = JSON.stringify(self.timeentry);
+                // helper.post(self.saveurl, data, function (response) {
+                //     console.log(response);
+                // }, false);
             },
             addInventory(){                    
                 let newinventory = {inventory_name: '',quantity: '',unit: '',hourlog_id:8}; // change hourlog_id: 8 to 0 on live server
                 this.timeentry.InventoryTracker.push(newinventory);
             },
-            removeInventory(){
+            removeInventory(index){
+                this.timeentry.InventoryTracker.splice(index, 1);
             },
         },
         computed: {
@@ -234,7 +238,9 @@
             calculateHourByAmount(){
                 let self = this;
                 // return calculateTotalHours(self.paymentCalculate.PaymentAmount, self.paymentCalculate.HourlyRate)
-                self.timeentry.HourLogs.end_time = calculateTotalHours(self.paymentCalculate.PaymentAmount, self.paymentCalculate.HourlyRate)
+                if(isAdmin){
+                    self.timeentry.HourLogs.end_time = calculateTotalHours(self.paymentCalculate.PaymentAmount, self.paymentCalculate.HourlyRate)
+                }
                 return self.timeentry.HourLogs.end_time;
             }
         },

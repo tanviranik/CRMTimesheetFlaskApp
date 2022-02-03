@@ -88,6 +88,9 @@
                                 <option v-for="(unit,ind) in unitlist" :value="unit" >[[unit]]</option>
                             </select>
                         </div>
+                        <div class="col-md-1">
+                            <button @click="removeInventory"><i class="fa fa-minus"></i></button>
+                        </div>
                     </div>
                 </template>                                        
                 <div class="hr-line-dashed"></div>

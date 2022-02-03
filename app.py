@@ -61,14 +61,20 @@ def save_timesheet():
     hourlogdt = data['HourLogs']
     hourlog_table = '[dbo].[HourLogs]'
     array_no = 9
-    # reponseMsg = dbcontext.InsertIntoTable(hourlog_table, hourlogs_tbl_pros, array_no, hourlogdt)
+    reponseMsg = dbcontext.InsertIntoTable(hourlog_table, hourlogs_tbl_pros, array_no, hourlogdt)
     # InventoryTracker
     # print(data["InventoryTracker"])
     # inventory = json.dumps(data["InventoryTracker"])
     # print(inventory)
+    hourlog = dbcontext.GetByFilter(hourlog_table, 1, '' ,'order by hourlog_id desc')[0]
     inventorydt = data['InventoryTracker']
-    inventory_table = '[dbo].[InventoryTracker]'
-    reponseMsg = dbcontext.BatchInsertIntoTable(inventory_table, inventory_tbl_pros, 4, inventorydt)
+    print(hourlog)
+    if len(inventorydt) > 0:
+        for dt in inventorydt:
+            dt['hourlog_id'] = hourlog['hourlog_id']
+        print(inventorydt)
+        inventory_table = '[dbo].[InventoryTracker]'
+        reponseMsg = dbcontext.BatchInsertIntoTable(inventory_table, inventory_tbl_pros, 4, inventorydt)
     dbcontext.Disconnect()
     reponseMsg = 'debuging on'
     response = jsonify({'status_code' : 200, 'data': reponseMsg})

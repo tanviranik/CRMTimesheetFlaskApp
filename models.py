@@ -2,7 +2,8 @@ import pyodbc
 from datetime import datetime
 from datetime import date
 
-CONN_STR = "Driver={ODBC Driver 17 for SQL Server};Server=13.68.246.119;Database=CRM;uid=sa;pwd=dataport;Trusted_Connection=no;"
+# CONN_STR = "Driver={ODBC Driver 17 for SQL Server};Server=13.68.246.119;Database=CRM;uid=sa;pwd=dataport;Trusted_Connection=no;"
+CONN_STR = "Driver={ODBC Driver 17 for SQL Server};Server=SABBIR\SQLEXPRESS;Database=CRM;uid=sa;pwd=sabbir@12#;Trusted_Connection=no;"
 
 class DataContext:
     def __init__(self,servername,databasename,username,password):
@@ -93,22 +94,25 @@ class DataContext:
 
 
     def ConvertJsonToArray(self,jsonData):
+        i=0
         x = []
         for key in jsonData:
-            x.append(jsonData[key])
+            if i>0:
+                x.append(jsonData[key])
+            i=i+1
         return x
     
-    def ConvertJsonListToArrayList(self,jsonData):
+    def ConvertJsonListToArrayList(self,jsonData):        
         x = []
-        for dt in jsonData:
-            x.append(self.ConvertJsonToArray(dt))
+        for dt in jsonData:            
+            x.append(self.ConvertJsonToArray(dt))            
         return x
 
     def InsertIntoTable(self, tablename, tableproperties, array_no, data):
         cursor = self.connection.cursor()
         dataarray = self.ConvertJsonToArray(data)
         myvalues = '('
-        for x in range(0, array_no):
+        for x in range(0, len(dataarray)):
             if x > 0:
                 myvalues = myvalues + ','
             myvalues = myvalues + '?'
@@ -130,7 +134,7 @@ class DataContext:
         dataarray = self.ConvertJsonListToArrayList(data)
         print(dataarray)
         myvalues = '('
-        for x in range(0, array_no):
+        for x in range(0, len(dataarray[0])):
             if x > 0:
                 myvalues = myvalues + ','
             myvalues = myvalues + '?'

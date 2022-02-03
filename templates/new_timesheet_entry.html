@@ -10,7 +10,7 @@
             <div class="form-horizontal">
                 <div class="form-group"><label class="col-sm-2 control-label">Project *</label>
                     <div class="col-sm-10">
-                        <!-- <input type="hidden" v-model="timeentry.HourLogs.hourlog_id" /> -->
+                        <input type="hidden" v-model="timeentry.HourLogs.hourlog_id" />
                         <input type="hidden" v-model="timeentry.HourLogs.employee_id" />
                         <select class="form-control m-b search-select" id="taskId" v-model="timeentry.HourLogs.task_id">
                             <optgroup v-for="(proj) in tasklist" :label="proj.project_name">
@@ -129,7 +129,7 @@
                 inventorylist: ['Tissue','Engine Oil','Brash','Towel','Bin','Soup','Detergent'],
                 timeentry:{
                     HourLogs: {
-                        // hourlog_id: 0,
+                        hourlog_id: 0,
                         employee_id: 1, // change employee_id: 1 to 0 on live server
                         task_id: 0,
                         category_id: 0,
@@ -140,7 +140,7 @@
                         end_time: '0:00',
                         total_hours: '0:00'
                     },
-                    InventoryTracker:[{inventory_name: '',quantity: '',unit: '',hourlog_id:8}]
+                    InventoryTracker:[]
                 },
                 tasklist: [],
                 categorylist: [],
@@ -173,6 +173,17 @@
                 self.timeentry.HourLogs.end_time = this.value;
             });
             $('.search-select').select2();
+            $('select#taskId').on('change', function() {
+                console.log('task onchange fired');
+                self.timeentry.HourLogs.task_id = parseInt($("select#taskId option").filter(":selected").val());
+            });
+            $('select#categoryId').on('change', function() {
+                console.log('category onchange fired');
+                self.timeentry.HourLogs.category_id = parseInt($("select#categoryId option").filter(":selected").val());
+            });
+            if(self.timeentry.HourLogs.entry_date === ''){
+                self.timeentry.HourLogs.entry_date = $("#StartDate").val();
+            }
             // to select selected data from select2 
             // Select the target node.            
             // var target = document.querySelector('#select2-taskId-container');
@@ -208,19 +219,14 @@
             },
             SaveTimeSheet(){
                 let self = this;
-                self.timeentry.HourLogs.task_id = parseInt($("select#taskId option").filter(":selected").val()) ;
-                self.timeentry.HourLogs.category_id = parseInt($("select#categoryId option").filter(":selected").val());
                 console.log(self.timeentry);
-                if(self.timeentry.HourLogs.entry_date === ''){
-                    self.timeentry.HourLogs.entry_date = $("#StartDate").val();
-                }
-                // data = JSON.stringify(self.timeentry);
-                // helper.post(self.saveurl, data, function (response) {
-                //     console.log(response);
-                // }, false);
+                data = JSON.stringify(self.timeentry);
+                helper.post(self.saveurl, data, function (response) {
+                    console.log(response);
+                }, false);
             },
             addInventory(){                    
-                let newinventory = {inventory_name: '',quantity: '',unit: '',hourlog_id:8}; // change hourlog_id: 8 to 0 on live server
+                let newinventory = {inventory_tracker_id: 0,inventory_name: '',quantity: '',unit: '',hourlog_id:0}; // change hourlog_id: 8 to 0 on live server
                 this.timeentry.InventoryTracker.push(newinventory);
             },
             removeInventory(index){

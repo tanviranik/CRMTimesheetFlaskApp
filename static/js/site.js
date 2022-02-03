@@ -27,7 +27,7 @@ const calculatingWorkingHours = function(starttime, endtime) {
     let starthour = parseInt(starttimeArr[0]);
     let startminute = parseInt(starttimeArr[1]);
     let endhour = parseInt(endtimeArr[0]);
-    let endminute = parseInt(endtimeArr[1]);
+    let endminute = parseInt(endtimeArr[1]);    
     if((starthour > endhour) || (starthour === endhour && startminute > endminute))
       return '00:00';
     if(startminute > endminute){

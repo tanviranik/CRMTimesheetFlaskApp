@@ -107,7 +107,7 @@ class DataContext:
             x.append(self.ConvertJsonToArray(dt))            
         return x
 
-    def InsertIntoTable(self, tablename, tableproperties, array_no, data):
+    def InsertIntoTable(self, tablename, tableproperties, array_no, data):        
         cursor = self.connection.cursor()
         dataarray = self.ConvertJsonToArray(data)
         myvalues = '('
@@ -126,7 +126,7 @@ class DataContext:
         except Exception as e:
             print('inside InsertIntoTable exception')
             print(str(e))
-            return str(e)
+            return '2'
 
     def BatchInsertIntoTable(self, tablename, tableproperties, array_no, data):
         cursor = self.connection.cursor()
@@ -146,8 +146,8 @@ class DataContext:
             return '1'
         except Exception as e:
             print('inside BatchInsertIntoTable exception')
-            print(e)
-            return str(e)
+            print(str(e))
+            return '2'
 
     def insert_hour_logs(data):
         try:        

@@ -1,4 +1,9 @@
-﻿$(document).ready(function () {
+﻿var MessageType = {
+  Success: 1,
+  Failed: 2,
+  Error: 3
+};
+$(document).ready(function () {
     $('.navbar-minimalize').on('click', function () {
         console.log('clicked');
 
@@ -117,6 +122,21 @@ function printDiv(div) {
       PW.print();
       PW.close();
   }, 500);
+}
+
+function OnSuccessRequest(result) {
+  if (result.MessageType == MessageType.Success) {
+      alertify.success(result.Message);
+  }
+  else if (result.MessageType == MessageType.Failed) {
+      alertify.error(result.Message);
+      return false;
+  }
+  else {
+      alertify.confirm('Something went wrong.For Detail, Please Check Console');
+      return false;
+  }
+  return true;
 }
 const getreportdata = function(){
   return [

@@ -3675,10 +3675,7 @@ video {
   padding: 0 20px;
 }
 .wrapper-content {
-  height: 95vh;
   padding: 70px 0px 40px;
-  overflow: hidden;
-  overflow-y: scroll;
 }
 #page-wrapper {
   min-height: 568px;

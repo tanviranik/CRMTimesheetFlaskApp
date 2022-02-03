@@ -34,6 +34,7 @@ task_tbl_pros = '([task_id],[category_id],[notes],[insert_date],[entry_date],[st
 inventory_tbl_pros = '([inventory_name],[quantity],[unit],[hourlog_id])'
 hourlog_table = '[dbo].[HourLogs]'
 inventory_table = '[dbo].[InventoryTracker]'
+
 # first route
 
 @app.route('/')
@@ -64,7 +65,13 @@ def save_timesheet():
     hourlogdt = data['HourLogs']
     # hourlog_table = '[dbo].[HourLogs]'
     array_no = 9
-    reponseMsg = dbcontext.InsertIntoTable(hourlog_table, hourlogs_tbl_pros, array_no, hourlogdt)
+    result = dbcontext.InsertIntoTable(hourlog_table, hourlogs_tbl_pros, array_no, hourlogdt)
+    
+    if result != '1':
+        dbcontext.Disconnect()
+        response = jsonify(GetResponseMessage(result))
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
     # InventoryTracker
     # print(data["InventoryTracker"])
     # inventory = json.dumps(data["InventoryTracker"])
@@ -77,10 +84,9 @@ def save_timesheet():
             dt['hourlog_id'] = hourlog['hourlog_id']
         print(inventorydt)
         # inventory_table = '[dbo].[InventoryTracker]'
-        reponseMsg = dbcontext.BatchInsertIntoTable(inventory_table, inventory_tbl_pros, 4, inventorydt)
+        result = dbcontext.BatchInsertIntoTable(inventory_table, inventory_tbl_pros, 4, inventorydt)
     dbcontext.Disconnect()
-    reponseMsg = 'debuging on'
-    response = jsonify({'status_code' : 200, 'data': reponseMsg})
+    response = jsonify(GetResponseMessage(result))
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
@@ -166,6 +172,18 @@ def detail(num):
     ord = make_ordinal( int(num) )
     return render_template('president.html', pres=pres_dict, ord=ord, the_title=pres_dict['President'])
 
+def GetResponseMessage(msgtype):
+    responseMessage = { "MessageType" : 0, "Message": ""}
+    if(msgtype == '1'):
+        responseMessage['MessageType'] = 1
+        responseMessage['Message'] = "Data saved."
+    elif(msgtype == '2'):
+        responseMessage['MessageType'] = 2
+        responseMessage['Message'] = "Save failed."
+    else:
+        responseMessage['MessageType'] = 3
+        responseMessage['Message'] = "Something went wrong"
+    return responseMessage
 
 # keep this as is
 if __name__ == '__main__':

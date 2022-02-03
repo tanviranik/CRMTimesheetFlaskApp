@@ -207,7 +207,6 @@
                 }, true);
             },
             makeReferenceObject(data){
-                console.log(data);
                 let self = this;
                 data.projectlist.forEach(element => {
                     element.tasks = data.tasklist.filter(function(el){
@@ -215,14 +214,14 @@
                     });
                     this.tasklist.push(element);
                 });
-                console.log(this.tasklist);
             },
             SaveTimeSheet(){
                 let self = this;
                 console.log(self.timeentry);
                 data = JSON.stringify(self.timeentry);
-                helper.post(self.saveurl, data, function (response) {
+                helper.post(self.saveurl, data, function (response) {                    
                     console.log(response);
+                    OnSuccessRequest(response);
                 }, false);
             },
             addInventory(){                    

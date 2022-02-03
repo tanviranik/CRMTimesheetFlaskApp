@@ -165,6 +165,39 @@ class DataContext:
             print(str(e))
             return '2'
 
+    def PrepareUpdateData(self,jsonData):
+        i=0
+        update_data_set = ""
+        where_clause = ""
+        for key in jsonData:
+            if isinstance(jsonData[key], int):
+                jsonData[key] = str(jsonData[key])
+            else:
+                jsonData[key] = "'" + jsonData[key] + "'"
+            if i>1:
+                update_data_set = update_data_set + " , "
+            if i==0:
+                where_clause = " where " + key + " = " + jsonData[key]
+            else:
+                update_data_set = update_data_set + " " + key + " = " + jsonData[key]
+            i=i+1
+        return update_data_set + where_clause
+
+    def UpdateIntoTableById(self, tablename, data):        
+        cursor = self.connection.cursor()
+        updatedata = self.PrepareUpdateData(data)        
+        try:
+            sql = "Update " + tablename + " set "+ updatedata
+            print(sql)
+            cursor.execute(sql)
+            self.connection.commit()
+            cursor.close()
+            return '1'
+        except Exception as e:
+            print('inside update table exception')
+            print(str(e))
+            return '2'
+
     def insert_hour_logs(data):
         try:        
             datarow = [data["employee_id"], data["task_id"], data["category_id"], data["notes"], data["insert_date"], data["entry_date"], data["start_time"], data["end_time"], data['total_hours']]

@@ -105,8 +105,8 @@ def edit_timesheet():
     if request.method == 'POST':
         data = request.json
     hourlogdt = data['HourLogs']
-    array_no = 9
-    result = dbcontext.UpdateIntoTable(hourlog_table, hourlogs_tbl_pros, array_no, hourlogdt)
+    # print(hourlogdt)
+    result = dbcontext.UpdateIntoTableById(hourlog_table, hourlogdt)
     
     if result != '1':
         dbcontext.Disconnect()
@@ -118,12 +118,13 @@ def edit_timesheet():
         for inventory in inventorylist:
             if inventory['inventory_tracker_id'] > 0:
                 # update command here
-                dbcontext.UpdateIntoTable(inventory_table, inventory_tbl_pros, inventory)
+                dbcontext.UpdateIntoTableById(inventory_table, inventory)
             else:
                 #inser command here
                 inventory['hourlog_id'] = hourlogdt['hourlog_id']                
                 result = dbcontext.InsertIntoTable(inventory_table, inventory_tbl_pros, 4, inventory)
     dbcontext.Disconnect()
+    # result = '1'
     response = jsonify(GetResponseMessage(result))
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
@@ -154,8 +155,8 @@ def get_hour_log():
     print(context)
     dbcontext.Disconnect()
     # print(context)
-    response = jsonify({'status_code' : 200, 'data': context})
-    response.headers.add('Access-Control-Allow-Origin', '*')
+    response = json.dumps({'status_code' : 200, 'data': context})
+    # response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
 @app.route("/get_supporting_data", methods=['GET'])

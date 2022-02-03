@@ -61,12 +61,12 @@
                             <div class="agile-detail flex">
                                 <div class="col-md-9">
                                     <div class="flex">
-                                        <p class="agile-head">[[log.Task.Project.project_name]]</p>
+                                        <p class="agile-head">[[log.project_name]]</p>
                                         <p class="agile-desc">&nbsp;</p>
                                     </div>
                                     <div class="flex">
-                                        <p class="category-title mr-1"><i class="far fa-folder-open"></i> [[log.Category.category_name]]</p>
-                                        <p class="task-title"><i class="fas fa-list"></i> [[log.Task.task_name]]</p>
+                                        <p class="category-title mr-1"><i class="far fa-folder-open"></i> [[log.category_name]]</p>
+                                        <p class="task-title"><i class="fas fa-list"></i> [[log.task_name]]</p>
                                     </div>
                                     <div class="flex">
                                         <p class="note">[[log.notes]]</p>
@@ -174,11 +174,10 @@
                     'startdate': "",
                     'enddate': ""
                 },
-                //firstDayOfWeek: new Date(),
-                //lastDayOfWeek: new Date(),
                 displaylogStartingDate: new Date(),
                 displaylogEndingDate: new Date(),
-                //selectedcalenderdate: '',
+                weekstartdateStr: '',
+                weekenddateStr: '',
                 workinglog: [],
                 daywiseDisplaylogList: [],                
                 displaylog: {
@@ -190,7 +189,8 @@
                 weekwiseDisplaylogList: [],
                 weekwisecolumntotal: ['0:00', '0:00', '0:00', '0:00', '0:00', '0:00', '0:00'],
                 weeklytotal: '0:00',
-                weeklygrandworkingtotal: '0:00'
+                weeklygrandworkingtotal: '0:00',
+                getHourLogUrl: 'GetWeeklyHourLogs'
             }
         },
         delimiters: ['[[',']]'],
@@ -199,33 +199,49 @@
         },
         methods: {
             loadDefault() {
-                this.pagetitle = 'Time Sheet';
+                let self = this;
+                self.pagetitle = 'Time Sheet';
                 // convert date to string
-                this.selectedDayStr = getcalenderformat(this.selectedDay);
+                self.selectedDayStr = getcalenderformat(self.selectedDay);                
                 // split date to array
-                this.selectedDayArr = this.selectedDay.toString('en-us').split(' ');
+                self.selectedDayArr = self.selectedDay.toString('en-us').split(' ');
+                // set week start date and week end date of selected date
+                self.setStartAndEndDate(self.selectedDay, self.selectedDayArr);
                 // get selected date week name in full form for display on screen
-                this.showWeekend = getFullWeekend(this.selectedDayArr[0]);
+                self.showWeekend = getFullWeekend(self.selectedDayArr[0]);
                 // get formatted date for display on screen
-                this.showDate = getFormattedDate(this.selectedDayArr);
+                
+                self.showDate = getFormattedDate(self.selectedDayArr);
+                
+                // start date of selected date week
+                // self.displaylogStartingDate = new Date(self.selectedDayStr);
+                // self.displaylogStartingDate.setHours(0, 0, 0, 0);
+                // self.displaylogStartingDate.setDate(self.displaylogStartingDate.getDate() - dayno);
+                // self.displaylogStartingDate = new Date(self.selectedDayStr);
+                // self.displaylogStartingDate.setHours(0, 0, 0, 0);
+                // self.displaylogStartingDate.setDate(self.displaylogStartingDate.getDate() - dayno);
                 // get current date daywise work log
-                this.daywiseloadWorkLog(this.selectedDayStr);
+                self.daywiseloadWorkLog(self.weekstartdateStr, self.weekenddateStr);
             },
-            daywiseloadWorkLog(selectedDayStr) {
+            daywiseloadWorkLog(startdateParam, enddateParam) {
                 var self = this;
                 // send selecteddaystr in your query string
                 //disable this code on server
-                let x = getdemodata();
-                self.workinglog = getdemodata();
-                self.daywiseProcessWorkingLog(self.workinglog);
-                self.getcurrentdateWorklog();
-                console.log(x);
+                // let x = getdemodata();
+                // self.workinglog = getdemodata();
+                // self.daywiseProcessWorkingLog(self.workinglog);
+                // self.getcurrentdateWorklog();
+                // console.log(x);
                 // enable this code on server
-                // helper.get('url', {}, function (response) {
-                //     self.workinglog = response;
-                //     self.weekwiseProcessWorkingLog(response);
-                //     self.getcurrentdateWorklog();
-                // }, true);
+                console.log(startdateParam);
+                console.log(enddateParam);
+                helper.get(self.getHourLogUrl, {startdate: startdateParam, enddate: enddateParam}, function (response) {
+                    console.log('live data');
+                    console.log(response.data)
+                    self.workinglog = response.data;
+                    self.daywiseProcessWorkingLog(response.data);
+                    self.getcurrentdateWorklog();
+                }, true);
             },
             weekwiseloadWorkLog(selectedDayStr) {
                 var self = this;
@@ -263,9 +279,9 @@
                 let tempday = new Date(self.selectedDayStr);
                 tempday.setDate(tempday.getDate() - dayno);
                 console.log('starting date : ' + tempday);
-                self.displaylogStartingDate = new Date(self.selectedDayStr);
-                self.displaylogStartingDate.setHours(0, 0, 0, 0);
-                self.displaylogStartingDate.setDate(self.displaylogStartingDate.getDate() - dayno);
+                // self.displaylogStartingDate = new Date(self.selectedDayStr);
+                // self.displaylogStartingDate.setHours(0, 0, 0, 0);
+                // self.displaylogStartingDate.setDate(self.displaylogStartingDate.getDate() - dayno);
                 // set first date of selected week                
                 for (let i = 1; i <= 7; i++) {
                     let startingday = getcalenderformat(tempday);
@@ -288,9 +304,10 @@
                     self.daywiseDisplaylogList.push(displaylog);
                     tempday.setDate(tempday.getDate() + 1);
                 }
-                self.displaylogEndingDate = new Date(tempday);
-                self.displaylogEndingDate.setDate(self.displaylogEndingDate.getDate() - 1);
-                self.displaylogEndingDate.setHours(0, 0, 0, 0);
+                // self.displaylogEndingDate = new Date(tempday);
+                // self.displaylogEndingDate.setDate(self.displaylogEndingDate.getDate() - 1);
+                // self.displaylogEndingDate.setHours(0, 0, 0, 0);
+                console.log('day wise data ');
                 console.log(self.daywiseDisplaylogList);
                 this.getcurrentdateWorklog();
             },
@@ -424,15 +441,30 @@
                         self.showWeekend = getFullWeekend(self.selectedDayArr[0]);
                         // get formatted date for display on screen
                         self.showDate = getFormattedDate(self.selectedDayArr);
+                        self.setStartAndEndDate(self.selectedDay,self.selectedDayArr);
                         // hide datepicker
                         $('.ui-datepicker').hide();
                         if (self.isDay) {
-                            self.daywiseloadWorkLog(self.selectedDayStr);
+                            self.daywiseloadWorkLog(self.weekstartdateStr, self.weekenddateStr);
                         } else {
                             self.weekwiseloadWorkLog(self.selectedDayStr);
                         }
                     }
-                });
+                }).datepicker("setDate", new Date(self.selectedDayStr));
+            },
+            setStartAndEndDate(selectedDayStrParam, seletedDayArrParam){
+                let self = this;
+                const daydiff = getWeekDayNo(seletedDayArrParam[0]) - 1;
+                // set week start date as global copy
+                self.displaylogStartingDate = new Date(selectedDayStrParam);
+                self.displaylogStartingDate.setHours(0, 0, 0, 0);
+                self.displaylogStartingDate.setDate(self.displaylogStartingDate.getDate() - daydiff);
+                self.weekstartdateStr = getcalenderformat(self.displaylogStartingDate);
+                // set week end date as global copy
+                self.displaylogEndingDate = new Date(self.displaylogStartingDate);
+                self.displaylogEndingDate.setHours(0, 0, 0, 0);
+                self.displaylogEndingDate.setDate(self.displaylogEndingDate.getDate() + 6);
+                self.weekenddateStr = getcalenderformat(self.displaylogEndingDate);
             },
             nextDay() {
                 this.selectedDay.setDate(this.selectedDay.getDate() + 1);
@@ -441,7 +473,8 @@
                 this.showWeekend = getFullWeekend(this.selectedDayArr[0]);
                 this.showDate = getFormattedDate(this.selectedDayArr);
                 if (this.displaylogEndingDate.setHours(0, 0, 0, 0) < this.selectedDay.setHours(0, 0, 0, 0)) {
-                    this.daywiseloadWorkLog();
+                    this.setStartAndEndDate(this.selectedDay,this.selectedDayArr);
+                    this.daywiseloadWorkLog(this.weekstartdateStr, this.weekenddateStr);
                 } else {
                     this.getcurrentdateWorklog();
                 }
@@ -455,7 +488,8 @@
                 /*this.displaylogStartingDate = new Date(this.daywiseDisplaylogList[0].entrydate);*/
                 console.log(this.displaylogStartingDate);
                 if (this.displaylogStartingDate.setHours(0, 0, 0, 0) > this.selectedDay.setHours(0, 0, 0, 0)) {
-                    this.daywiseloadWorkLog();
+                    this.setStartAndEndDate(this.selectedDay,this.selectedDayArr);
+                    this.daywiseloadWorkLog(this.weekstartdateStr, this.weekenddateStr);
                 } else {
                     this.getcurrentdateWorklog();
                 }

@@ -5,6 +5,7 @@ from modules import convert_to_dict, make_ordinal
 from models import DataContext
 from flask_cors import CORS
 import json
+import datetime
 
 # app = Flask(__name__, template_folder='template')
 app = Flask(__name__)
@@ -31,6 +32,8 @@ employee_tbl_pros = '([employee_name],[title],[joining_date],cast([hourly_rate] 
 project_tbl_pros = '([project_name],[site_location],[is_active],[start_date])'
 task_tbl_pros = '([task_id],[category_id],[notes],[insert_date],[entry_date],[start_time],[end_time],[total_hours])'
 inventory_tbl_pros = '([inventory_name],[quantity],[unit],[hourlog_id])'
+hourlog_table = '[dbo].[HourLogs]'
+inventory_table = '[dbo].[InventoryTracker]'
 # first route
 
 @app.route('/')
@@ -57,23 +60,23 @@ def save_timesheet():
     #request.form.get('word')
     # datadict = json.load(data)
     # print(datadict)
-    print(data)
+    # print(data)
     hourlogdt = data['HourLogs']
-    hourlog_table = '[dbo].[HourLogs]'
+    # hourlog_table = '[dbo].[HourLogs]'
     array_no = 9
     reponseMsg = dbcontext.InsertIntoTable(hourlog_table, hourlogs_tbl_pros, array_no, hourlogdt)
     # InventoryTracker
     # print(data["InventoryTracker"])
     # inventory = json.dumps(data["InventoryTracker"])
-    # print(inventory)
-    hourlog = dbcontext.GetByFilter(hourlog_table, 1, '' ,'order by hourlog_id desc')[0]
+    # print(inventory)    
     inventorydt = data['InventoryTracker']
-    print(hourlog)
+    # print(hourlog)
     if len(inventorydt) > 0:
+        hourlog = dbcontext.GetByFilter(hourlog_table, 1, '' ,'order by hourlog_id desc')[0]
         for dt in inventorydt:
             dt['hourlog_id'] = hourlog['hourlog_id']
         print(inventorydt)
-        inventory_table = '[dbo].[InventoryTracker]'
+        # inventory_table = '[dbo].[InventoryTracker]'
         reponseMsg = dbcontext.BatchInsertIntoTable(inventory_table, inventory_tbl_pros, 4, inventorydt)
     dbcontext.Disconnect()
     reponseMsg = 'debuging on'
@@ -110,6 +113,28 @@ def get_supporting_data():
 def get_employees():
     employees = GetEmplyees()
     response = jsonify({'status_code' : 200, 'data': employees})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
+@app.route("/GetWeeklyHourLogs", methods=['GET'])
+def GetWeeklyHourLogs():
+    dbcontext = DataContext('x','x','x','x')
+    dbcontext.Connect()
+    start_date = request.args.get('startdate')
+    end_date = request.args.get('enddate')
+    print(start_date)
+    print(end_date)
+    # where_clause = "where [insert_date] >= '" + start_date + "' and [insert_date] <= '" + end_date + "'"
+    # orderby_clause = 'order by hourlog_id asc'
+    hourlog = dbcontext.Get7DaysData(start_date, end_date)
+    # for log in hourlog:
+    #     log['insert_date'] = log['insert_date'].strftime('%Y-%m-%d')
+    #     log['entry_date'] = log['entry_date'].strftime('%Y-%m-%d')
+    #     log['start_time'] = log['start_time'].strftime('%H:%M')
+    #     log['end_time'] = log['end_time'].strftime('%H:%M')
+    #     print(log)
+    dbcontext.Disconnect()
+    response = jsonify({'status_code' : 200, 'data': hourlog})
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 

@@ -191,26 +191,23 @@
                     </ul>
                 </nav>
             </div>
-            <div class="row" >
-                <div class="col-lg-12">
-                    <div class="wrapper wrapper-content animated fadeInRight">
-                        {% block content %}
+            <div class="wrapper wrapper-content animated fadeInRight">
+                {% block content %}
+                {% endblock %}    
+            </div>
+            <div class="footer">
+                <div class="flex align-between flex-wrap">
+                    <div>
+                        <strong>Copyright</strong> AiDOM &copy; 2021-2022
                     </div>
-                    <div class="footer">
-                        <div class="flex align-between flex-wrap">
-                            <div>
-                                <strong>Copyright</strong> AiDOM &copy; 2021-2022
-                            </div>
-                            <div>
-                                version <strong> 2.1 </strong>.
-                            </div>    
-                        </div>
-                    </div>
+                    <div>
+                        version <strong> 2.1 </strong>.
+                    </div>    
                 </div>
-            </div>            
+            </div>
         </div>
         
-  		{% endblock %}       
+  		   
     </div>
 
 

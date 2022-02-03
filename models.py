@@ -20,7 +20,7 @@ class DataContext:
 
     def dictfetchall(self, cur):
         dataset = cur.fetchall()
-        columns = [col[0] for col in cur.description]
+        columns = [col[0] for col in cur.description]        
         return [
             dict(zip(columns, row))
             for row in dataset
@@ -91,7 +91,6 @@ class DataContext:
         except Exception as e:
             print('inside GetAllbyId')
             return str(e)
-
 
     def ConvertJsonToArray(self,jsonData):
         i=0
@@ -198,38 +197,17 @@ class DataContext:
         except Exception as e:
             print('Exception occured : ', e, '. For Datarow: ', datarow)
 
-    # def GetProjects():
-    #     conn = pyodbc.connect(CONN_STR)
-    #     cursor = conn.cursor()
-    #     query = """SELECT [project_id]
-    #                 ,[project_name]
-    #                 ,[site_location]
-    #                 ,[is_active]
-    #                 ,[start_date]
-    #             FROM [dbo].[Project]"""
+    def Get7DaysData(self, start_date, end_date):
+        cursor = self.connection.cursor()
+        query = """select h.hourlog_id,h.employee_id,emp.employee_name, h.task_id, tsk.task_name, proj.project_id, proj.project_name,h.category_id, cat.category_name, h.notes, CONVERT(VARCHAR(30), h.insert_date, 23) insert_date, CONVERT(VARCHAR(30), h.entry_date, 23) entry_date, CONVERT(VARCHAR(30), h.start_time, 24) start_time, CONVERT(VARCHAR(30), h.end_time, 24) end_time, h.total_hours  from HourLogs h
+ inner join Employee emp on emp.employee_id = h.employee_id
+ inner join Task tsk on tsk.task_id = h.task_id
+ inner join Project proj on proj.project_id = tsk.project_id
+ inner join Category cat on cat.category_id = h.category_id
+ where h.entry_date>='"""+start_date+"""' and h.entry_date <= '"""+end_date+"""'"""
 
-    #     cursor.execute(query)
-    #     data = dictfetchall(cursor)
-    #     cursor.close()
-    #     conn.close()
-    #     return data
-
-    # def GetTasks():
-    #     cursor = self.connection.cursor()
-    #     query = """SELECT * FROM [dbo].[Task]"""
-
-    #     cursor.execute(query)
-    #     data = dictfetchall(cursor)
-    #     cursor.close()
-    #     conn.close()
-    #     return data
-
-    # def GetCategories():
-    #     cursor = self.connection.cursor()
-    #     query = """SELECT * FROM [dbo].[Category]"""
-
-    #     cursor.execute(query)
-    #     data = dictfetchall(cursor)
-    #     cursor.close()
-    #     conn.close()
-    #     return data
+        cursor.execute(query)
+        data = self.dictfetchall(cursor)
+        cursor.close()
+        return data
+            

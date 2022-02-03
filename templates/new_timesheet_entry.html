@@ -106,7 +106,7 @@
                 <div class="hr-line-dashed"></div>
                 <div class="form-group">
                     <div class="col-sm-4 col-sm-offset-2">
-                        <button class="btn btn-primary" v-if="edit_hour_log == 0" @click="SaveTimeSheet">Save Changes</button>
+                        <button class="btn btn-primary" v-if="edit_hour_log == 0" @click="SaveTimeSheet" id="savebtn">Save Changes</button>
                         <button class="btn btn-primary" v-else @click="EditTimeSheet">Update Changes</button>
                     </div>
                 </div>
@@ -219,11 +219,15 @@
             },
             SaveTimeSheet(){
                 let self = this;
+                $('#savebtn').disabled = true;
                 console.log(self.timeentry);
                 data = JSON.stringify(self.timeentry);
                 helper.post(self.saveurl, data, function (response) {                    
                     console.log(response);
                     OnSuccessRequest(response);
+                    setTimeout(() => {
+                        location.href = "timesheet";
+                    }, 1000)
                 }, false);
             },
             EditTimeSheet(){

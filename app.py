@@ -118,11 +118,16 @@ def edit_timesheet():
         for inventory in inventorylist:
             if inventory['inventory_tracker_id'] > 0:
                 # update command here
-                dbcontext.UpdateIntoTableById(inventory_table, inventory)
+                result = dbcontext.UpdateIntoTableById(inventory_table, inventory)
             else:
                 #inser command here
                 inventory['hourlog_id'] = hourlogdt['hourlog_id']                
                 result = dbcontext.InsertIntoTable(inventory_table, inventory_tbl_pros, 4, inventory)
+    removeinventorylist = data['RemovedInventories']
+    if len(removeinventorylist) > 0:        
+        for remove_inventory in removeinventorylist:
+            delete_clause = "inventory_tracker_id = " + str(remove_inventory['inventory_tracker_id'])
+            result = dbcontext.DeleteFromTableById(inventory_table, delete_clause)
     dbcontext.Disconnect()
     # result = '1'
     response = jsonify(GetResponseMessage(result))

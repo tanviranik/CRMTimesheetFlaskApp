@@ -197,6 +197,19 @@ class DataContext:
             print('inside update table exception')
             print(str(e))
             return '2'
+    
+    def DeleteFromTableById(self, tablename, delete_clause):        
+        cursor = self.connection.cursor()
+        try:
+            sql = "delete from " + tablename + " where "+ delete_clause
+            cursor.execute(sql)
+            self.connection.commit()
+            cursor.close()
+            return '1'
+        except Exception as e:
+            print('inside update table exception')
+            print(str(e))
+            return '2'
 
     def insert_hour_logs(data):
         try:        

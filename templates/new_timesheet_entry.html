@@ -50,14 +50,14 @@
                     </div>
                     <div class="col-sm-5 flex">
                         <div id="clockStart" class="input-group clockpicker col-sm-4" data-autoclose="true">
-                            <input type="text" id="startValue" class="form-control" value="00:00" >
+                            <input type="text" id="startValue" class="form-control" v-model="timeentry.HourLogs.start_time" >
                             <span class="input-group-addon">
                                 <i class="far fa-clock"></i>
                             </span>
                         </div>
                         <label class="col-sm-1 control-label"> - </label>
                         <div id="clockEnd" class="input-group clockpicker col-sm-4" data-autoclose="true">
-                            <input type="text" id="endValue" class="form-control" value="00:00" >
+                            <input type="text" id="endValue" class="form-control"  v-model="timeentry.HourLogs.end_time" >
                             <span class="input-group-addon">
                                 <i class="far fa-clock"></i>
                             </span>
@@ -65,34 +65,51 @@
                     </div>
                     <label class="col-sm-2">Total Hours : [[totalhour]]</label>
                 </div>
-                <div class="flex">
-                    <div class="col-md-2 text-right"><label>Required Items</label> </div>
-                    <div class="col-md-2"><label>Particular</label> </div>
-                    <div class="col-md-2"><label>Quantity</label> </div>
-                    <div class="col-md-2"><label>Unit</label> </div>
-                    <div class="col-md-1"><button @click="addInventory"><i class="fa fa-plus"></i></button></div>
-                </div>
-                <template v-for="(obj, index) in timeentry.InventoryTracker">
-                    <div class="flex">
-                        <div class="col-md-2">&nbsp;</div>
-                        <div class="col-md-2">
-                            <select v-model="obj.inventory_name" class="form-control">
-                                <option v-for="(inv,ind) in inventorylist" :value="inv">[[inv]]</option>
-                            </select>
+                <div class="row">
+                    <div class="col-md-9">
+                        <div class="flex">
+                            <div class="col-md-3 text-right"><label>Required Items</label> </div>
+                            <div class="col-md-3"><label>Particular</label> </div>
+                            <div class="col-md-2"><label>Quantity</label> </div>
+                            <div class="col-md-3"><label>Unit</label> </div>
+                            <div class="col-md-1"><button @click="addInventory" class="btn btn-info"><i class="fa fa-plus"></i></button></div>
                         </div>
-                        <div class="col-md-2">
-                            <input type="text" v-model="obj.quantity" class="form-control" autocomplete="off"/>
-                        </div>
-                        <div class="col-md-2">
-                            <select v-model="obj.unit" class="form-control">
-                                <option v-for="(unit,ind) in unitlist" :value="unit" >[[unit]]</option>
-                            </select>
-                        </div>
-                        <div class="col-md-1">
-                            <button @click="removeInventory"><i class="fa fa-minus"></i></button>
-                        </div>
+                        <template v-for="(obj, index) in timeentry.InventoryTracker">
+                            <div class="flex mt-1">
+                                <div class="col-md-3">&nbsp;</div>
+                                <div class="col-md-3">
+                                    <select v-model="obj.inventory_name" class="form-control">
+                                        <option v-for="(inv,ind) in inventorylist" :value="inv">[[inv]]</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="text" v-model="obj.quantity" class="form-control" autocomplete="off"/>
+                                </div>
+                                <div class="col-md-3">
+                                    <select v-model="obj.unit" class="form-control">
+                                        <option v-for="(unit,ind) in unitlist" :value="unit" >[[unit]]</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-1 align-middle">
+                                    <button @click="removeInventory" class="btn btn-danger"><i class="fa fa-minus"></i></button>
+                                </div>
+                            </div>
+                        </template>
                     </div>
-                </template>                                        
+                    <div class="col-md-3">
+                        <template v-if="isAdmin">
+                            <div class="flex">
+                                <div class="col-md-5"><span class="hidden">[[calculateHourByAmount]]</span><label>Payment</label> </div>
+                                <div class="col-md-6"><label>Hourly Rate</label> </div>
+                            </div>
+                            <div class="flex mt-1">
+                                <div class="col-md-5"><input type="text" v-model="paymentCalculate.PaymentAmount" class="form-control" autocomplete="off"/></div>
+                                <div class="col-md-6"><input type="text" v-model="paymentCalculate.HourlyRate" class="form-control" autocomplete="off"/></div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+                                                        
                 <div class="hr-line-dashed"></div>
                 <div class="form-group">
                     <div class="col-sm-4 col-sm-offset-2">
@@ -128,7 +145,13 @@
                 tasklist: [],
                 categorylist: [],
                 supportingUrl: 'get_supporting_data',
-                saveurl: 'save_timesheet'
+                saveurl: 'save_timesheet',
+                isAdmin: true,
+                paymentCalculate: {
+                    PaymentAmount: 0,
+                    HourlyRate: 0
+                }
+
             }
         },
         mounted: function () {
@@ -196,7 +219,9 @@
             addInventory(){                    
                 let newinventory = {inventory_name: '',quantity: '',unit: '',hourlog_id:8}; // change hourlog_id: 8 to 0 on live server
                 this.timeentry.InventoryTracker.push(newinventory);
-            }
+            },
+            removeInventory(){
+            },
         },
         computed: {
             // a computed getter
@@ -205,6 +230,12 @@
                 // `this` points to the vm instance
                 self.timeentry.HourLogs.total_hours = calculatingWorkingHours(self.timeentry.HourLogs.start_time, self.timeentry.HourLogs.end_time)
                 return self.timeentry.HourLogs.total_hours;
+            },
+            calculateHourByAmount(){
+                let self = this;
+                // return calculateTotalHours(self.paymentCalculate.PaymentAmount, self.paymentCalculate.HourlyRate)
+                self.timeentry.HourLogs.end_time = calculateTotalHours(self.paymentCalculate.PaymentAmount, self.paymentCalculate.HourlyRate)
+                return self.timeentry.HourLogs.end_time;
             }
         },
         delimiters: ['[[',']]'],

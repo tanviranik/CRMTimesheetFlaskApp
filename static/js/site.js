@@ -18,8 +18,8 @@
     })
     $('.clockpicker').clockpicker();
 });
-const calculatingWorkingHours = function(starttime, endtime) {
-    if(starttime === "0:00" || endtime === "0:00") return '0:00';
+const calculatingWorkingHours = function(starttime, endtime) {  
+    if(starttime === endtime) return '00:00';
     let starttimeArr = starttime.split(':');
     let endtimeArr = endtime.split(':');
     let carry =0;
@@ -29,19 +29,33 @@ const calculatingWorkingHours = function(starttime, endtime) {
     let endhour = parseInt(endtimeArr[0]);
     let endminute = parseInt(endtimeArr[1]);
     if((starthour > endhour) || (starthour === endhour && startminute > endminute))
-      return '0:00';
+      return '00:00';
     if(startminute > endminute){
         endminute = 60 + endminute;
         carry = 1;
     }
     let minutedeff = endminute - startminute;
     let hourdiff = endhour - (starthour+carry);
-    // if(minutedeff < 10){
-
-    // }
     let minutestr = (minutedeff < 10) ? ('0' + minutedeff) : minutedeff;
     let hourdiffstr = (hourdiff < 10) ? ('0' + hourdiff) : hourdiff;
     return hourdiffstr + ':' + minutestr;
+}
+const calculateTotalHours = function(paymentAmount, hourlyRate){
+  if(paymentAmount === NaN || paymentAmount === '' || paymentAmount === 0 || hourlyRate === NaN || hourlyRate === '' ||hourlyRate === 0) return "00:00";
+  let total_hours_decimal = paymentAmount/hourlyRate;
+  // Separate the int from the decimal part
+  var hour = Math.floor(total_hours_decimal);
+  var decpart = total_hours_decimal - hour;
+  var min = 1 / 60;
+  // Round to nearest minute
+  decpart = min * Math.round(decpart / min);
+  var minute = Math.floor(decpart * 60) + '';
+  // Add padding if need
+  if (minute.length < 2) {
+  minute = '0' + minute; 
+  }  
+  // Concate hours and minutes
+  return ((hour < 10) ? ('0' + hour) : hour) + ':' + minute;
 }
 const nth = function (d) {
     d = parseInt(d);

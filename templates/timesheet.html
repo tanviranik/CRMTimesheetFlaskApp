@@ -75,7 +75,7 @@
                                 <div class="col-md-3">
                                     <div class="flex">
                                         <p class="working-hour col-md-4 m-auto">[[log.total_hours]]</p>
-                                        <button class="btn btn-default"><i class="far fa-edit"></i></button>
+                                        <a class="btn btn-default" :href="'edittimesheet?hourlog_id=' + log.hourlog_id"><i class="far fa-edit"></i></a>
                                     </div>
                                 </div>
                             </div>
@@ -93,7 +93,7 @@
                             <div class="flex align-evenly">
                                 <div class="flex pt-2 pb-2">
                                     <p>No Timesheets here yet. </p>
-                                    <a class="pl-1"> Add Entry </a>
+                                    <a class="pl-1" :href="'newtimesheet?selecteddate=' + selectedDayStr"> Add Entry </a>
                                 </div>
                             </div>
                         </div>

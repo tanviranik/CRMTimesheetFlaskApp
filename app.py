@@ -49,7 +49,14 @@ def timesheet():
 @app.route('/newtimesheet')
 def newtimesheet():
     selecteddate = request.args.get('selecteddate')
-    return render_template('new_timesheet_entry.html', the_title="Ai DOM - Time Sheet", start_date=selecteddate)
+    hourlog_id = 0
+    return render_template('new_timesheet_entry.html', the_title="Ai DOM - Time Sheet", start_date=selecteddate, hourlog_id=hourlog_id)
+
+@app.route('/edittimesheet')
+def edittimesheet():
+    selecteddate = ''
+    hourlog_id = request.args.get('hourlog_id')
+    return render_template('new_timesheet_entry.html', the_title="Ai DOM - Time Sheet", start_date=selecteddate, hourlog_id=hourlog_id)
 
 @app.route('/save_timesheet', methods=['POST', 'GET'])
 def save_timesheet():
@@ -58,7 +65,7 @@ def save_timesheet():
     global data
     if request.method == 'POST':
         data = request.json
-    #request.form.get('word')
+    #request.form.get('word') edit_timesheet
     # datadict = json.load(data)
     # print(datadict)
     # print(data)
@@ -90,6 +97,37 @@ def save_timesheet():
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
+@app.route('/edit_timesheet', methods=['POST', 'GET'])
+def edit_timesheet():
+    dbcontext = DataContext('x','x','x','x')
+    dbcontext.Connect()
+    global data
+    if request.method == 'POST':
+        data = request.json
+    hourlogdt = data['HourLogs']
+    array_no = 9
+    result = dbcontext.UpdateIntoTable(hourlog_table, hourlogs_tbl_pros, array_no, hourlogdt)
+    
+    if result != '1':
+        dbcontext.Disconnect()
+        response = jsonify(GetResponseMessage(result))
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
+    inventorylist = data['InventoryTracker']
+    if len(inventorylist) > 0:        
+        for inventory in inventorylist:
+            if inventory['inventory_tracker_id'] > 0:
+                # update command here
+                dbcontext.UpdateIntoTable(inventory_table, inventory_tbl_pros, inventory)
+            else:
+                #inser command here
+                inventory['hourlog_id'] = hourlogdt['hourlog_id']                
+                result = dbcontext.InsertIntoTable(inventory_table, inventory_tbl_pros, 4, inventory)
+    dbcontext.Disconnect()
+    response = jsonify(GetResponseMessage(result))
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
 @app.route('/report')
 def reportpage():
     return render_template('report.html', the_title="Ai DOM - Reports", weektitle="")
@@ -98,6 +136,25 @@ def reportpage():
 def get_projects():
     projects = GetProjects()
     response = jsonify({'status_code' : 200, 'data': projects})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
+@app.route("/get_hour_log", methods=['GET'])
+def get_hour_log():
+    hourlog_id = request.args.get('hour_log_id')
+    dbcontext = DataContext('x','x','x','x')
+    dbcontext.Connect()
+    context = {"HourLogs": {}, 'InventoryTracker': []}
+    hourlog_selectparam = "hourlog_id,employee_id,task_id, category_id, notes, CONVERT(VARCHAR(30), insert_date, 23) insert_date, CONVERT(VARCHAR(30), entry_date, 23) entry_date, CONVERT(VARCHAR(30), start_time, 24) start_time, CONVERT(VARCHAR(30), end_time, 24) end_time, total_hours"
+    where_clause = "where [hourlog_id] = " + hourlog_id
+    context['HourLogs'] = dbcontext.GetByFilterWithSelect('[dbo].[HourLogs]', 0, hourlog_selectparam , where_clause)[0]
+    # context['HourLogs'] =
+    inventory_selectparam = "[inventory_tracker_id],[inventory_name],CONVERT(VARCHAR(30), [quantity]) quantity,[unit],[hourlog_id]"
+    context['InventoryTracker'] = dbcontext.GetByFilterWithSelect('[dbo].[InventoryTracker]', 0, inventory_selectparam , where_clause)
+    print(context)
+    dbcontext.Disconnect()
+    # print(context)
+    response = jsonify({'status_code' : 200, 'data': context})
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 

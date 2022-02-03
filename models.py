@@ -80,6 +80,22 @@ class DataContext:
         except Exception as e:
             print('inside GetByFilter')
             return str(e)
+    
+    def GetByFilterWithSelect(self, tablename,numbrows = 0,selectparam = '*', whereclause='',orderby=''):
+        cursor = self.connection.cursor()
+        try:
+            numrowstr = ''
+            if numbrows == 0:                
+                numrowstr = ''
+            else:
+                numrowstr = 'TOP(' + str(numbrows) + ')'
+            cursor.execute('SELECT ' + numrowstr + ' '+ selectparam +' FROM ' + tablename + ' ' + whereclause + ' ' + orderby)
+            data = self.dictfetchall(cursor)
+            cursor.close()
+            return data
+        except Exception as e:
+            print('inside GetByFilter')
+            return str(e)
 
     def GetAllbyId(self, tablename, idvalue):
         cursor = self.connection.cursor()

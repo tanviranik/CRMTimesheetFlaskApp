@@ -3,13 +3,16 @@
 {% block content %}
 <div id="timesheet-entry" class="section-content">
     <div class="ibox float-e-margins">
-        <div class="ibox-title">
-            <h5>Time Sheet <small>New Entry</small></h5>                                    
+        <div class="ibox-title flex align-between">
+            <h5>Time Sheet <small>New Entry</small></h5>
+            <a href="timesheet" class="btn btn-success">Back</a>
         </div>
         <div class="ibox-content">
             <div class="form-horizontal">
                 <div class="form-group"><label class="col-sm-2 control-label">Project *</label>
                     <div class="col-sm-10">
+                        <input type="hidden" value="{{start_date}}" id="edit_start_date"/>
+                        <input type="hidden" value="{{hourlog_id}}" id="edit_hour_log"/>
                         <input type="hidden" v-model="timeentry.HourLogs.hourlog_id" />
                         <input type="hidden" v-model="timeentry.HourLogs.employee_id" />
                         <select class="form-control m-b search-select" id="taskId" v-model="timeentry.HourLogs.task_id">
@@ -46,7 +49,7 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Start Date</label>
                     <div class="col-sm-2">
-                        <input type="text" id="StartDate" class="form-control" autocomplete="off" value="{{start_date}}"/>
+                        <input type="text" id="StartDate" class="form-control" autocomplete="off" v-model="timeentry.HourLogs.entry_date"/>
                     </div>
                     <div class="col-sm-5 flex">
                         <div id="clockStart" class="input-group clockpicker col-sm-4" data-autoclose="true">
@@ -113,7 +116,8 @@
                 <div class="hr-line-dashed"></div>
                 <div class="form-group">
                     <div class="col-sm-4 col-sm-offset-2">
-                        <button class="btn btn-primary" @click="SaveTimeSheet">Save changes</button>
+                        <button class="btn btn-primary" v-if="edit_hour_log == 0" @click="SaveTimeSheet">Save Changes</button>
+                        <button class="btn btn-primary" v-else @click="EditTimeSheet">Update Changes</button>
                     </div>
                 </div>
             </div>
@@ -145,18 +149,36 @@
                 tasklist: [],
                 categorylist: [],
                 supportingUrl: 'get_supporting_data',
+                edit_hourlog_url: 'get_hour_log',
                 saveurl: 'save_timesheet',
+                editurl: 'edit_timesheet',
                 isAdmin: false,
                 paymentCalculate: {
                     PaymentAmount: 0,
                     HourlyRate: 0
-                }
-
+                },
+                edit_hour_log: 0,
+                edit_startdate: ''
             }
         },
         mounted: function () {
             let self = this;
             this.loadDefault();
+            self.edit_hour_log = $("#edit_hour_log").val();
+            self.edit_startdate = $("#edit_start_date").val();
+            // works on new selected date entry
+            if(self.edit_startdate !== ''){
+                self.timeentry.HourLogs.entry_date = self.edit_startdate;
+            }
+            // works on edit timesheet entry
+            if(self.edit_hour_log > 0){
+                helper.get(self.edit_hourlog_url, {hour_log_id: self.edit_hour_log}, function (response) {                    
+                    console.log(response);
+                    self.timeentry = response.data;
+                    $('select#taskId').val(self.timeentry.HourLogs.task_id).trigger('change');
+                    $('select#categoryId').val(self.timeentry.HourLogs.category_id).trigger('change');
+                }, true);
+            }
             // use to select date from datepicker
             $("#StartDate").datepicker({
                 dateFormat: 'yy-mm-dd',
@@ -184,19 +206,6 @@
             if(self.timeentry.HourLogs.entry_date === ''){
                 self.timeentry.HourLogs.entry_date = $("#StartDate").val();
             }
-            // to select selected data from select2 
-            // Select the target node.            
-            // var target = document.querySelector('#select2-taskId-container');
-            
-            // // Create an observer instance.
-            // var observer = new MutationObserver(function (mutations) {
-            //     if (self.timeentry.HourLogs.task_id !== target.innerText) {
-            //         self.timeentry.HourLogs.task_id = parseInt($("select#taskId option").filter(":selected").val());
-            //     };
-            // });
-            // var config = { attributes: true, childList: true, characterData: true };
-            // // Pass in the target node, as well as the observer options.
-            // observer.observe(target, config);
         },
         methods: {
             loadDefault() {
@@ -220,6 +229,15 @@
                 console.log(self.timeentry);
                 data = JSON.stringify(self.timeentry);
                 helper.post(self.saveurl, data, function (response) {                    
+                    console.log(response);
+                    OnSuccessRequest(response);
+                }, false);
+            },
+            EditTimeSheet(){
+                let self = this;
+                console.log(self.timeentry);
+                data = JSON.stringify(self.timeentry);
+                helper.post(self.editurl, data, function (response) {                    
                     console.log(response);
                     OnSuccessRequest(response);
                 }, false);

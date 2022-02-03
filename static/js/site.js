@@ -3,6 +3,7 @@
   Failed: 2,
   Error: 3
 };
+var mouse_is_inside = false;
 $(document).ready(function () {
     $('.navbar-minimalize').on('click', function () {
         console.log('clicked');
@@ -22,6 +23,16 @@ $(document).ready(function () {
       }
     })
     $('.clockpicker').clockpicker();
+
+    $('#j-calender').hover(function(){ 
+      mouse_is_inside=true; 
+    }, function(){ 
+        mouse_is_inside=false; 
+    });
+
+    $("body").mouseup(function(){ 
+        if(! mouse_is_inside) $('.ui-datepicker').hide();
+    });
 });
 const calculatingWorkingHours = function(starttime, endtime) {  
     if(starttime === endtime) return '00:00';

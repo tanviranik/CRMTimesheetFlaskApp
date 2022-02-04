@@ -225,6 +225,7 @@
             },
             loadworkinglog(startdateParam, enddateParam) {
                 var self = this;
+                showloading();
                 // send selecteddaystr in your query string
                 //disable this code on server
                 // let x = getdemodata();
@@ -245,6 +246,7 @@
                         self.weekwiseProcessWorkingLog(response.data);
                     }
                     self.getcurrentdateWorklog();
+                    stoploading();
                 }, true);
             },
             getcurrentdateWorklog() {

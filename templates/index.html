@@ -9,9 +9,22 @@
             <h4>Let's get you up and running. <span class="text-blue">View all support articles</span> </h4>
         </div>
     </div>
-</div>     
-
-
+</div>   
+<script>
+    const dashboardapp = {
+        data() {
+            return {
+                pagetitle: 'Dashboard',
+            }
+        },
+        mounted: function () {
+            stoploading();
+        },
+        methods: {                
+        }
+    }
+    Vue.createApp(dashboardapp).mount('#dashboard-page')
+</script>
 {% endblock %}
 
 

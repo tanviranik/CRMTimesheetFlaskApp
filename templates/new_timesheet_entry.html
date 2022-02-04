@@ -155,22 +155,15 @@
         },
         mounted: function () {
             let self = this;
-            this.loadDefault();
+            showloading();
+            self.loadDefault();
             self.edit_hour_log = $("#edit_hour_log").val();
             self.edit_startdate = $("#edit_start_date").val();
+            console.log(self.edit_hour_log);
+            $('.search-select').select2();
             // works on new selected date entry
             if(self.edit_startdate !== ''){
                 self.timeentry.HourLogs.entry_date = self.edit_startdate;
-            }
-            // works on edit timesheet entry
-            if(self.edit_hour_log > 0){
-                helper.get(self.edit_hourlog_url, {hour_log_id: self.edit_hour_log}, function (response) {                    
-                    console.log(response);
-                    self.timeentry = response.data;
-                    self.timeentry['RemovedInventories'] = [];
-                    $('select#taskId').val(self.timeentry.HourLogs.task_id).trigger('change');
-                    $('select#categoryId').val(self.timeentry.HourLogs.category_id).trigger('change');
-                }, true);
             }
             // use to select date from datepicker
             $("#StartDate").datepicker({
@@ -187,7 +180,7 @@
             $("#endValue").on('change', function(){
                 self.timeentry.HourLogs.end_time = this.value;
             });
-            $('.search-select').select2();
+            
             $('select#taskId').on('change', function() {
                 console.log('task onchange fired');
                 self.timeentry.HourLogs.task_id = parseInt($("select#taskId option").filter(":selected").val());
@@ -204,11 +197,28 @@
             loadDefault() {
                 let self = this;
                 helper.get(self.supportingUrl, {}, function (response) {                    
+                    console.log('loaddefault called');
                     self.categorylist = response.data.categorylist;
-                    self.makeReferenceObject(response.data);
+                    self.makeReferenceObject(response.data, self.setOptions);
                 }, true);
             },
-            makeReferenceObject(data){
+            setOptions(){
+                let self = this;
+                console.log('setoptions called');
+                // works on edit timesheet entry
+                if(self.edit_hour_log > 0){
+                    helper.get(self.edit_hourlog_url, {hour_log_id: self.edit_hour_log}, function (response) {                    
+                        console.log(response);
+                        self.timeentry = response.data;
+                        self.timeentry['RemovedInventories'] = [];
+                        $('select#taskId').val(self.timeentry.HourLogs.task_id).trigger('change');
+                        $('select#categoryId').val(self.timeentry.HourLogs.category_id).trigger('change');
+                        stoploading();
+                    }, true);
+                }
+            },
+            makeReferenceObject(data, _callback){
+                console.log('makereference called');
                 let self = this;
                 data.projectlist.forEach(element => {
                     element.tasks = data.tasklist.filter(function(el){
@@ -216,6 +226,7 @@
                     });
                     this.tasklist.push(element);
                 });
+                _callback();
             },
             SaveTimeSheet(){
                 let self = this;

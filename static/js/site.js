@@ -34,6 +34,12 @@ $(document).ready(function () {
         if(! mouse_is_inside) $('.ui-datepicker').hide();
     });
 });
+const showloading = function(){
+  $('.loading').css('display','flex');
+}
+const stoploading = function(){
+  $('.loading').css('display','none');
+};
 const calculatingWorkingHours = function(starttime, endtime) {  
     if(starttime === endtime) return '00:00';
     let starttimeArr = starttime.split(':');

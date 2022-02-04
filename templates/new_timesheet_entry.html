@@ -206,7 +206,11 @@
                 let self = this;
                 console.log('setoptions called');
                 // works on edit timesheet entry
-                if(self.edit_hour_log > 0){
+
+                if(self.edit_hour_log === '0'){
+                    stoploading();
+                }else{
+                    console.log('should not be here while it is new');
                     helper.get(self.edit_hourlog_url, {hour_log_id: self.edit_hour_log}, function (response) {                    
                         console.log(response);
                         self.timeentry = response.data;

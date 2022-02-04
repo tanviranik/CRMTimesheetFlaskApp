@@ -153,6 +153,19 @@
 </div>
 
 <script>
+    $(document).ready(function () {
+        var mouse_is_inside = false;
+        $('#j-calender').hover(function(){ 
+            mouse_is_inside=true; 
+        }, function(){ 
+            mouse_is_inside=false; 
+        });
+
+        $("body").mouseup(function(){ 
+            if(! mouse_is_inside) $('.ui-datepicker').hide();
+        });
+    });
+
     function ShowSection(div, element) {
         $('.content-toggler').css('display', 'none');
         $('#day-week').find('a').removeClass('active');
@@ -209,17 +222,8 @@
                 self.setStartAndEndDate(self.selectedDay, self.selectedDayArr);
                 // get selected date week name in full form for display on screen
                 self.showWeekend = getFullWeekend(self.selectedDayArr[0]);
-                // get formatted date for display on screen
-                
-                self.showDate = getFormattedDate(self.selectedDayArr);
-                
-                // start date of selected date week
-                // self.displaylogStartingDate = new Date(self.selectedDayStr);
-                // self.displaylogStartingDate.setHours(0, 0, 0, 0);
-                // self.displaylogStartingDate.setDate(self.displaylogStartingDate.getDate() - dayno);
-                // self.displaylogStartingDate = new Date(self.selectedDayStr);
-                // self.displaylogStartingDate.setHours(0, 0, 0, 0);
-                // self.displaylogStartingDate.setDate(self.displaylogStartingDate.getDate() - dayno);
+                // get formatted date for display on screen                
+                self.showDate = getFormattedDate(self.selectedDayArr);                
                 // get current date daywise work log
                 self.loadworkinglog(self.weekstartdateStr, self.weekenddateStr);
             },

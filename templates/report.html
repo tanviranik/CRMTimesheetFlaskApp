@@ -17,7 +17,7 @@
                             <input type="text" v-model="loginInfo.employee_code" class="form-control" autocomplete="off"/>
                         </div>
                     </template>
-                    <a href="timesheetdetailreport" class="btn btn-primary">Details</a>
+                    <a href="rpthourlogdetail" class="btn btn-primary">Details</a>
                 </div>
             </div>
         </div>
@@ -67,13 +67,14 @@
                 }
             }
         },
+        delimiters: ['[[',']]'],
         mounted: function () {
             this.loadDefault();
         },
         methods: {
             loadDefault() {
                 this.pagetitle = 'Time Sheet';
-                
+                stoploading();
             }                
         }
     }

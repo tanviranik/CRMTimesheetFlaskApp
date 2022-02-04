@@ -234,11 +234,13 @@
             },
             SaveTimeSheet(){
                 let self = this;
+                showloading();
                 $('#savebtn').disabled = true;
                 console.log(self.timeentry);
                 data = JSON.stringify(self.timeentry);
                 helper.post(self.saveurl, data, function (response) {                    
                     console.log(response);
+                    stoploading();
                     OnSuccessRequest(response);
                     setTimeout(() => {
                         location.href = "timesheet";
@@ -247,11 +249,16 @@
             },
             EditTimeSheet(){
                 let self = this;
+                showloading();
                 console.log(self.timeentry);
                 data = JSON.stringify(self.timeentry);
                 helper.post(self.editurl, data, function (response) {                    
                     console.log(response);
+                    stoploading();
                     OnSuccessRequest(response);
+                    setTimeout(() => {
+                        location.href = "timesheet";
+                    }, 1000)
                 }, false);
             },
             addInventory(){                    

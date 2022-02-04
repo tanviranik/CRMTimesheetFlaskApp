@@ -41,7 +41,6 @@ inventory_table = '[dbo].[InventoryTracker]'
 def index():
     return render_template('index.html', pairs=pairs_list, the_title="Presidents Index")
 
-
 @app.route('/timesheet')
 def timesheet():
     return render_template('timesheet.html', the_title="Ai DOM - Time Sheet", weektitle="")
@@ -57,6 +56,8 @@ def edittimesheet():
     selecteddate = ''
     hourlog_id = request.args.get('hourlog_id')
     return render_template('new_timesheet_entry.html', the_title="Ai DOM - Time Sheet", start_date=selecteddate, hourlog_id=hourlog_id)
+
+
 
 @app.route('/save_timesheet', methods=['POST', 'GET'])
 def save_timesheet():
@@ -137,6 +138,11 @@ def edit_timesheet():
 @app.route('/report')
 def reportpage():
     return render_template('report.html', the_title="Ai DOM - Reports", weektitle="")
+
+@app.route('/rpthourlogdetail')
+def timesheetdetailreport():
+    print('rpt timesheet detail report')
+    return render_template('timesheetdetailreport.html', the_title="Ai DOM - Time Sheet", weektitle="")
 
 @app.route("/get_projects", methods=['GET'])
 def get_projects():

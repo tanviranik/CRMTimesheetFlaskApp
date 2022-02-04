@@ -1,389 +1,211 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Time Sheet</title>    
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />    
-    <link href="css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="css/jquery-ui.min.css" rel="stylesheet"/>
-    <link href="css/site.css" rel="stylesheet" />
-    <link href="css/animate.css" rel="stylesheet"/>
-    <link href="css/style.css" rel="stylesheet"/>    
-</head>
-<body>
-    <div id="wrapper">
-        <nav class="navbar-default navbar-static-side" role="navigation">
-            <div class="sidebar-collapse">
-                <ul class="nav metismenu" id="side-menu">
-                    <li class="nav-header">
-                        <div class="dropdown profile-element">
-                            <span>
-                                <img alt="image" class="img-circle" src="images/profile_small.jpg" />
-                            </span>
-                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                                <span class="clear">
-                                    <span class="block m-t-xs">
-                                        <strong class="font-bold">David Williams</strong>
-                                    </span> <span class="text-muted text-xs block">Art Director <b class="caret"></b></span>
-                                </span>
-                            </a>
-                            <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                                <li><a href="profile.html">Profile</a></li>
-                                <li><a href="contacts.html">Contacts</a></li>
-                                <li><a href="mailbox.html">Mailbox</a></li>
-                                <li class="divider"></li>
-                                <li><a href="login.html">Logout</a></li>
-                            </ul>
-                        </div>
-                        <div class="logo-element">
-                            <img alt="image" class="img-circle" src="images/hero-logo.png" width="35" height="35" />
-                        </div>
-                    </li>
-                    <li>
-                        <a href="index.html"><i class="fa fa-th-large"></i> <span class="nav-label">Dashboards</span></a>
-                    </li>
-                    <li class="carat-change">
-                        <a href="#"><i class="fas fa-user-shield"></i> <span class="nav-label">Admin</span><i class="fas fa-chevron-left float-right"></i></a>
-                        <ul class="nav nav-second-level collapse">
-                            <li><a href="#">Employee</a></li>
-                            <li><a href="#">User</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="timesheet.html"><i class="fas fa-calendar-alt"></i> <span class="nav-label">TimeSheet</span>  </a>
-                    </li> 
-                    <li class="special_link">
-                        <a href="report.html"><i class="fa fa-database"></i> <span class="nav-label">Report</span></a>
-                    </li>                    
-                </ul>
-                <div class="sidebar-toggler">
-                    <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-arrow-left"></i> </a>
-                </div>        
-            </div>
-        </nav>
-        <div id="page-wrapper" class="gray-bg dashbard-1">
-            <div class="row border-bottom">
-                <nav class="navbar navbar-fixed-top custom-nav-pad" role="navigation" style="margin-bottom: 0;">
-                    <div class="navbar-header flex flex-start">
-                        <div class="m-auto page-title"> <span class="pr-1 text-primary">Reports</span>  <i class="fas fa-caret-right"></i> <span class="pl-1 text-black">Display</span></div>
-                    </div>
-                    <ul class="nav navbar-top-links navbar-right">           
-                        <li class="dropdown">
-                            <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-                                <i class="fa fa-cog"></i>  <span class="label label-warning"></span>
-                            </a>
-                            <ul class="dropdown-menu dropdown-messages">
-                                <li>
-                                    <div class="dropdown-messages-box">
-                                        <a href="profile.html" class="pull-left">
-                                            <img alt="image" class="img-circle" src="images/a7.jpg">
-                                        </a>
-                                        <div class="media-body">
-                                            <small class="pull-right">46h ago</small>
-                                            <strong>Mike Loreipsum</strong> started following <strong>Monica Smith</strong>. <br>
-                                            <small class="text-muted">3 days ago at 7:58 pm - 10.06.2014</small>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="divider"></li>
-                                <li>
-                                    <div class="dropdown-messages-box">
-                                        <a href="profile.html" class="pull-left">
-                                            <img alt="image" class="img-circle" src="images/a4.jpg">
-                                        </a>
-                                        <div class="media-body ">
-                                            <small class="pull-right text-navy">5h ago</small>
-                                            <strong>Chris Johnatan Overtunk</strong> started following <strong>Monica Smith</strong>. <br>
-                                            <small class="text-muted">Yesterday 1:21 pm - 11.06.2014</small>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="divider"></li>
-                                <li>
-                                    <div class="dropdown-messages-box">
-                                        <a href="profile.html" class="pull-left">
-                                            <img alt="image" class="img-circle" src="images/profile.jpg">
-                                        </a>
-                                        <div class="media-body ">
-                                            <small class="pull-right">23h ago</small>
-                                            <strong>Monica Smith</strong> love <strong>Kim Smith</strong>. <br>
-                                            <small class="text-muted">2 days ago at 2:30 am - 11.06.2014</small>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="divider"></li>
-                                <li>
-                                    <div class="text-center link-block">
-                                        <a href="mailbox.html">
-                                            <i class="fa fa-envelope"></i> <strong>Read All Messages</strong>
-                                        </a>
-                                    </div>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="dropdown">
-                            <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-                                <i class="fa fa-bell"></i>  <span class="label label-primary">8</span>
-                            </a>
-                            <ul class="dropdown-menu dropdown-alerts">
-                                <li>
-                                    <a href="mailbox.html">
-                                        <div>
-                                            <i class="fa fa-envelope fa-fw"></i> You have 16 messages
-                                            <span class="pull-right text-muted small">4 minutes ago</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="divider"></li>
-                                <li>
-                                    <a href="profile.html">
-                                        <div>
-                                            <i class="fa fa-twitter fa-fw"></i> 3 New Followers
-                                            <span class="pull-right text-muted small">12 minutes ago</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="divider"></li>
-                                <li>
-                                    <a href="grid_options.html">
-                                        <div>
-                                            <i class="fa fa-upload fa-fw"></i> Server Rebooted
-                                            <span class="pull-right text-muted small">4 minutes ago</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="divider"></li>
-                                <li>
-                                    <div class="text-center link-block">
-                                        <a href="notifications.html">
-                                            <strong>See All Alerts</strong>
-                                            <i class="fa fa-angle-right"></i>
-                                        </a>
-                                    </div>
-                                </li>
-                            </ul>
-                        </li>
-            
-            
-                        <li>
-                            <a href="login.html">
-                                <i class="fas fa-sign-out-alt"></i>
-                            </a>
-                        </li>            
-                    </ul>
-            
-                </nav>
-            </div>
-            <div class="wrapper wrapper-content animated fadeInRight">
-                <div id="report-page">
-                    <div class="report-control flex flex-start">
-                        <button :class="['btn','btn-default']" onclick="ExporttoExcel('timesheetdetails',this)"><i class="far fa-file-excel"></i></button>
-                        <button :class="['btn','btn-default']" @click="printReport"><i class="fas fa-print"></i></button>
-                        <button :class="['btn','btn-default',(isFilter===true ? 'btn-default-active' : '')]" @click="toggleFilter"><i class="fas fa-filter"></i></button>
-                        <button :class="['btn','btn-default']" onclick="zoomIn()"><i class="fas fa-search-plus"></i></button>
-                        <button :class="['btn','btn-default']" onclick="zoomOut()"><i class="fas fa-search-minus"></i></button>
-                    </div>
-                    <div id="report-body" class="flex">
-                        <div id="report-viewer" :class="[(isFilter===true ? 'col-md-9' : 'col-md-12')]">
-                            <div id="print-area">
-                                <div class="report-header">
-                                    <div class="report-title"> Timesheet Details for Sunny (Tanvir) Anik</div>
-                                </div>
-                                <div class="report-content">
-                                    <table class="table table-responsive table-bordered table-report">
-                                        <thead>
-                                            <tr>
-                                                <th v-for="(head, index) in reportdataheader" class="text-center">{{ head }}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="(dt, index) in reportdata">
-                                                <td>{{dt.entry_date}}</td>
-                                                <td>{{dt.project_name}}</td>
-                                                <td>{{dt.task_name}}</td>
-                                                <td class="text-right">{{dt.total_hours}}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>                                    
-                        </div>
-                        <template v-if="isFilter">
-                            <div class="filter-group col-md-3 animated fadeInRight">
-                                <div class="form-group">
-                                    <label>Date Range</label>
-                                    <select name="date_range" class="form-control">
-                                        <option class="0">Select</option>
-                                        <option class="1">This Week</option>
-                                        <option class="2">This Month</option>
-                                        <option class="3">Last Week</option>
-                                        <option class="4">Last Month</option>
-                                        <option class="5">Last 30 Days</option>
-                                        <option class="6">Last 60 Days</option>
-                                        <option class="9">Last 90 Days</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Start Date</label>
-                                    <input id="startdate" type="text" class="form-control" />
-                                </div>
-                                <div class="form-group">
-                                    <label>End Date</label>
-                                    <input id="enddate"  type="text" class="form-control" />
-                                </div>
-                                <div class="form-group">
-                                    <label>Primary Grouping</label>
-                                    <select name="primary_grouping" class="form-control">
-                                        <option class="0">Select</option>
-                                        <option class="1">Project</option>
-                                        <option class="2">Task</option>
-                                        <option class="3">Date</option>
-                                        <option class="4">Customer</option>
-                                        <option class="5">Status</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Secondary Grouping</label>
-                                    <select name="secondary_grouping" class="form-control">
-                                        <option class="0">Select</option>
-                                        <option class="1">Project</option>
-                                        <option class="2">Task</option>
-                                        <option class="3">Date</option>
-                                        <option class="4">Customer</option>
-                                        <option class="5">Status</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Project</label>
-                                    <select name="project_id" class="form-control">
-                                        <option class="0">Select</option>
-                                        <option class="1">Project 1</option>
-                                        <option class="2">Project 2</option>
-                                        <option class="3">Project 3</option>
-                                        <option class="4">Project 4</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Task</label>
-                                    <select name="task_id" class="form-control">
-                                        <option class="0">Select</option>
-                                        <option class="1">Task 1</option>
-                                        <option class="2">Task 2</option>
-                                        <option class="3">Task 3</option>
-                                        <option class="4">Task 4</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Category</label>
-                                    <select name="category_id" class="form-control">
-                                        <option class="0">Select</option>
-                                        <option class="1">Category 1</option>
-                                        <option class="2">Category 2</option>
-                                        <option class="3">Category 3</option>
-                                        <option class="4">Category 4</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Status</label>
-                                    <select name="status" class="form-control">
-                                        <option class="0">Select</option>
-                                        <option class="1">Pending</option>
-                                        <option class="2">Approved</option>
-                                        <option class="3">Automatically Approved</option>
-                                        <option class="4">Rejected</option>
-                                        <option class="5">Invoiced</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">                                            
-                                    <button class="btn btn-success">Preview</button>
-                                </div>
-                            </div>
-                        </template>
-                    </div>
-                </div>
-            </div>                        
-            <div class="footer">
-                <div class="flex align-between flex-wrap">
-                    <div>
-                        <strong>Copyright</strong> AiDOM &copy; 2021-2022
-                    </div>
-                    <div>
-                        version <strong> 2.1 </strong>.
-                    </div>    
-                </div>
-            </div>
-        </div>        
-    </div>
+{% extends 'base.html' %}
 
-    <!-- jQuery CDN -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
-            crossorigin="anonymous"></script>
-    <!-- jQuery UI CDN -->
-    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js" integrity="sha256-eTyxS0rkjpLEo16uXTS0uVCS4815lc40K2iVpWDvdSY=" crossorigin="anonymous"></script>
+{% block content %}
+<div id="report-page">
+    <div class="report-control flex flex-start">
+        <button :class="['btn','btn-default']" onclick="ExporttoExcel('timesheetdetails',this)"><i class="far fa-file-excel"></i></button>
+        <button :class="['btn','btn-default']" @click="printReport"><i class="fas fa-print"></i></button>
+        <button :class="['btn','btn-default',(isFilter===true ? 'btn-default-active' : '')]" @click="toggleFilter"><i class="fas fa-filter"></i></button>
+        <button :class="['btn','btn-default']" onclick="zoomIn()"><i class="fas fa-search-plus"></i></button>
+        <button :class="['btn','btn-default']" onclick="zoomOut()"><i class="fas fa-search-minus"></i></button>
+    </div>
+    <div id="report-body" class="flex">
+        <div id="report-viewer" :class="[(isFilter===true ? 'col-md-9' : 'col-md-12')]">
+            <div id="print-area">
+                <div class="report-header">
+                    <div class="report-title"> Timesheet Details for Sunny (Tanvir) Anik</div>
+                </div>
+                <div class="report-content">
+                    <table class="table table-responsive table-bordered table-report">
+                        <thead>
+                            <tr>
+                                <th v-for="(head, index) in reportdataheader" class="text-center">[[ head ]]</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(dt, index) in reportdata">
+                                <td>[[dt.entry_date]]</td>
+                                <td>[[dt.project_name]]</td>
+                                <td>[[dt.task_name]]</td>
+                                <td class="text-right">[[dt.total_hours]]</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>                                    
+        </div>
+        <template v-if="isFilter">
+            <div class="filter-group col-md-3 animated fadeInRight">
+                <div class="form-group">
+                    <label>Date Range</label>
+                    <select name="date_range" class="form-control" v-model="filterby.date_range" @change="setDateRange">
+                        <option value="0">Select</option>
+                        <option value="1">This Week</option>
+                        <option value="2">This Month</option>
+                        <option value="3">Last Week</option>
+                        <option value="4">Last Month</option>
+                        <option value="5">Last 30 Days</option>
+                        <option value="6">Last 60 Days</option>
+                        <option value="7">Last 90 Days</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Start Date</label>
+                    <input id="startdate" type="text" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>End Date</label>
+                    <input id="enddate"  type="text" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Primary Grouping</label>
+                    <select name="primary_grouping" class="form-control">
+                        <option value="0">Select</option>
+                        <option value="1">Project</option>
+                        <option value="2">Task</option>
+                        <option value="3">Date</option>
+                        <option value="4">Customer</option>
+                        <option value="5">Status</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Secondary Grouping</label>
+                    <select name="secondary_grouping" class="form-control">
+                        <option value="0">Select</option>
+                        <option value="1">Project</option>
+                        <option value="2">Task</option>
+                        <option value="3">Date</option>
+                        <option value="4">Customer</option>
+                        <option value="5">Status</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Project</label>
+                    <select name="project_id" class="form-control">
+                        <option value="0">Select</option>
+                        <option value="1">Project 1</option>
+                        <option value="2">Project 2</option>
+                        <option value="3">Project 3</option>
+                        <option value="4">Project 4</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Task</label>
+                    <select name="task_id" class="form-control">
+                        <option value="0">Select</option>
+                        <option value="1">Task 1</option>
+                        <option value="2">Task 2</option>
+                        <option value="3">Task 3</option>
+                        <option value="4">Task 4</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select name="category_id" class="form-control">
+                        <option value="0">Select</option>
+                        <option value="1">Category 1</option>
+                        <option value="2">Category 2</option>
+                        <option value="3">Category 3</option>
+                        <option value="4">Category 4</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select name="status" class="form-control">
+                        <option value="0">Select</option>
+                        <option value="1">Pending</option>
+                        <option value="2">Approved</option>
+                        <option value="3">Automatically Approved</option>
+                        <option value="4">Rejected</option>
+                        <option value="5">Invoiced</option>
+                    </select>
+                </div>
+                <div class="form-group">                                            
+                    <button class="btn btn-success">Preview</button>
+                </div>
+            </div>
+        </template>
+    </div>
+</div>
+<script>
     
-    <script src="js/bootstrap.min.js"></script>
-    <!-- Popper.JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
-    <!-- Font Awesome JS -->
-    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
-    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
-    <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
-    <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-    <script src="js/inspinia.js"></script>
-    <script src="js/clockpicker.js"></script>
-    <script src="js/site.js"></script>
-    <script src="js/vue.js"></script>
-    <script src="js/vuehelper.js"></script>
-    <script src="js/reportcontrol.js"></script>
-    <script>
-       
-        const reportapp = {
-            data() {
-                return {
-                    pagetitle: '',
-                    isFilter: true,
-                    reportdataheader: ['Date', 'Customer', 'Project', 'Duration'],
-                    reportdata: [],
-                    filterby:{
-                        date_range: '',
-                        startdate: '',
-                        enddate: '',
-                        primary_grouping: '',
-                        secondary_grouping: '',
-                        project_id: '',
-                        task_id:'',
-                        category_id:'',
-                        status: ''
-                    }
+    const reportapp = {
+        data() {
+            return {
+                pagetitle: '',
+                isFilter: true,
+                reportdataheader: ['Date', 'Customer', 'Project', 'Duration'],
+                reportdata: [],
+                selectedDay: new Date(),
+                selectedDayStr: '',
+                selectedDayArr:[],
+                displaylogStartingDate: new Date(),
+                displaylogEndingDate: new Date(),
+                weekstartdateStr: '',
+                weekenddateStr: '',
+                filterby:{
+                    date_range: '0',
+                    startdate: '',
+                    enddate: '',
+                    primary_grouping: '',
+                    secondary_grouping: '',
+                    project_id: '',
+                    task_id:'',
+                    category_id:'',
+                    status: ''
                 }
-            },
-            mounted: function () {
-                this.loadDefault();
+            }
+        },
+        delimiters: ['[[',']]'],
+        mounted: function () {
+            this.loadDefault();            
+        },
+        methods: {
+            loadDefault() {
+                let self = this;
+                self.pagetitle = 'Timesheet Detail Report';
+                self.reportdata = getreportdata();
+                self.selectedDayStr = getcalenderformat(self.selectedDay);
+                self.selectedDayArr = self.selectedDay.toString('en-us').split(' ');
+                self.setStartAndEndDate(self.selectedDayStr, self.selectedDayArr);
                 $( "#startdate").datepicker({
                     showAnim: 'slideDown',
                     dateFormat: 'yy-mm-dd',
-                });
+                    firstDay: 1,
+                }).datepicker("setDate", new Date(self.weekstartdateStr));
                 $( "#enddate").datepicker({
                     showAnim: 'slideDown',
                     dateFormat: 'yy-mm-dd',
-                });
+                    firstDay: 1,
+                    maxDate: "+0D",
+                }).datepicker("setDate", new Date(self.weekenddateStr));
+                stoploading();
             },
-            methods: {
-                loadDefault() {
-                    this.pagetitle = 'Timesheet Detail Report';
-                    this.reportdata = getreportdata();
-                },
-                toggleFilter(){
-                    this.isFilter = (this.isFilter) ? false : true;
-                },
-                printReport(){
-                    printDiv('print-area');
-                }
+            toggleFilter(){
+                this.isFilter = (this.isFilter) ? false : true;
+            },
+            printReport(){
+                printDiv('print-area');
+            },
+            setDateRange(){
+                console.log(this.filterby.date_range);
+            },
+            setStartAndEndDate(selectedDayStrParam, seletedDayArrParam){
+                let self = this;
+                const daydiff = getWeekDayNo(seletedDayArrParam[0]) - 1;
+                // set week start date as global copy
+                self.displaylogStartingDate = new Date(selectedDayStrParam);
+                self.displaylogStartingDate.setHours(0, 0, 0, 0);
+                self.displaylogStartingDate.setDate(self.displaylogStartingDate.getDate() - daydiff);
+                self.weekstartdateStr = getcalenderformat(self.displaylogStartingDate);
+                // set week end date as global copy
+                self.displaylogEndingDate = new Date(self.displaylogStartingDate);
+                self.displaylogEndingDate.setHours(0, 0, 0, 0);
+                self.displaylogEndingDate.setDate(self.displaylogEndingDate.getDate() + 6);
+                self.weekenddateStr = getcalenderformat(self.displaylogEndingDate);
             }
         }
-        Vue.createApp(reportapp).mount('#report-page')
-    </script>
-</body>
-</html>
+    }
+    Vue.createApp(reportapp).mount('#report-page')
+</script>
+{% endblock %}

@@ -147,7 +147,7 @@
 
 
 <script>
-    const csslink = "{{ url_for('static', filename='css/print.css') }}";
+    const reportcsslink = "{{ url_for('static', filename='css/print.css') }}";
     const reportapp = {
         data() {
             return {
@@ -223,7 +223,7 @@
                 this.isFilter = (this.isFilter) ? false : true;
             },
             printReport(){
-                printDivPortrait('print-area', csslink);
+                printDivPortrait('print-area', reportcsslink);
             }            
         }
     }

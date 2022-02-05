@@ -22,16 +22,96 @@
             <button :class="['btn','btn-default']" onclick="ExporttoExcel('timesheetdetails',this)"><i class="far fa-file-excel"></i></button>
             <button :class="['btn','btn-default']" @click="printReport"><i class="fas fa-print"></i></button>
             <button :class="['btn','btn-default',(isFilter===true ? 'btn-default-active' : '')]" @click="toggleFilter"><i class="fas fa-filter"></i></button>
-            <button :class="['btn','btn-default']" onclick="zoomIn()"><i class="fas fa-search-plus"></i></button>
-            <button :class="['btn','btn-default']" onclick="zoomOut()"><i class="fas fa-search-minus"></i></button>
         </div>
         <div id="report-body" class="flex">
             <div id="report-viewer" :class="[(isFilter===true ? 'col-md-9' : 'col-md-12')]">
                 <div id="print-area">
-                    <div class="report-header">
-                        <div class="report-title"> Timesheet Details for Sunny (Tanvir) Anik</div>
-                    </div>
+                    <div class="report-header"></div>
                     <div class="report-content">
+                        <div class="flex mb-2">
+                            <div class="col-md-5">
+                                <h3 class="upper-case">Employeer</h3>
+                                <p>1379302 Alberta Limited</p>
+                                <p>PO Box 23089</p>
+                                <p>Calgary AB T2S3B1</p>
+                            </div>
+                            <div class="col-md-7">
+                                <h3 class="upper-case">Pay Period</h3>
+                                <div class="flex">
+                                    <div class="col-md-6">
+                                        <p>Period Beginning</p>
+                                        <p>Period Ending</p>
+                                        <p>Pay Day</p>
+                                        <p>Total Hour</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p>[[ weekstartdateStr ]]</p>
+                                        <p>[[weekenddateStr]]</p>
+                                        <p>[[weekenddateStr]]</p>
+                                        <p>40.00</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex mb-2">
+                            <div class="col-md-5">
+                                <h3 class="upper-case">employee</h3>
+                                <p>[[employee_name]]</p>
+                            </div>
+                            <div class="col-md-7">
+                                <h3 class="upper-case">other pay/contributions</h3>
+                                <div class="flex">
+                                    <div class="col-md-5">&nbsp;</div>
+                                    <div class="col-md-7 flex align-between">
+                                        <div style="width:100%; text-align: right;">
+                                            <h4>Current</h4>
+                                        </div>
+                                        <div style="width:100%; text-align: right;">
+                                            <h4>Year To Date</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex">
+                                    <div class="col-md-5">
+                                        <p>Employee Life Insurance</p>
+                                    </div>
+                                    <div class="col-md-7 flex align-between">
+                                        <div style="width:100%; text-align: right;">
+                                            <p>20.00</p>
+                                        </div>
+                                        <div style="width:100%; text-align: right;">
+                                            <p>20.00</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex">
+                                    <div class="col-md-5">
+                                        <p>AD&D</p>
+                                    </div>
+                                    <div class="col-md-7 flex align-between">
+                                        <div style="width:100%; text-align: right;">
+                                            <p>10.00</p>
+                                        </div>
+                                        <div style="width:100%; text-align: right;">
+                                            <p>10.00</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex">
+                                    <div class="col-md-5">
+                                        <p>Life Insurance(Dependent)</p>
+                                    </div>
+                                    <div class="col-md-7 flex align-between">
+                                        <div style="width:100%; text-align: right;">
+                                            <p>2.00</p>
+                                        </div>
+                                        <div style="width:100%; text-align: right;">
+                                            <p>2.00</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <table class="table table-responsive table-bordered table-report">
                             <thead>
                                 <tr>
@@ -145,7 +225,7 @@
     </div>
 </div>
 <script>
-    
+    const reportcsslink = "{{ url_for('static', filename='css/print.css') }}";
     const paystubapp = {
         data() {
             return {
@@ -170,7 +250,8 @@
                     task_id:'',
                     category_id:'',
                     status: ''
-                }
+                },
+                reportUrl: 'gettimesheetdetail'
             }
         },
         delimiters: ['[[',']]'],
@@ -181,28 +262,36 @@
             loadDefault() {
                 let self = this;
                 self.pagetitle = 'Timesheet Detail Report';
-                self.reportdata = getreportdata();
+                // self.reportdata = getreportdata();
                 self.selectedDayStr = getcalenderformat(self.selectedDay);
                 self.selectedDayArr = self.selectedDay.toString('en-us').split(' ');
                 self.setStartAndEndDate(self.selectedDayStr, self.selectedDayArr);
+                self.stubstartdateStr = GetStubStartDate(self.selectedDay);
+                self.stubenddateStr = GetSubEndDate(self.selectedDay);  
                 $( "#startdate").datepicker({
                     showAnim: 'slideDown',
                     dateFormat: 'yy-mm-dd',
                     firstDay: 1,
-                }).datepicker("setDate", new Date(self.weekstartdateStr));
+                }).datepicker("setDate", new Date(self.stubstartdateStr));
                 $( "#enddate").datepicker({
                     showAnim: 'slideDown',
                     dateFormat: 'yy-mm-dd',
                     firstDay: 1,
-                    maxDate: "+0D",
-                }).datepicker("setDate", new Date(self.weekenddateStr));
-                stoploading();
+                    // maxDate: "+0D",
+                }).datepicker("setDate", new Date(self.stubenddateStr));
+                helper.get(self.reportUrl, {startdate: self.stubstartdateStr, enddate: self.stubenddateStr, emp_id: 1}, function (response) {
+                    console.log('live data');
+                    console.log(response.data);
+                    self.reportdata = response.data;
+                    self.employee_name = self.reportdata[0].employee_name;
+                    stoploading();
+                }, true);
             },
             toggleFilter(){
                 this.isFilter = (this.isFilter) ? false : true;
             },
             printReport(){
-                printDiv('print-area');
+                printDivPortrait('print-area', reportcsslink);
             },
             setDateRange(){
                 console.log(this.filterby.date_range);

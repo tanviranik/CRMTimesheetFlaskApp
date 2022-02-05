@@ -8634,3 +8634,12 @@ body.md-skin {
   margin: auto;
   width: 25%;
 }
+.upper-case{
+  text-transform: uppercase;
+}
+.lower-case{
+  text-transform: lowercase;
+}
+p{
+  margin: 0 0 2px;
+}

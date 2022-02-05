@@ -24,15 +24,15 @@
         <div class="col-md-4">
             <div class="ibox float-e-margins">
                 <div class="ibox-content">
-                    <h3>My Schedule vs Timesheets</h3>
-                    <p class="mb-2">Detailed list of my own timesheets</p>
+                    <h3>Pay Stub</h3>
+                    <p class="mb-2">Detailed list of my own Pay Stub</p>
                     <template v-if="loginInfo.is_admin">
                         <div class="form-group flex row">
                             <label class="control-label col-md-6">Employee Id</label>
                             <input type="text" v-model="loginInfo.employee_code" class="form-control" autocomplete="off"/>
                         </div>
                     </template>
-                    <a href="schedulevstimesheetreport" class="btn btn-primary">Details</a>
+                    <a href="paystub" class="btn btn-primary">Details</a>
                 </div>
             </div>
         </div>

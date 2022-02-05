@@ -140,9 +140,12 @@ def reportpage():
     return render_template('report.html', the_title="Ai DOM - Reports", weektitle="")
 
 @app.route('/rpthourlogdetail')
-def timesheetdetailreport():
-    print('rpt timesheet detail report')
+def timesheetdetailreport():    
     return render_template('timesheetdetailreport.html', the_title="Ai DOM - Time Sheet", weektitle="")
+
+@app.route('/paystub')
+def paystub():
+    return render_template('paystub.html', the_title="Ai DOM - Time Sheet", weektitle="")
 
 @app.route("/get_projects", methods=['GET'])
 def get_projects():

@@ -32,6 +32,48 @@ const showloading = function(){
 const stoploading = function(){
   $('.loading').css('display','none');
 };
+const GetWeekStartDate = function(selecteddate){
+    selectedDayStr = getcalenderformat(selecteddate);
+    selectedDayArr = selecteddate.toString('en-us').split(' ');
+    const daydiff = getWeekDayNo(selectedDayArr[0]) - 1;
+    // set week start date as global copy
+    weekstartdate = new Date(selectedDayStr);
+    weekstartdate.setHours(0, 0, 0, 0);
+    weekstartdate.setDate(weekstartdate.getDate() - daydiff);
+    return getcalenderformat(weekstartdate);
+};
+const GetWeekEndDate = function(selecteddate){
+    selectedDayStr = getcalenderformat(selecteddate);
+    selectedDayArr = selecteddate.toString('en-us').split(' ');
+    const daydiff = 7 - getWeekDayNo(selectedDayArr[0]);
+    // set week start date as global copy
+    weekenddate = new Date(selectedDayStr);
+    weekenddate.setHours(0, 0, 0, 0);
+    weekenddate.setDate(selecteddate.getDate() + daydiff);
+    return getcalenderformat(weekenddate);
+};
+const GetStubStartDate = function(selecteddate){
+    selectedDayStr = getcalenderformat(selecteddate);
+    selectedDayArr = selecteddate.toString('en-us').split(' ');
+    const daydiff = getReportWeekDayNo(selectedDayArr[0]) - 1;
+    // set week start date as global copy
+    let weekstartdate = new Date(selectedDayStr);
+    weekstartdate.setHours(0, 0, 0, 0);
+    weekstartdate.setDate(weekstartdate.getDate() - daydiff);
+    return getcalenderformat(weekstartdate);
+};
+const GetSubEndDate = function(selecteddate){
+    selectedDayStr = getcalenderformat(selecteddate);
+    selectedDayArr = selecteddate.toString('en-us').split(' ');
+    const daydiff = 7 - getReportWeekDayNo(selectedDayArr[0]);
+    console.log(daydiff);
+    // set week start date as global copy
+    let weekenddate = new Date(selectedDayStr);
+    weekenddate.setHours(0, 0, 0, 0);
+    weekenddate.setDate(weekenddate.getDate() + daydiff);
+    console.log(weekenddate);
+    return getcalenderformat(weekenddate);
+};
 const calculatingWorkingHours = function(starttime, endtime) {  
     if(starttime === endtime) return '00:00';
     let starttimeArr = starttime.split(':');
@@ -106,6 +148,7 @@ const getFullWeekend = function (dayname) {
         default: return "";
     }
 }
+
 const getWeekDayNo = function (dayname) {
     switch (dayname) {
         case 'Mon': return 1;
@@ -119,10 +162,23 @@ const getWeekDayNo = function (dayname) {
     }
 }
 
+const getReportWeekDayNo = function (dayname) {
+    switch (dayname) {
+        case 'Mon': return 4;
+        case 'Tue': return 5;
+        case 'Wed': return 6;
+        case 'Thu': return 7;
+        case 'Fri': return 1;
+        case 'Sat': return 2;
+        case 'Sun': return 3;
+        default: return "";
+    }
+}
+
 function printDiv(div) {
   var PW = window.open('', '_blank', 'Print content');
   //IF YOU HAVE DIV STYLE IN CSS, REMOVE BELOW COMMENT AND ADD CSS ADDRESS
-  PW.document.write('<link href="./css/print.css" rel="stylesheet" />');
+  PW.document.write('<link href="../css/print.css" rel="stylesheet" />');
   PW.document.write(document.getElementById(div).innerHTML);
   PW.document.close();
   PW.focus();
@@ -131,6 +187,19 @@ function printDiv(div) {
       PW.close();
   }, 500);
 }
+function printDivPortrait(div, csslink) {
+    var PW = window.open('', '_blank', 'Print content');
+    //IF YOU HAVE DIV STYLE IN CSS, REMOVE BELOW COMMENT AND ADD CSS ADDRESS
+    // '<link href="../css/print.css" rel="stylesheet" />'
+    PW.document.write('<link href="'+csslink+'" rel="stylesheet" />');
+    PW.document.write(document.getElementById(div).innerHTML);
+    PW.document.close();
+    PW.focus();
+    setTimeout(function () {
+        PW.print();
+        PW.close();
+    }, 500);
+  }
 
 function OnSuccessRequest(result) {
   if (result.MessageType == MessageType.Success) {

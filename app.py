@@ -57,8 +57,6 @@ def edittimesheet():
     hourlog_id = request.args.get('hourlog_id')
     return render_template('new_timesheet_entry.html', the_title="Ai DOM - Time Sheet", start_date=selecteddate, hourlog_id=hourlog_id)
 
-
-
 @app.route('/save_timesheet', methods=['POST', 'GET'])
 def save_timesheet():
     dbcontext = DataContext('x','x','x','x')
@@ -147,6 +145,18 @@ def timesheetdetailreport():
 def paystub():
     return render_template('paystub.html', the_title="Ai DOM - Time Sheet", weektitle="")
 
+@app.route("/gettimesheetdetail", methods=['GET'])
+def gettimesheetdetail():
+    dbcontext = DataContext('x','x','x','x')
+    dbcontext.Connect()
+    start_date = request.args.get('startdate')
+    end_date = request.args.get('enddate')
+    emp_id = request.args.get('emp_id')
+    hourlog = dbcontext.GetDateRangeData(start_date, end_date, emp_id)    
+    dbcontext.Disconnect()
+    response = json.dumps({'data': hourlog})
+    return response
+
 @app.route("/get_projects", methods=['GET'])
 def get_projects():
     projects = GetProjects()
@@ -200,17 +210,8 @@ def GetWeeklyHourLogs():
     dbcontext.Connect()
     start_date = request.args.get('startdate')
     end_date = request.args.get('enddate')
-    print(start_date)
-    print(end_date)
-    # where_clause = "where [insert_date] >= '" + start_date + "' and [insert_date] <= '" + end_date + "'"
-    # orderby_clause = 'order by hourlog_id asc'
-    hourlog = dbcontext.Get7DaysData(start_date, end_date)
-    # for log in hourlog:
-    #     log['insert_date'] = log['insert_date'].strftime('%Y-%m-%d')
-    #     log['entry_date'] = log['entry_date'].strftime('%Y-%m-%d')
-    #     log['start_time'] = log['start_time'].strftime('%H:%M')
-    #     log['end_time'] = log['end_time'].strftime('%H:%M')
-    #     print(log)
+    emp_id = request.args.get('emp_id')
+    hourlog = dbcontext.GetDateRangeData(start_date, end_date, emp_id)    
     dbcontext.Disconnect()
     response = jsonify({'status_code' : 200, 'data': hourlog})
     response.headers.add('Access-Control-Allow-Origin', '*')

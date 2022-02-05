@@ -121,14 +121,14 @@
                     </select>
                 </div>
                 <div class="form-group">                                            
-                    <button class="btn btn-success">Preview</button>
+                    <button class="btn btn-success" @click="RefreshReport">Preview</button>
                 </div>
             </div>
         </template>
     </div>
 </div>
 <script>
-    
+    const csslink = "{{ url_for('static', filename='css/print.css') }}";
     const reportapp = {
         data() {
             return {
@@ -143,6 +143,8 @@
                 displaylogEndingDate: new Date(),
                 weekstartdateStr: '',
                 weekenddateStr: '',
+                stubstartdateStr: '',
+                stubenddateStr: '',
                 filterby:{
                     date_range: '0',
                     startdate: '',
@@ -153,7 +155,8 @@
                     task_id:'',
                     category_id:'',
                     status: ''
-                }
+                },
+                reportUrl: 'gettimesheetdetail'
             }
         },
         delimiters: ['[[',']]'],
@@ -164,46 +167,43 @@
             loadDefault() {
                 let self = this;
                 self.pagetitle = 'Timesheet Detail Report';
-                self.reportdata = getreportdata();
+                // self.reportdata = getreportdata();
                 self.selectedDayStr = getcalenderformat(self.selectedDay);
                 self.selectedDayArr = self.selectedDay.toString('en-us').split(' ');
-                self.setStartAndEndDate(self.selectedDayStr, self.selectedDayArr);
+                // self.weekstartdateStr = GetWeekStartDate(self.selectedDay);
+                // self.weekenddateStr = GetWeekEndDate(self.selectedDay);
+                self.stubstartdateStr = GetStubStartDate(self.selectedDay);
+                self.stubenddateStr = GetSubEndDate(self.selectedDay);                
+                const maxdate = 
                 $( "#startdate").datepicker({
                     showAnim: 'slideDown',
                     dateFormat: 'yy-mm-dd',
                     firstDay: 1,
-                }).datepicker("setDate", new Date(self.weekstartdateStr));
+                }).datepicker("setDate", new Date(self.stubstartdateStr));
                 $( "#enddate").datepicker({
                     showAnim: 'slideDown',
                     dateFormat: 'yy-mm-dd',
-                    firstDay: 1,
-                    maxDate: "+0D",
-                }).datepicker("setDate", new Date(self.weekenddateStr));
-                stoploading();
+                    firstDay: 1
+                }).datepicker("setDate", new Date(self.stubenddateStr));
+                helper.get(self.reportUrl, {startdate: self.stubstartdateStr, enddate: self.stubenddateStr, emp_id: 1}, function (response) {
+                    console.log('live data');
+                    console.log(response.data);
+                    self.reportdata = response.data;
+                    stoploading();
+                }, true);
+            },
+            RefreshReport(){
+
+            },
+            setDateRange(){
+                console.log(this.filterby.date_range);
             },
             toggleFilter(){
                 this.isFilter = (this.isFilter) ? false : true;
             },
             printReport(){
-                printDiv('print-area');
-            },
-            setDateRange(){
-                console.log(this.filterby.date_range);
-            },
-            setStartAndEndDate(selectedDayStrParam, seletedDayArrParam){
-                let self = this;
-                const daydiff = getWeekDayNo(seletedDayArrParam[0]) - 1;
-                // set week start date as global copy
-                self.displaylogStartingDate = new Date(selectedDayStrParam);
-                self.displaylogStartingDate.setHours(0, 0, 0, 0);
-                self.displaylogStartingDate.setDate(self.displaylogStartingDate.getDate() - daydiff);
-                self.weekstartdateStr = getcalenderformat(self.displaylogStartingDate);
-                // set week end date as global copy
-                self.displaylogEndingDate = new Date(self.displaylogStartingDate);
-                self.displaylogEndingDate.setHours(0, 0, 0, 0);
-                self.displaylogEndingDate.setDate(self.displaylogEndingDate.getDate() + 6);
-                self.weekenddateStr = getcalenderformat(self.displaylogEndingDate);
-            }
+                printDivPortrait('print-area', csslink);
+            }            
         }
     }
     Vue.createApp(reportapp).mount('#report-page')

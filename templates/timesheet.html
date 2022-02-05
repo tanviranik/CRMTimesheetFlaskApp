@@ -240,7 +240,7 @@
                 // enable this code on server
                 console.log(startdateParam);
                 console.log(enddateParam);
-                helper.get(self.getHourLogUrl, {startdate: startdateParam, enddate: enddateParam}, function (response) {
+                helper.get(self.getHourLogUrl, {startdate: startdateParam, enddate: enddateParam, emp_id: 1}, function (response) {
                     console.log('live data');
                     console.log(response.data)
                     self.workinglog = response.data;

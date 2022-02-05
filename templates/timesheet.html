@@ -1,156 +1,175 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div id="timesheet-page" class="section-content m-1">
-    <div class="flex align-between">
-        <div class="event-date">
-            <template v-if="isDay">
-                <p style="font-size: 18px;"><b>[[showWeekend]]</b>  [[showDate]]</p>
-            </template>
-            <template v-else>
-                <p style="font-size: 18px;">[[weektitle.startdate]] - [[weektitle.enddate]]</p>
-            </template>
+<div class="row border-bottom">
+    <nav class="navbar navbar-fixed-top custom-nav-pad" role="navigation" style="margin-bottom: 0;">
+        <div class="navbar-header flex flex-start">
+            <!-- <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a> -->
+            <div class="m-auto page-title"> {{the_title}} </div>
         </div>
-        <div class="date-events">
-            <div class="day-change mr-1">
+        <ul class="nav navbar-top-links navbar-right">
+            <li>
+                <a href="login.html">
+                    <i class="fas fa-sign-out-alt"></i>
+                </a>
+            </li>            
+        </ul>
+    </nav>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div id="timesheet-page" class="section-content m-1">
+        <div class="flex align-between">
+            <div class="event-date">
                 <template v-if="isDay">
-                    <a class="btn btn-default btn-right-no-border" @click="prevDay"><i class="fas fa-chevron-left"></i> </a>
-                    <p class="day-title"> Today </p>
-                    <a class="btn btn-default btn-left-no-border" @click="nextDay"><i class="fas fa-chevron-right"></i> </a>
+                    <p style="font-size: 18px;"><b>[[showWeekend]]</b>  [[showDate]]</p>
                 </template>
                 <template v-else>
-                    <a class="btn btn-default" @click="prevWeek"><i class="fas fa-chevron-left"></i> </a>
-                    <p class="day-title"> Week </p>
-                    <a class="btn btn-default" @click="nextWeek"><i class="fas fa-chevron-right"></i> </a>
+                    <p style="font-size: 18px;">[[weektitle.startdate]] - [[weektitle.enddate]]</p>
                 </template>
             </div>
-            <div class="mr-1">
-                <button class="btn btn-default btn-calender" @click="loadCalender"><i class="fas fa-calendar-alt"></i></button>
-                <div id="j-calender"></div>
-            </div>
-            <div id="day-week" class="mr-1" style="z-index: 999;">
-                <a :class="['btn', 'btn-default', 'join-btn-first',(isDay===true ? 'active' : '')]" @click="SetDayWiseView(true)">Day</a>
-                <a :class="['btn', 'btn-default', 'join-btn-last',(isDay===true ? '' : 'active')]" @click="SetDayWiseView(false)">Week</a>
-            </div>
-            <div class="mr-1">
-                <a class="btn btn-primary" :href="'newtimesheet?selecteddate=' + selectedDayStr"><i class="fa fa-plus"></i> Entry</a>
+            <div class="date-events">
+                <div class="day-change mr-1">
+                    <template v-if="isDay">
+                        <a class="btn btn-default btn-right-no-border" @click="prevDay"><i class="fas fa-chevron-left"></i> </a>
+                        <p class="day-title"> Today </p>
+                        <a class="btn btn-default btn-left-no-border" @click="nextDay"><i class="fas fa-chevron-right"></i> </a>
+                    </template>
+                    <template v-else>
+                        <a class="btn btn-default" @click="prevWeek"><i class="fas fa-chevron-left"></i> </a>
+                        <p class="day-title"> Week </p>
+                        <a class="btn btn-default" @click="nextWeek"><i class="fas fa-chevron-right"></i> </a>
+                    </template>
+                </div>
+                <div class="mr-1">
+                    <button class="btn btn-default btn-calender" @click="loadCalender"><i class="fas fa-calendar-alt"></i></button>
+                    <div id="j-calender"></div>
+                </div>
+                <div id="day-week" class="mr-1" style="z-index: 999;">
+                    <a :class="['btn', 'btn-default', 'join-btn-first',(isDay===true ? 'active' : '')]" @click="SetDayWiseView(true)">Day</a>
+                    <a :class="['btn', 'btn-default', 'join-btn-last',(isDay===true ? '' : 'active')]" @click="SetDayWiseView(false)">Week</a>
+                </div>
+                <div class="mr-1">
+                    <a class="btn btn-primary" :href="'newtimesheet?selecteddate=' + selectedDayStr"><i class="fa fa-plus"></i> Entry</a>
+                </div>
             </div>
         </div>
-    </div>
-    <template v-if="isDay">
-        <div id="day-wise">
-            <div id="button-calender">
-                <ul class="flex align-evenly time-button-group">
-                    <li v-for="(value, index) in daywiseDisplaylogList">
-                        <a :class="['btn','btn-default',(index === 0 ? 'join-btn-first' : 'join-btn-middle'),(selectedDayArr[0] === value.weekShortName ? 'active' : '')]">
-                            <span><b>[[value.weekShortName]]</b></span>
-                            <span>[[value.grandworkinghour]]</span>
-                        </a>
-                    </li>
-                    <li><a class="btn btn-default join-btn-last"><span>Total: </span><span><b>[[weeklytotal]]</b></span></a></li> 
-                </ul>
-            </div>
-            <div class="flex flex-start">
-                <p class="group-title m-auto">ACTUAL TIME</p>
-                <hr class="group-break col-md-11" />
-            </div>            
-            <template v-if="displaylog.workinglog.length > 0">
-                <ul class="sortable-list connectList agile-list ui-sortable col-md-12" id="todo">
-                    <template v-for="(log, name, index) in displaylog.workinglog">
-                        <li class="warning-element ui-sortable-handle" v-if="log.entry_date === selectedDayStr">
-                            <div class="agile-detail flex">
-                                <div class="col-md-9">
-                                    <div class="flex">
-                                        <p class="agile-head">[[log.project_name]]</p>
-                                        <p class="agile-desc">&nbsp;</p>
-                                    </div>
-                                    <div class="flex">
-                                        <p class="category-title mr-1"><i class="far fa-folder-open"></i> [[log.category_name]]</p>
-                                        <p class="task-title"><i class="fas fa-list"></i> [[log.task_name]]</p>
-                                    </div>
-                                    <div class="flex">
-                                        <p class="note">[[log.notes]]</p>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="flex">
-                                        <p class="working-hour col-md-4 m-auto">[[log.total_hours]]</p>
-                                        <a class="btn btn-default" :href="'edittimesheet?hourlog_id=' + log.hourlog_id"><i class="far fa-edit"></i></a>
-                                    </div>
-                                </div>
-                            </div>
+        <template v-if="isDay">
+            <div id="day-wise">
+                <div id="button-calender">
+                    <ul class="flex align-evenly time-button-group">
+                        <li v-for="(value, index) in daywiseDisplaylogList">
+                            <a :class="['btn','btn-default',(index === 0 ? 'join-btn-first' : 'join-btn-middle'),(selectedDayArr[0] === value.weekShortName ? 'active' : '')]">
+                                <span><b>[[value.weekShortName]]</b></span>
+                                <span>[[value.grandworkinghour]]</span>
+                            </a>
                         </li>
-                    </template>
-                </ul>
-                <div class="col-md-offset-9 col-md-3">
-                    <p style="font-size:22px;"> Total   :   <span style="padding-left:20px;">[[displaylog.grandworkinghour]]</span>  </p>
+                        <li><a class="btn btn-default join-btn-last"><span>Total: </span><span><b>[[weeklytotal]]</b></span></a></li> 
+                    </ul>
                 </div>
-            </template>
-            <template v-else>
-                <div id="section-blank" class="content-toggler">
-                    <div class="ibox">
-                        <div class="ibox-content">
-                            <div class="flex align-evenly">
-                                <div class="flex pt-2 pb-2">
-                                    <p>No Timesheets here yet. </p>
-                                    <a class="pl-1" :href="'newtimesheet?selecteddate=' + selectedDayStr"> Add Entry </a>
+                <div class="flex flex-start">
+                    <p class="group-title m-auto">ACTUAL TIME</p>
+                    <hr class="group-break col-md-11" />
+                </div>            
+                <template v-if="displaylog.workinglog.length > 0">
+                    <ul class="sortable-list connectList agile-list ui-sortable col-md-12" id="todo">
+                        <template v-for="(log, name, index) in displaylog.workinglog">
+                            <li class="warning-element ui-sortable-handle" v-if="log.entry_date === selectedDayStr">
+                                <div class="agile-detail flex">
+                                    <div class="col-md-9">
+                                        <div class="flex">
+                                            <p class="agile-head">[[log.project_name]]</p>
+                                            <p class="agile-desc">&nbsp;</p>
+                                        </div>
+                                        <div class="flex">
+                                            <p class="category-title mr-1"><i class="far fa-folder-open"></i> [[log.category_name]]</p>
+                                            <p class="task-title"><i class="fas fa-list"></i> [[log.task_name]]</p>
+                                        </div>
+                                        <div class="flex">
+                                            <p class="note">[[log.notes]]</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="flex">
+                                            <p class="working-hour col-md-4 m-auto">[[log.total_hours]]</p>
+                                            <a class="btn btn-default" :href="'edittimesheet?hourlog_id=' + log.hourlog_id"><i class="far fa-edit"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </template>
+                    </ul>
+                    <div class="col-md-offset-9 col-md-3">
+                        <p style="font-size:22px;"> Total   :   <span style="padding-left:20px;">[[displaylog.grandworkinghour]]</span>  </p>
+                    </div>
+                </template>
+                <template v-else>
+                    <div id="section-blank" class="content-toggler">
+                        <div class="ibox">
+                            <div class="ibox-content">
+                                <div class="flex align-evenly">
+                                    <div class="flex pt-2 pb-2">
+                                        <p>No Timesheets here yet. </p>
+                                        <a class="pl-1" :href="'newtimesheet?selecteddate=' + selectedDayStr"> Add Entry </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </template>
-        </div>
-    </template>
-    <template v-else>
-        <div id="week-wise" class="flex row mt-2">
-            <div class="col-lg-12">
-                <div class="ibox">
-                    <div class="ibox-content">
-                        <div class="table-responsive">
-                            <div class="feed-activity-list">
-                                <template v-for="(taskobject, index) in weekwiseDisplaylogList">
+                </template>
+            </div>
+        </template>
+        <template v-else>
+            <div id="week-wise" class="flex row mt-2">
+                <div class="col-lg-12">
+                    <div class="ibox">
+                        <div class="ibox-content">
+                            <div class="table-responsive">
+                                <div class="feed-activity-list">
+                                    <template v-for="(taskobject, index) in weekwiseDisplaylogList">
+                                        <div class="feed-element">
+                                            <div class="media-body">
+                                                <template v-if="index === 0">
+                                                    <div class="col-md-5"></div>
+                                                </template>
+                                                <template v-else>
+                                                    <div class="col-md-5"><p>[[taskobject.project_name]]</p><p>[[taskobject.task_name]] - [[taskobject.task_id]]</p></div>
+                                                </template>
+                                                <div class="col-md-7 flex">
+                                                    <template v-for="(v,i) in taskobject.hourlog">
+                                                        <div class="day-workinghour" v-if="index===0">
+                                                            <span><b>[[v.weekShortName]]</b></span>
+                                                            <span>[[v.entrydate]]</span>
+                                                        </div>
+                                                        <div class="box-workinghour" v-else>[[v.totalhours]]</div>
+                                                    </template>
+                                                    <div class="day-workinghour-2" v-if="index===0"><span>&nbsp;</span></div>
+                                                    <div class="day-workinghour-2" v-else><span><b>[[taskobject.GrandTotalHours]]</b></span></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
                                     <div class="feed-element">
                                         <div class="media-body">
-                                            <template v-if="index === 0">
-                                                <div class="col-md-5"></div>
-                                            </template>
-                                            <template v-else>
-                                                <div class="col-md-5"><p>[[taskobject.project_name]]</p><p>[[taskobject.task_name]] - [[taskobject.task_id]]</p></div>
-                                            </template>
+                                            <div class="col-md-5"></div>
                                             <div class="col-md-7 flex">
-                                                <template v-for="(v,i) in taskobject.hourlog">
-                                                    <div class="day-workinghour" v-if="index===0">
-                                                        <span><b>[[v.weekShortName]]</b></span>
-                                                        <span>[[v.entrydate]]</span>
-                                                    </div>
-                                                    <div class="box-workinghour" v-else>[[v.totalhours]]</div>
+                                                <template v-for="(v,i) in weekwisecolumntotal">
+                                                    <div class="day-workinghour"><b>[[v]]</b></div>
                                                 </template>
-                                                <div class="day-workinghour-2" v-if="index===0"><span>&nbsp;</span></div>
-                                                <div class="day-workinghour-2" v-else><span><b>[[taskobject.GrandTotalHours]]</b></span></div>
+                                                <div class="day-workinghour-2"><span><b>[[weeklygrandworkingtotal]]</b></span></div>
                                             </div>
                                         </div>
                                     </div>
-                                </template>
-                                <div class="feed-element">
-                                    <div class="media-body">
-                                        <div class="col-md-5"></div>
-                                        <div class="col-md-7 flex">
-                                            <template v-for="(v,i) in weekwisecolumntotal">
-                                                <div class="day-workinghour"><b>[[v]]</b></div>
-                                            </template>
-                                            <div class="day-workinghour-2"><span><b>[[weeklygrandworkingtotal]]</b></span></div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </template>    
+        </template>    
+    </div>
 </div>
+
+
 
 <script>
     $(document).ready(function () {
@@ -176,7 +195,7 @@
     const timesheetapp = {
         data() {
             return {
-                pagetitle: '',
+                pagetitle: 'Time Sheet',
                 isDay: true,
                 selectedDay: new Date(),
                 selectedDayStr: '',

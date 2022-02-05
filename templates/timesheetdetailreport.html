@@ -1,140 +1,160 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div id="report-page">
-    <div class="report-control flex flex-start">
-        <button :class="['btn','btn-default']" onclick="ExporttoExcel('timesheetdetails',this)"><i class="far fa-file-excel"></i></button>
-        <button :class="['btn','btn-default']" @click="printReport"><i class="fas fa-print"></i></button>
-        <button :class="['btn','btn-default',(isFilter===true ? 'btn-default-active' : '')]" @click="toggleFilter"><i class="fas fa-filter"></i></button>
-        <button :class="['btn','btn-default']" onclick="zoomIn()"><i class="fas fa-search-plus"></i></button>
-        <button :class="['btn','btn-default']" onclick="zoomOut()"><i class="fas fa-search-minus"></i></button>
-    </div>
-    <div id="report-body" class="flex">
-        <div id="report-viewer" :class="[(isFilter===true ? 'col-md-9' : 'col-md-12')]">
-            <div id="print-area">
-                <div class="report-header">
-                    <div class="report-title"> Timesheet Details for Sunny (Tanvir) Anik</div>
-                </div>
-                <div class="report-content">
-                    <table class="table table-responsive table-bordered table-report">
-                        <thead>
-                            <tr>
-                                <th v-for="(head, index) in reportdataheader" class="text-center">[[ head ]]</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(dt, index) in reportdata">
-                                <td>[[dt.entry_date]]</td>
-                                <td>[[dt.project_name]]</td>
-                                <td>[[dt.task_name]]</td>
-                                <td class="text-right">[[dt.total_hours]]</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>                                    
+<div class="row border-bottom">
+    <nav class="navbar navbar-fixed-top custom-nav-pad" role="navigation" style="margin-bottom: 0;">
+        <div class="navbar-header flex flex-start">
+            <!-- <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a> -->
+            <div class="m-auto page-title"> {{the_title}} </div>
         </div>
-        <template v-if="isFilter">
-            <div class="filter-group col-md-3 animated fadeInRight">
-                <div class="form-group">
-                    <label>Date Range</label>
-                    <select name="date_range" class="form-control" v-model="filterby.date_range" @change="setDateRange">
-                        <option value="0">Select</option>
-                        <option value="1">This Week</option>
-                        <option value="2">This Month</option>
-                        <option value="3">Last Week</option>
-                        <option value="4">Last Month</option>
-                        <option value="5">Last 30 Days</option>
-                        <option value="6">Last 60 Days</option>
-                        <option value="7">Last 90 Days</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Start Date</label>
-                    <input id="startdate" type="text" class="form-control" />
-                </div>
-                <div class="form-group">
-                    <label>End Date</label>
-                    <input id="enddate"  type="text" class="form-control" />
-                </div>
-                <div class="form-group">
-                    <label>Primary Grouping</label>
-                    <select name="primary_grouping" class="form-control">
-                        <option value="0">Select</option>
-                        <option value="1">Project</option>
-                        <option value="2">Task</option>
-                        <option value="3">Date</option>
-                        <option value="4">Customer</option>
-                        <option value="5">Status</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Secondary Grouping</label>
-                    <select name="secondary_grouping" class="form-control">
-                        <option value="0">Select</option>
-                        <option value="1">Project</option>
-                        <option value="2">Task</option>
-                        <option value="3">Date</option>
-                        <option value="4">Customer</option>
-                        <option value="5">Status</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Project</label>
-                    <select name="project_id" class="form-control">
-                        <option value="0">Select</option>
-                        <option value="1">Project 1</option>
-                        <option value="2">Project 2</option>
-                        <option value="3">Project 3</option>
-                        <option value="4">Project 4</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Task</label>
-                    <select name="task_id" class="form-control">
-                        <option value="0">Select</option>
-                        <option value="1">Task 1</option>
-                        <option value="2">Task 2</option>
-                        <option value="3">Task 3</option>
-                        <option value="4">Task 4</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Category</label>
-                    <select name="category_id" class="form-control">
-                        <option value="0">Select</option>
-                        <option value="1">Category 1</option>
-                        <option value="2">Category 2</option>
-                        <option value="3">Category 3</option>
-                        <option value="4">Category 4</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Status</label>
-                    <select name="status" class="form-control">
-                        <option value="0">Select</option>
-                        <option value="1">Pending</option>
-                        <option value="2">Approved</option>
-                        <option value="3">Automatically Approved</option>
-                        <option value="4">Rejected</option>
-                        <option value="5">Invoiced</option>
-                    </select>
-                </div>
-                <div class="form-group">                                            
-                    <button class="btn btn-success" @click="RefreshReport">Preview</button>
-                </div>
+        <ul class="nav navbar-top-links navbar-right">
+            <li>
+                <a href="login.html">
+                    <i class="fas fa-sign-out-alt"></i>
+                </a>
+            </li>            
+        </ul>
+    </nav>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div id="report-page">
+        <div class="report-control flex flex-start">
+            <button :class="['btn','btn-default']" onclick="ExporttoExcel('timesheetdetails',this)"><i class="far fa-file-excel"></i></button>
+            <button :class="['btn','btn-default']" @click="printReport"><i class="fas fa-print"></i></button>
+            <button :class="['btn','btn-default',(isFilter===true ? 'btn-default-active' : '')]" @click="toggleFilter"><i class="fas fa-filter"></i></button>
+            <button :class="['btn','btn-default']" onclick="zoomIn()"><i class="fas fa-search-plus"></i></button>
+            <button :class="['btn','btn-default']" onclick="zoomOut()"><i class="fas fa-search-minus"></i></button>
+        </div>
+        <div id="report-body" class="flex">
+            <div id="report-viewer" :class="[(isFilter===true ? 'col-md-9' : 'col-md-12')]">
+                <div id="print-area">
+                    <div class="report-header">
+                        <div class="report-title"> Timesheet Details for [[employee_name]]</div>
+                    </div>
+                    <div class="report-content">
+                        <table class="table table-responsive table-bordered table-report">
+                            <thead>
+                                <tr>
+                                    <th v-for="(head, index) in reportdataheader" class="text-center">[[ head ]]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(dt, index) in reportdata">
+                                    <td>[[dt.entry_date]]</td>
+                                    <td>[[dt.project_name]]</td>
+                                    <td>[[dt.task_name]]</td>
+                                    <td class="text-right">[[dt.total_hours]]</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>                                    
             </div>
-        </template>
+            <template v-if="isFilter">
+                <div class="filter-group col-md-3 animated fadeInRight">
+                    <div class="form-group">
+                        <label>Date Range</label>
+                        <select name="date_range" class="form-control" v-model="filterby.date_range" @change="setDateRange">
+                            <option value="0">Select</option>
+                            <option value="1">This Week</option>
+                            <option value="2">This Month</option>
+                            <option value="3">Last Week</option>
+                            <option value="4">Last Month</option>
+                            <option value="5">Last 30 Days</option>
+                            <option value="6">Last 60 Days</option>
+                            <option value="7">Last 90 Days</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Start Date</label>
+                        <input id="startdate" type="text" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>End Date</label>
+                        <input id="enddate"  type="text" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Primary Grouping</label>
+                        <select name="primary_grouping" class="form-control">
+                            <option value="0">Select</option>
+                            <option value="1">Project</option>
+                            <option value="2">Task</option>
+                            <option value="3">Date</option>
+                            <option value="4">Customer</option>
+                            <option value="5">Status</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Secondary Grouping</label>
+                        <select name="secondary_grouping" class="form-control">
+                            <option value="0">Select</option>
+                            <option value="1">Project</option>
+                            <option value="2">Task</option>
+                            <option value="3">Date</option>
+                            <option value="4">Customer</option>
+                            <option value="5">Status</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Project</label>
+                        <select name="project_id" class="form-control">
+                            <option value="0">Select</option>
+                            <option value="1">Project 1</option>
+                            <option value="2">Project 2</option>
+                            <option value="3">Project 3</option>
+                            <option value="4">Project 4</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Task</label>
+                        <select name="task_id" class="form-control">
+                            <option value="0">Select</option>
+                            <option value="1">Task 1</option>
+                            <option value="2">Task 2</option>
+                            <option value="3">Task 3</option>
+                            <option value="4">Task 4</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select name="category_id" class="form-control">
+                            <option value="0">Select</option>
+                            <option value="1">Category 1</option>
+                            <option value="2">Category 2</option>
+                            <option value="3">Category 3</option>
+                            <option value="4">Category 4</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select name="status" class="form-control">
+                            <option value="0">Select</option>
+                            <option value="1">Pending</option>
+                            <option value="2">Approved</option>
+                            <option value="3">Automatically Approved</option>
+                            <option value="4">Rejected</option>
+                            <option value="5">Invoiced</option>
+                        </select>
+                    </div>
+                    <div class="form-group">                                            
+                        <button class="btn btn-success" @click="RefreshReport">Preview</button>
+                    </div>
+                </div>
+            </template>
+        </div>
     </div>
 </div>
+
+
 <script>
     const csslink = "{{ url_for('static', filename='css/print.css') }}";
     const reportapp = {
         data() {
             return {
-                pagetitle: '',
+                pagetitle: 'Report - Time Sheet Detail',
                 isFilter: true,
                 reportdataheader: ['Date', 'Customer', 'Project', 'Duration'],
+                employee_name: '',
                 reportdata: [],
                 selectedDay: new Date(),
                 selectedDayStr: '',
@@ -189,6 +209,7 @@
                     console.log('live data');
                     console.log(response.data);
                     self.reportdata = response.data;
+                    self.employee_name = self.reportdata[0].employee_name;
                     stoploading();
                 }, true);
             },

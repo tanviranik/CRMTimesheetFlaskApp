@@ -38,6 +38,7 @@ inventory_table = '[dbo].[InventoryTracker]'
 # first route
 
 @app.route('/')
+@app.route('/index')
 def index():
     return render_template('index.html', pairs=pairs_list, the_title="Presidents Index")
 
@@ -49,13 +50,13 @@ def timesheet():
 def newtimesheet():
     selecteddate = request.args.get('selecteddate')
     hourlog_id = 0
-    return render_template('new_timesheet_entry.html', the_title="Ai DOM - Time Sheet", start_date=selecteddate, hourlog_id=hourlog_id)
+    return render_template('new_timesheet_entry.html', the_title="Ai DOM - New Entry", start_date=selecteddate, hourlog_id=hourlog_id)
 
 @app.route('/edittimesheet')
 def edittimesheet():
     selecteddate = ''
     hourlog_id = request.args.get('hourlog_id')
-    return render_template('new_timesheet_entry.html', the_title="Ai DOM - Time Sheet", start_date=selecteddate, hourlog_id=hourlog_id)
+    return render_template('new_timesheet_entry.html', the_title="Ai DOM - Edit Entry", start_date=selecteddate, hourlog_id=hourlog_id)
 
 @app.route('/save_timesheet', methods=['POST', 'GET'])
 def save_timesheet():
@@ -139,11 +140,11 @@ def reportpage():
 
 @app.route('/rpthourlogdetail')
 def timesheetdetailreport():    
-    return render_template('timesheetdetailreport.html', the_title="Ai DOM - Time Sheet", weektitle="")
+    return render_template('timesheetdetailreport.html', the_title="Reports - Time Sheet Details", weektitle="")
 
 @app.route('/paystub')
 def paystub():
-    return render_template('paystub.html', the_title="Ai DOM - Time Sheet", weektitle="")
+    return render_template('paystub.html', the_title="Reports - Pay Stub", weektitle="")
 
 @app.route("/gettimesheetdetail", methods=['GET'])
 def gettimesheetdetail():

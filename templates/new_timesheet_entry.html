@@ -1,119 +1,138 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div id="timesheet-entry" class="section-content">
-    <div class="ibox float-e-margins">
-        <div class="ibox-title flex align-between">
-            <h5>Time Sheet <small v-if="edit_hour_log == 0">New Entry</small><small v-else>Update Entry</small></h5>
-            <a href="timesheet" class="btn btn-success">Back</a>
+<div class="row border-bottom">
+    <nav class="navbar navbar-fixed-top custom-nav-pad" role="navigation" style="margin-bottom: 0;">
+        <div class="navbar-header flex flex-start">
+            <!-- <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a> -->
+            <div class="m-auto page-title"> {{the_title}} </div>
         </div>
-        <div class="ibox-content">
-            <div class="form-horizontal">
-                <div class="form-group"><label class="col-sm-2 control-label">Project *</label>
-                    <div class="col-sm-10">
-                        <input type="hidden" value="{{start_date}}" id="edit_start_date"/>
-                        <input type="hidden" value="{{hourlog_id}}" id="edit_hour_log"/>
-                        <input type="hidden" v-model="timeentry.HourLogs.hourlog_id" />
-                        <input type="hidden" v-model="timeentry.HourLogs.employee_id" />
-                        <select class="form-control m-b search-select" id="taskId" v-model="timeentry.HourLogs.task_id">
-                            <optgroup v-for="(proj) in tasklist" :label="proj.project_name">
-                                <option v-for="(task) in proj.tasks" :value="task.task_id">[[task.task_name]]</option>
-                            </optgroup>
-                        </select>
-                    </div>
-                </div>                                        
-                <div class="form-group"><label class="col-sm-2 control-label">Category *</label>
-                    <div class="col-sm-10">
-                        <select class="form-control m-b search-select" id="categoryId" v-model="timeentry.HourLogs.category_id">
-                            <option v-for="(cat) in categorylist" :value="cat.category_id">[[cat.category_name]]</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Note</label>        
-                    <div class="col-sm-10">
-                        <textarea class="form-control" name="notes" rows="3" v-model="timeentry.HourLogs.notes"></textarea>
-                    </div>
-                </div>
-                <div class="hr-line-dashed"></div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Start Date</label>
-                    <div class="col-sm-2">
-                        <input type="text" id="StartDate" class="form-control" autocomplete="off" v-model="timeentry.HourLogs.entry_date"/>
-                    </div>
-                    <div class="col-sm-5 flex">
-                        <div id="clockStart" class="input-group clockpicker col-sm-4" data-autoclose="true">
-                            <input type="text" id="startValue" class="form-control" v-model="timeentry.HourLogs.start_time" >
-                            <span class="input-group-addon">
-                                <i class="far fa-clock"></i>
-                            </span>
+        <ul class="nav navbar-top-links navbar-right">
+            <li>
+                <a href="login.html">
+                    <i class="fas fa-sign-out-alt"></i>
+                </a>
+            </li>            
+        </ul>
+    </nav>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div id="timesheet-entry" class="section-content">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title flex align-between">
+                <h5>Time Sheet <small v-if="edit_hour_log == 0">New Entry</small><small v-else>Update Entry</small></h5>
+                <a href="timesheet" class="btn btn-success">Back</a>
+            </div>
+            <div class="ibox-content">
+                <div class="form-horizontal">
+                    <div class="form-group"><label class="col-sm-2 control-label">Project *</label>
+                        <div class="col-sm-10">
+                            <input type="hidden" value="{{start_date}}" id="edit_start_date"/>
+                            <input type="hidden" value="{{hourlog_id}}" id="edit_hour_log"/>
+                            <input type="hidden" v-model="timeentry.HourLogs.hourlog_id" />
+                            <input type="hidden" v-model="timeentry.HourLogs.employee_id" />
+                            <select class="form-control m-b search-select" id="taskId" v-model="timeentry.HourLogs.task_id">
+                                <optgroup v-for="(proj) in tasklist" :label="proj.project_name">
+                                    <option v-for="(task) in proj.tasks" :value="task.task_id">[[task.task_name]]</option>
+                                </optgroup>
+                            </select>
                         </div>
-                        <label class="col-sm-1 control-label"> - </label>
-                        <div id="clockEnd" class="input-group clockpicker col-sm-4" data-autoclose="true">
-                            <input type="text" id="endValue" class="form-control"  v-model="timeentry.HourLogs.end_time" >
-                            <span class="input-group-addon">
-                                <i class="far fa-clock"></i>
-                            </span>
+                    </div>                                        
+                    <div class="form-group"><label class="col-sm-2 control-label">Category *</label>
+                        <div class="col-sm-10">
+                            <select class="form-control m-b search-select" id="categoryId" v-model="timeentry.HourLogs.category_id">
+                                <option v-for="(cat) in categorylist" :value="cat.category_id">[[cat.category_name]]</option>
+                            </select>
                         </div>
                     </div>
-                    <label class="col-sm-2">Total Hours : [[totalhour]]</label>
-                </div>
-                <div class="row">
-                    <div class="col-md-9">
-                        <div class="flex">
-                            <div class="col-md-3 text-right"><label>Required Items</label> </div>
-                            <div class="col-md-3"><label>Particular</label> </div>
-                            <div class="col-md-2"><label>Quantity</label> </div>
-                            <div class="col-md-3"><label>Unit</label> </div>
-                            <div class="col-md-1"><button @click="addInventory" class="btn btn-info"><i class="fa fa-plus"></i></button></div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Note</label>        
+                        <div class="col-sm-10">
+                            <textarea class="form-control" name="notes" rows="3" v-model="timeentry.HourLogs.notes"></textarea>
                         </div>
-                        <template v-for="(obj, index) in timeentry.InventoryTracker">
-                            <div class="flex mt-1">
-                                <div class="col-md-3">&nbsp;</div>
-                                <div class="col-md-3">
-                                    <select v-model="obj.inventory_name" class="form-control">
-                                        <option v-for="(inv,ind) in inventorylist" :value="inv">[[inv]]</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-2">
-                                    <input type="text" v-model="obj.quantity" class="form-control" autocomplete="off"/>
-                                </div>
-                                <div class="col-md-3">
-                                    <select v-model="obj.unit" class="form-control">
-                                        <option v-for="(unit,ind) in unitlist" :value="unit" >[[unit]]</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-1 align-middle">
-                                    <button @click="removeInventory(index)" class="btn btn-danger"><i class="fa fa-minus"></i></button>
-                                </div>
+                    </div>
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Start Date</label>
+                        <div class="col-sm-2">
+                            <input type="text" id="StartDate" class="form-control" autocomplete="off" v-model="timeentry.HourLogs.entry_date"/>
+                        </div>
+                        <div class="col-sm-5 flex">
+                            <div id="clockStart" class="input-group clockpicker col-sm-4" data-autoclose="true">
+                                <input type="text" id="startValue" class="form-control" v-model="timeentry.HourLogs.start_time" >
+                                <span class="input-group-addon">
+                                    <i class="far fa-clock"></i>
+                                </span>
                             </div>
-                        </template>
+                            <label class="col-sm-1 control-label"> - </label>
+                            <div id="clockEnd" class="input-group clockpicker col-sm-4" data-autoclose="true">
+                                <input type="text" id="endValue" class="form-control"  v-model="timeentry.HourLogs.end_time" >
+                                <span class="input-group-addon">
+                                    <i class="far fa-clock"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <label class="col-sm-2">Total Hours : [[totalhour]]</label>
                     </div>
-                    <div class="col-md-3">
-                        <template v-if="isAdmin">
+                    <div class="row">
+                        <div class="col-md-9">
                             <div class="flex">
-                                <div class="col-md-5"><span class="hidden">[[calculateHourByAmount]]</span><label>Payment</label> </div>
-                                <div class="col-md-6"><label>Hourly Rate</label> </div>
+                                <div class="col-md-3 text-right"><label>Required Items</label> </div>
+                                <div class="col-md-3"><label>Particular</label> </div>
+                                <div class="col-md-2"><label>Quantity</label> </div>
+                                <div class="col-md-3"><label>Unit</label> </div>
+                                <div class="col-md-1"><button @click="addInventory" class="btn btn-info"><i class="fa fa-plus"></i></button></div>
                             </div>
-                            <div class="flex mt-1">
-                                <div class="col-md-5"><input type="text" v-model="paymentCalculate.PaymentAmount" class="form-control" autocomplete="off"/></div>
-                                <div class="col-md-6"><input type="text" v-model="paymentCalculate.HourlyRate" class="form-control" autocomplete="off"/></div>
-                            </div>
-                        </template>
+                            <template v-for="(obj, index) in timeentry.InventoryTracker">
+                                <div class="flex mt-1">
+                                    <div class="col-md-3">&nbsp;</div>
+                                    <div class="col-md-3">
+                                        <select v-model="obj.inventory_name" class="form-control">
+                                            <option v-for="(inv,ind) in inventorylist" :value="inv">[[inv]]</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="text" v-model="obj.quantity" class="form-control" autocomplete="off"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select v-model="obj.unit" class="form-control">
+                                            <option v-for="(unit,ind) in unitlist" :value="unit" >[[unit]]</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-1 align-middle">
+                                        <button @click="removeInventory(index)" class="btn btn-danger"><i class="fa fa-minus"></i></button>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="col-md-3">
+                            <template v-if="isAdmin">
+                                <div class="flex">
+                                    <div class="col-md-5"><span class="hidden">[[calculateHourByAmount]]</span><label>Payment</label> </div>
+                                    <div class="col-md-6"><label>Hourly Rate</label> </div>
+                                </div>
+                                <div class="flex mt-1">
+                                    <div class="col-md-5"><input type="text" v-model="paymentCalculate.PaymentAmount" class="form-control" autocomplete="off"/></div>
+                                    <div class="col-md-6"><input type="text" v-model="paymentCalculate.HourlyRate" class="form-control" autocomplete="off"/></div>
+                                </div>
+                            </template>
+                        </div>
                     </div>
-                </div>
-                                                        
-                <div class="hr-line-dashed"></div>
-                <div class="form-group">
-                    <div class="col-sm-4 col-sm-offset-2">
-                        <button class="btn btn-primary" v-if="edit_hour_log == 0" @click="SaveTimeSheet" id="savebtn">Save Changes</button>
-                        <button class="btn btn-primary" v-else @click="EditTimeSheet">Update Changes</button>
+                                                            
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group">
+                        <div class="col-sm-4 col-sm-offset-2">
+                            <button class="btn btn-primary" v-if="edit_hour_log == 0" @click="SaveTimeSheet" id="savebtn">Save Changes</button>
+                            <button class="btn btn-primary" v-else @click="EditTimeSheet">Update Changes</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
 <script>
     const timeentryapp = {
         data() {

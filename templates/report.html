@@ -1,58 +1,76 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div id="report-page" class="m-1">
-    <div class="flex mb-2 pl-1">
-        <h1>Project Management</h1>
-    </div>
-    <div class="flex flex-start">
-        <div class="col-md-4">
-            <div class="ibox float-e-margins">
-                <div class="ibox-content">
-                    <h3>My Timesheet Details</h3>
-                    <p class="mb-2">Detailed list of my own timesheets</p>
-                    <template v-if="loginInfo.is_admin">
-                        <div class="form-group flex row">
-                            <label class="control-label col-md-6">Employee Id</label>
-                            <input type="text" v-model="loginInfo.employee_code" class="form-control" autocomplete="off"/>
-                        </div>
-                    </template>
-                    <a href="rpthourlogdetail" class="btn btn-primary">Details</a>
-                </div>
-            </div>
+<div class="row border-bottom">
+    <nav class="navbar navbar-fixed-top custom-nav-pad" role="navigation" style="margin-bottom: 0;">
+        <div class="navbar-header flex flex-start">
+            <!-- <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a> -->
+            <div class="m-auto page-title"> {{the_title}} </div>
         </div>
-        <div class="col-md-4">
-            <div class="ibox float-e-margins">
-                <div class="ibox-content">
-                    <h3>Pay Stub</h3>
-                    <p class="mb-2">Detailed list of my own Pay Stub</p>
-                    <template v-if="loginInfo.is_admin">
-                        <div class="form-group flex row">
-                            <label class="control-label col-md-6">Employee Id</label>
-                            <input type="text" v-model="loginInfo.employee_code" class="form-control" autocomplete="off"/>
-                        </div>
-                    </template>
-                    <a href="paystub" class="btn btn-primary">Details</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="ibox float-e-margins">     
-                <div class="ibox-content">
-                    <h3>Task List Report (Restricted)</h3>
-                    <p class="mb-2">Detailed list of my own timesheets</p>
-                    <template v-if="loginInfo.is_admin">
-                        <div class="form-group flex row">
-                            <label class="control-label col-md-6">Employee Id</label>
-                            <input type="text" v-model="loginInfo.employee_code" class="form-control" autocomplete="off"/>
-                        </div>
-                    </template>
-                    <a href="tasklistreport" class="btn btn-primary">Details</a>
-                </div>
-            </div>
-        </div>
-    </div>                            
+        <ul class="nav navbar-top-links navbar-right">
+            <li>
+                <a href="login.html">
+                    <i class="fas fa-sign-out-alt"></i>
+                </a>
+            </li>            
+        </ul>
+    </nav>
 </div>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div id="report-page" class="m-1">
+        <div class="flex mb-2 pl-1">
+            <h1>Project Management</h1>
+        </div>
+        <div class="flex flex-start">
+            <div class="col-md-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-content">
+                        <h3>My Timesheet Details</h3>
+                        <p class="mb-2">Detailed list of my own timesheets</p>
+                        <template v-if="loginInfo.is_admin">
+                            <div class="form-group flex row">
+                                <label class="control-label col-md-6">Employee Id</label>
+                                <input type="text" v-model="loginInfo.employee_code" class="form-control" autocomplete="off"/>
+                            </div>
+                        </template>
+                        <a href="rpthourlogdetail" class="btn btn-primary">Details</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-content">
+                        <h3>Pay Stub</h3>
+                        <p class="mb-2">Detailed list of my own Pay Stub</p>
+                        <template v-if="loginInfo.is_admin">
+                            <div class="form-group flex row">
+                                <label class="control-label col-md-6">Employee Id</label>
+                                <input type="text" v-model="loginInfo.employee_code" class="form-control" autocomplete="off"/>
+                            </div>
+                        </template>
+                        <a href="paystub" class="btn btn-primary">Details</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="ibox float-e-margins">     
+                    <div class="ibox-content">
+                        <h3>Task List Report (Restricted)</h3>
+                        <p class="mb-2">Detailed list of my own timesheets</p>
+                        <template v-if="loginInfo.is_admin">
+                            <div class="form-group flex row">
+                                <label class="control-label col-md-6">Employee Id</label>
+                                <input type="text" v-model="loginInfo.employee_code" class="form-control" autocomplete="off"/>
+                            </div>
+                        </template>
+                        <a href="tasklistreport" class="btn btn-primary">Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
        
     const reportapp = {

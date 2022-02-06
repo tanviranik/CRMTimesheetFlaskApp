@@ -308,7 +308,7 @@
                 let self = this;
                 // return calculateTotalHours(self.paymentCalculate.PaymentAmount, self.paymentCalculate.HourlyRate)
                 if(isAdmin){
-                    self.timeentry.HourLogs.end_time = calculateTotalHours(self.paymentCalculate.PaymentAmount, self.paymentCalculate.HourlyRate)
+                    self.timeentry.HourLogs.end_time = calculateTotalHoursFromDecimalByPayment(self.paymentCalculate.PaymentAmount, self.paymentCalculate.HourlyRate)
                 }
                 return self.timeentry.HourLogs.end_time;
             }

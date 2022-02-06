@@ -266,7 +266,7 @@ class DataContext:
  inner join Task tsk on tsk.task_id = h.task_id
  inner join Project proj on proj.project_id = tsk.project_id
  inner join Category cat on cat.category_id = h.category_id
- where h.employee_id= """+emp_id+""" and h.entry_date>='"""+start_date+"""' and h.entry_date <= '"""+end_date+"""'"""
+ where h.employee_id= """+emp_id+""" and h.entry_date>='"""+start_date+"""' and h.entry_date <= '"""+end_date+"""' order by entry_date asc"""
 
         cursor.execute(query)
         data = self.dictfetchall(cursor)

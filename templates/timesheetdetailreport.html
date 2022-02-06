@@ -45,6 +45,10 @@
                                     <td>[[dt.task_name]]</td>
                                     <td class="text-right">[[dt.total_hours]]</td>
                                 </tr>
+                                <tr>
+                                    <td colspan="3"class="text-right"><b>Total Working Hours</b></td>
+                                    <td class="text-right">[[grandhours]]</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -54,8 +58,7 @@
                 <div class="filter-group col-md-3 animated fadeInRight">
                     <div class="form-group">
                         <label>Date Range</label>
-                        <select name="date_range" class="form-control" v-model="filterby.date_range" @change="setDateRange">
-                            <option value="0">Select</option>
+                        <select name="date_range" id="weekrange" class="form-control" v-model="filterby.date_range" @change="setDateRange">
                             <option value="1">This Week</option>
                             <option value="2">This Month</option>
                             <option value="3">Last Week</option>
@@ -165,8 +168,9 @@
                 weekenddateStr: '',
                 stubstartdateStr: '',
                 stubenddateStr: '',
+                grandhours: '0:00',
                 filterby:{
-                    date_range: '0',
+                    date_range: '1',
                     startdate: '',
                     enddate: '',
                     primary_grouping: '',
@@ -176,7 +180,10 @@
                     category_id:'',
                     status: ''
                 },
-                reportUrl: 'gettimesheetdetail'
+                weeklist: [],
+                selectedweek: {},
+                reportUrl: 'gettimesheetdetail',
+                weekUrl: 'GetPayStubWeek'
             }
         },
         delimiters: ['[[',']]'],
@@ -187,14 +194,45 @@
             loadDefault() {
                 let self = this;
                 self.pagetitle = 'Timesheet Detail Report';
-                // self.reportdata = getreportdata();
                 self.selectedDayStr = getcalenderformat(self.selectedDay);
                 self.selectedDayArr = self.selectedDay.toString('en-us').split(' ');
-                // self.weekstartdateStr = GetWeekStartDate(self.selectedDay);
-                // self.weekenddateStr = GetWeekEndDate(self.selectedDay);
-                self.stubstartdateStr = GetStubStartDate(self.selectedDay);
-                self.stubenddateStr = GetSubEndDate(self.selectedDay);                
-                const maxdate = 
+                self.stubstartdateStr = '';
+                self.stubenddateStr = '';
+                self.getWeekList();
+            },
+            getWeekList(){
+                let self = this;
+                helper.get(self.weekUrl, {}, function (response) {
+                    self.weeklist = response.data;
+                    self.selectedweek = self.weeklist.filter(function (element) {
+                        return element.startdate <= self.selectedDayStr && element.enddate >= self.selectedDayStr;
+                    });
+                    console.log(self.selectedweek[0]);
+                    self.SetupWeekCalendar();
+                }, true);
+            },
+            LoadReport(){
+                let self = this;
+                helper.get(self.reportUrl, {startdate: self.stubstartdateStr, enddate: self.stubenddateStr, emp_id: 1}, function (response) {
+                    self.reportdata = response.data;
+                    if(self.reportdata.length > 0){
+                        self.grandhours = '0:00';
+                        self.employee_name = self.reportdata[0].employee_name;
+                        self.reportdata.forEach(element => {
+                            self.grandhours = calculatingTotalHours(self.grandhours, element.total_hours);
+                        });
+                    }
+                    stoploading();
+                }, true);
+            },
+            SetupWeekCalendar(){
+                let self = this;
+                console.log('week calendar load');
+                self.stubstartdateStr = self.selectedweek[0].startdate;
+                self.stubenddateStr = self.selectedweek[0].enddate;
+                console.log(self.stubstartdateStr);
+                console.log(self.stubenddateStr);
+
                 $( "#startdate").datepicker({
                     showAnim: 'slideDown',
                     dateFormat: 'yy-mm-dd',
@@ -205,19 +243,15 @@
                     dateFormat: 'yy-mm-dd',
                     firstDay: 1
                 }).datepicker("setDate", new Date(self.stubenddateStr));
-                helper.get(self.reportUrl, {startdate: self.stubstartdateStr, enddate: self.stubenddateStr, emp_id: 1}, function (response) {
-                    console.log('live data');
-                    console.log(response.data);
-                    self.reportdata = response.data;
-                    self.employee_name = self.reportdata[0].employee_name;
-                    stoploading();
-                }, true);
+                self.LoadReport();
             },
             RefreshReport(){
 
             },
             setDateRange(){
                 console.log(this.filterby.date_range);
+                self.filterby.startdate = $("#StartDate").val();
+                self.filterby.enddate = $("#enddate").val();
             },
             toggleFilter(){
                 this.isFilter = (this.isFilter) ? false : true;

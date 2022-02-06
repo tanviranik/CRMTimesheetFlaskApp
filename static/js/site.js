@@ -96,7 +96,15 @@ const calculatingWorkingHours = function(starttime, endtime) {
     let hourdiffstr = (hourdiff < 10) ? ('0' + hourdiff) : hourdiff;
     return hourdiffstr + ':' + minutestr;
 }
-const calculateTotalHours = function(paymentAmount, hourlyRate){
+const calculatingTotalHours = function(grandtotal, workinghours) {
+    let workinghoursArr = workinghours.split(':');
+    let grandtotalarr = grandtotal.split(':');
+    let workingminutes = parseInt(workinghoursArr[1]) + parseInt(grandtotalarr[1]);                
+    let mins = ((workingminutes % 60) < 10) ? ('0' + (workingminutes % 60)) : (workingminutes % 60);
+    let hours = parseInt(workinghoursArr[0]) + parseInt(grandtotalarr[0]) + Math.floor(workingminutes / 60);
+    return hours + ':' + mins;
+}
+const calculateTotalHoursFromDecimalByPayment = function(paymentAmount, hourlyRate){
   if(paymentAmount === NaN || paymentAmount === '' || paymentAmount === 0 || hourlyRate === NaN || hourlyRate === '' ||hourlyRate === 0) return "00:00";
   let total_hours_decimal = paymentAmount/hourlyRate;
   // Separate the int from the decimal part

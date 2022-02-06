@@ -34,6 +34,7 @@ task_tbl_pros = '([task_id],[category_id],[notes],[insert_date],[entry_date],[st
 inventory_tbl_pros = '([inventory_name],[quantity],[unit],[hourlog_id])'
 hourlog_table = '[dbo].[HourLogs]'
 inventory_table = '[dbo].[InventoryTracker]'
+weekpaystub_table = '[dbo].[WeekPayStub]'
 
 # first route
 
@@ -156,6 +157,16 @@ def gettimesheetdetail():
     hourlog = dbcontext.GetDateRangeData(start_date, end_date, emp_id)    
     dbcontext.Disconnect()
     response = json.dumps({'data': hourlog})
+    return response
+
+@app.route("/GetPayStubWeek", methods=['GET'])
+def GetPayStubWeek():
+    dbcontext = DataContext('x','x','x','x')
+    dbcontext.Connect()
+    columns = "week_id, month_no, CONVERT(VARCHAR(30), startdate, 23) startdate, CONVERT(VARCHAR(30), enddate, 23) enddate, year"
+    weeks = dbcontext.GetByFilterWithSelect(weekpaystub_table, 0 , columns, '')
+    print(weeks)
+    response = json.dumps({'data': weeks})
     return response
 
 @app.route("/get_projects", methods=['GET'])

@@ -43,10 +43,12 @@
                                     <td>[[dt.entry_date]]</td>
                                     <td>[[dt.project_name]]</td>
                                     <td>[[dt.task_name]]</td>
+                                    <td>[[dt.start_time]]</td>
+                                    <td>[[dt.end_time]]</td>
                                     <td class="text-right">[[dt.total_hours]]</td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3"class="text-right"><b>Total Working Hours</b></td>
+                                    <td colspan="5"class="text-right"><b>Total Working Hours</b></td>
                                     <td class="text-right">[[grandhours]]</td>
                                 </tr>
                             </tbody>
@@ -156,7 +158,7 @@
             return {
                 pagetitle: 'Report - Time Sheet Detail',
                 isFilter: true,
-                reportdataheader: ['Date', 'Customer', 'Project', 'Duration'],
+                reportdataheader: ['Date', 'Project Name', 'Task Name','Start Time', 'End Time', 'Duration'],
                 employee_name: '',
                 reportdata: [],
                 selectedDay: new Date(),

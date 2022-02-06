@@ -28,8 +28,16 @@
         <div id="report-body" class="flex">
             <div id="report-viewer" :class="[(isFilter===true ? 'col-md-9' : 'col-md-12')]">
                 <div id="print-area">
-                    <div class="report-header">
+                    <div class="report-header mb-1">
                         <div class="report-title"> Timesheet Details for [[employee_name]]</div>
+                        <div class="flex align-between col-md-3">
+                            <p> Week Start Date :</p>
+                            <p> [[stubstartdateStr]]</p>
+                        </div>
+                        <div class="flex align-between col-md-3">
+                            <p> Week End Date :</p>
+                            <p> [[stubenddateStr]]</p>
+                        </div>
                     </div>
                     <div class="report-content">
                         <table class="table table-responsive table-bordered table-report">
@@ -62,12 +70,12 @@
                         <label>Date Range</label>
                         <select name="date_range" id="weekrange" class="form-control" v-model="filterby.date_range" @change="setDateRange">
                             <option value="1">This Week</option>
-                            <option value="2">This Month</option>
+                            <!-- <option value="2">This Month</option>
                             <option value="3">Last Week</option>
                             <option value="4">Last Month</option>
                             <option value="5">Last 30 Days</option>
                             <option value="6">Last 60 Days</option>
-                            <option value="7">Last 90 Days</option>
+                            <option value="7">Last 90 Days</option> -->
                         </select>
                     </div>
                     <div class="form-group">
@@ -78,7 +86,7 @@
                         <label>End Date</label>
                         <input id="enddate"  type="text" class="form-control" />
                     </div>
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <label>Primary Grouping</label>
                         <select name="primary_grouping" class="form-control">
                             <option value="0">Select</option>
@@ -140,7 +148,7 @@
                             <option value="4">Rejected</option>
                             <option value="5">Invoiced</option>
                         </select>
-                    </div>
+                    </div> -->
                     <div class="form-group">                                            
                         <button class="btn btn-success" @click="RefreshReport">Preview</button>
                     </div>
@@ -164,10 +172,6 @@
                 selectedDay: new Date(),
                 selectedDayStr: '',
                 selectedDayArr:[],
-                displaylogStartingDate: new Date(),
-                displaylogEndingDate: new Date(),
-                weekstartdateStr: '',
-                weekenddateStr: '',
                 stubstartdateStr: '',
                 stubenddateStr: '',
                 grandhours: '0:00',
@@ -229,12 +233,8 @@
             },
             SetupWeekCalendar(){
                 let self = this;
-                console.log('week calendar load');
                 self.stubstartdateStr = self.selectedweek[0].startdate;
                 self.stubenddateStr = self.selectedweek[0].enddate;
-                console.log(self.stubstartdateStr);
-                console.log(self.stubenddateStr);
-
                 $( "#startdate").datepicker({
                     showAnim: 'slideDown',
                     dateFormat: 'yy-mm-dd',

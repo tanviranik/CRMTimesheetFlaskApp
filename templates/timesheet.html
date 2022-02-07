@@ -529,10 +529,18 @@
             },
             deleteTimeSheet(hourlog_id){
                 let self = this;
-                helper.get(self.deleteUrl, {hourlog_id: hourlog_id}, function (response) {
-                    self.loadworkinglog(self.weekstartdateStr, self.weekenddateStr)
-                    OnSuccessRequest(response);
-                }, true);
+                alertify.confirm("Delete Confirmation ", "Do you really want to delete?",
+                    function () {
+                        helper.get(self.deleteUrl, {hourlog_id: hourlog_id}, function (response) {
+                            self.loadworkinglog(self.weekstartdateStr, self.weekenddateStr)
+                            OnSuccessRequest(response);
+                        }, true);
+                        var obj = {};                        
+                    },
+                    function () {
+                        alertify.success('Cancel');
+                    });
+                
             }
         }
     }

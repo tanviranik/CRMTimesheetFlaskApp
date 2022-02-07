@@ -164,10 +164,9 @@ def paystub():
 def gettimesheetdetail():
     dbcontext = DataContext('x','x','x','x')
     dbcontext.Connect()
-    start_date = request.args.get('startdate')
-    end_date = request.args.get('enddate')
-    emp_id = request.args.get('emp_id')
-    hourlog = dbcontext.GetDateRangeData(start_date, end_date, emp_id)    
+    filterparams = request.args.get('filterby')
+    print(filterparams)
+    hourlog = dbcontext.GetDateRangeData(filterparams.startdate, filterparams.enddate, filterparams.emp_id)    
     dbcontext.Disconnect()
     response = json.dumps({'data': hourlog})
     return response

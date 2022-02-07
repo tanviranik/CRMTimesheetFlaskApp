@@ -107,38 +107,29 @@
                             <option value="4">Customer</option>
                             <option value="5">Status</option>
                         </select>
-                    </div>
+                    </div> -->
                     <div class="form-group">
                         <label>Project</label>
-                        <select name="project_id" class="form-control">
+                        <select name="filterby.project_id" id="project_id" class="form-control search-select">
                             <option value="0">Select</option>
-                            <option value="1">Project 1</option>
-                            <option value="2">Project 2</option>
-                            <option value="3">Project 3</option>
-                            <option value="4">Project 4</option>
+                            <option v-for="proj in projectlist" :value="proj.project_id">[[proj.project_name]]</option>                            
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Task</label>
-                        <select name="task_id" class="form-control">
+                        <select name="filterby.task_id" id="task_id" class="form-control search-select">
                             <option value="0">Select</option>
-                            <option value="1">Task 1</option>
-                            <option value="2">Task 2</option>
-                            <option value="3">Task 3</option>
-                            <option value="4">Task 4</option>
+                            <option v-for="task in tasklist" :value="task.task_id">[[task.task_name]]</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Category</label>
-                        <select name="category_id" class="form-control">
+                        <select name="filterby.category_id" id="category_id" class="form-control search-select">
                             <option value="0">Select</option>
-                            <option value="1">Category 1</option>
-                            <option value="2">Category 2</option>
-                            <option value="3">Category 3</option>
-                            <option value="4">Category 4</option>
+                            <option v-for="category in categorylist" :value="category.category_id">[[category.category_name]]</option>
                         </select>
                     </div>
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <label>Status</label>
                         <select name="status" class="form-control">
                             <option value="0">Select</option>
@@ -181,26 +172,68 @@
                     enddate: '',
                     primary_grouping: '',
                     secondary_grouping: '',
-                    project_id: '',
-                    task_id:'',
-                    category_id:'',
-                    status: ''
+                    project_id: '0',
+                    task_id:'0',
+                    category_id:'0',
+                    status: '',
+                    emp_id: 1
                 },
                 weeklist: [],
                 selectedweek: {},
+                tasklist: [],
+                projectlist: [],
+                categorylist: [],
                 reportUrl: 'gettimesheetdetail',
-                weekUrl: 'GetPayStubWeek'
+                weekUrl: 'GetPayStubWeek',
+                supportingUrl: 'get_supporting_data',
             }
         },
         delimiters: ['[[',']]'],
         mounted: function () {
-            this.loadDefault();            
+            let self = this;
+            self.loadDefault();
+            $('.search-select').select2();
+            $('select#task_id').on('change', function() {
+                console.log('task onchange fired');
+                self.filterby.task_id = parseInt($("select#task_id option").filter(":selected").val());
+            });
+            $('select#category_id').on('change', function() {
+                console.log('category onchange fired');
+                self.filterby.category_id = parseInt($("select#category_id option").filter(":selected").val());
+            });
+            $('select#project_id').on('change', function() {
+                console.log('project_id onchange fired');
+                self.filterby.project_id = parseInt($("select#project_id option").filter(":selected").val());
+            });
+            $( "#startdate").datepicker({
+                showAnim: 'slideDown',
+                dateFormat: 'yy-mm-dd',
+                firstDay: 1,
+                onSelect: function (dateText, inst) {
+                    // assign selected date
+                    self.filterby.startdate = dateText;
+                }
+            });
+            $( "#enddate").datepicker({
+                showAnim: 'slideDown',
+                dateFormat: 'yy-mm-dd',
+                firstDay: 1,
+                onSelect: function (dateText, inst) {
+                    // assign selected date
+                    self.filterby.enddate = dateText;
+                }
+            });
         },
         methods: {
             loadDefault() {
                 let self = this;
                 self.pagetitle = 'Timesheet Detail Report';
                 self.selectedDayStr = getcalenderformat(self.selectedDay);
+                helper.get(self.supportingUrl, {}, function (response) {
+                    self.categorylist = response.data.categorylist;
+                    self.tasklist = response.data.tasklist;
+                    self.projectlist = response.data.projectlist;
+                }, true);
                 self.selectedDayArr = self.selectedDay.toString('en-us').split(' ');
                 self.stubstartdateStr = '';
                 self.stubenddateStr = '';
@@ -219,7 +252,8 @@
             },
             LoadReport(){
                 let self = this;
-                helper.get(self.reportUrl, {startdate: self.stubstartdateStr, enddate: self.stubenddateStr, emp_id: 1}, function (response) {
+                data = JSON.stringify(self.filterby);
+                helper.get(self.reportUrl, {filterby: data}, function (response) {
                     self.reportdata = response.data;
                     if(self.reportdata.length > 0){
                         self.grandhours = '0:00';
@@ -235,6 +269,8 @@
                 let self = this;
                 self.stubstartdateStr = self.selectedweek[0].startdate;
                 self.stubenddateStr = self.selectedweek[0].enddate;
+                self.filterby.startdate = self.selectedweek[0].startdate;
+                self.filterby.enddate = self.selectedweek[0].enddate;
                 $( "#startdate").datepicker({
                     showAnim: 'slideDown',
                     dateFormat: 'yy-mm-dd',
@@ -248,7 +284,7 @@
                 self.LoadReport();
             },
             RefreshReport(){
-
+                console.log(this.filterby);
             },
             setDateRange(){
                 console.log(this.filterby.date_range);

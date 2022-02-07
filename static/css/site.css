@@ -261,3 +261,19 @@ textarea {
 #report-viewer .col-md-1,#report-viewer  .col-md-10,#report-viewer  .col-md-11,#report-viewer  .col-md-12,#report-viewer  .col-md-2,#report-viewer  .col-md-3,#report-viewer  .col-md-4,#report-viewer  .col-md-5,#report-viewer  .col-md-6,#report-viewer  .col-md-7,#report-viewer  .col-md-8,#report-viewer  .col-md-9 {
     float: none;
 }
+
+.agile-list>li:nth-child(1) {
+    border-left: 3px solid #f8ac59;
+}
+.agile-list>li:nth-child(2) {
+    border-left: 3px solid #31aa31;
+}
+.agile-list>li:nth-child(3) {
+    border-left: 3px solid #195b64;
+}
+.agile-list>li:nth-child(4) {
+    border-left: 3px solid #672791;
+}
+.agile-list>li:nth-child(5) {
+    border-left: 3px solid #963c2c;
+}

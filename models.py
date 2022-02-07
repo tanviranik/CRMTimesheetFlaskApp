@@ -2,8 +2,8 @@ import pyodbc
 from datetime import datetime
 from datetime import date
 
-CONN_STR = "Driver={ODBC Driver 17 for SQL Server};Server=13.68.246.119;Database=CRM;uid=sa;pwd=dataport;Trusted_Connection=no;"
-#CONN_STR = "Driver={ODBC Driver 17 for SQL Server};Server=SABBIR\SQLEXPRESS;Database=CRM;uid=sa;pwd=sabbir@12#;Trusted_Connection=no;"
+#CONN_STR = "Driver={ODBC Driver 17 for SQL Server};Server=13.68.246.119;Database=CRM;uid=sa;pwd=dataport;Trusted_Connection=no;"
+CONN_STR = "Driver={ODBC Driver 17 for SQL Server};Server=SABBIR\SQLEXPRESS;Database=CRM;uid=sa;pwd=sabbir@12#;Trusted_Connection=no;"
 
 class DataContext:
     def __init__(self,servername,databasename,username,password):

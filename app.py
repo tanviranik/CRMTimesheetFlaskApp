@@ -135,6 +135,19 @@ def edit_timesheet():
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
+@app.route('/deletetimesheet', methods=['GET'])
+def deletetimesheet():
+    hourlog_id = request.args.get('hourlog_id')
+    dbcontext = DataContext('x','x','x','x')
+    dbcontext.Connect()
+    where_clause = 'hourlog_id = ' + hourlog_id
+    result = dbcontext.DeleteFromTableById(inventory_table, where_clause)
+    if result == '1':
+        result = dbcontext.DeleteFromTableById(hourlog_table, where_clause)
+    response = jsonify(GetResponseMessage(result))
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
 @app.route('/report')
 def reportpage():
     return render_template('report.html', the_title="Ai DOM - Reports", weektitle="")
@@ -223,6 +236,9 @@ def GetWeeklyHourLogs():
     start_date = request.args.get('startdate')
     end_date = request.args.get('enddate')
     emp_id = request.args.get('emp_id')
+    print(start_date)
+    print(end_date)
+    print(emp_id)
     hourlog = dbcontext.GetDateRangeData(start_date, end_date, emp_id)    
     dbcontext.Disconnect()
     response = jsonify({'status_code' : 200, 'data': hourlog})

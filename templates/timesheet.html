@@ -73,7 +73,7 @@
                 <template v-if="displaylog.workinglog.length > 0">
                     <ul class="sortable-list connectList agile-list ui-sortable col-md-12" id="todo">
                         <template v-for="(log, name, index) in displaylog.workinglog">
-                            <li class="warning-element ui-sortable-handle" v-if="log.entry_date === selectedDayStr">
+                            <li class="ui-sortable-handle" v-if="log.entry_date === selectedDayStr">
                                 <div class="agile-detail flex">
                                     <div class="col-md-9">
                                         <div class="flex">
@@ -90,8 +90,9 @@
                                     </div>
                                     <div class="col-md-3">
                                         <div class="flex">
-                                            <p class="working-hour col-md-4 m-auto">[[log.total_hours]]</p>
-                                            <a class="btn btn-default" :href="'edittimesheet?hourlog_id=' + log.hourlog_id"><i class="far fa-edit"></i></a>
+                                            <p class="working-hour col-md-4 m-auto">[[log.total_hours]]</p>                                            
+                                            <a class="btn btn-warning" :href="'edittimesheet?hourlog_id=' + log.hourlog_id"><i class="far fa-edit"></i></a>
+                                            <a class="btn btn-danger ml-1" @click="deleteTimeSheet(log.hourlog_id)"><i class="far fa-trash"></i></a>
                                         </div>
                                     </div>
                                 </div>
@@ -222,7 +223,8 @@
                 weekwisecolumntotal: ['0:00', '0:00', '0:00', '0:00', '0:00', '0:00', '0:00'],
                 weeklytotal: '0:00',
                 weeklygrandworkingtotal: '0:00',
-                getHourLogUrl: 'GetWeeklyHourLogs'
+                getHourLogUrl: 'GetWeeklyHourLogs',
+                deleteUrl : 'deletetimesheet'
             }
         },
         delimiters: ['[[',']]'],
@@ -524,6 +526,13 @@
                 this.selectedDayArr = this.selectedDay.toString('en-us').split(' ');
                 this.setStartAndEndDate(this.selectedDay,this.selectedDayArr);
                 this.loadworkinglog(this.weekstartdateStr, this.weekenddateStr);
+            },
+            deleteTimeSheet(hourlog_id){
+                let self = this;
+                helper.get(self.deleteUrl, {hourlog_id: hourlog_id}, function (response) {
+                    self.loadworkinglog(self.weekstartdateStr, self.weekenddateStr)
+                    OnSuccessRequest(response);
+                }, true);
             }
         }
     }

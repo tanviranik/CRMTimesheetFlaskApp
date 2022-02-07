@@ -141,7 +141,7 @@
                         </select>
                     </div> -->
                     <div class="form-group">                                            
-                        <button class="btn btn-success" @click="RefreshReport">Preview</button>
+                        <button class="btn btn-success" @click="LoadReport">Preview</button>
                     </div>
                 </div>
             </template>
@@ -227,6 +227,7 @@
         methods: {
             loadDefault() {
                 let self = this;
+                showloading();
                 self.pagetitle = 'Timesheet Detail Report';
                 self.selectedDayStr = getcalenderformat(self.selectedDay);
                 helper.get(self.supportingUrl, {}, function (response) {
@@ -252,6 +253,7 @@
             },
             LoadReport(){
                 let self = this;
+                showloading();
                 data = JSON.stringify(self.filterby);
                 helper.get(self.reportUrl, {filterby: data}, function (response) {
                     self.reportdata = response.data;

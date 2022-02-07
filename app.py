@@ -165,8 +165,9 @@ def gettimesheetdetail():
     dbcontext = DataContext('x','x','x','x')
     dbcontext.Connect()
     filterparams = request.args.get('filterby')
-    print(filterparams)
-    hourlog = dbcontext.GetDateRangeData(filterparams.startdate, filterparams.enddate, filterparams.emp_id)    
+    filters = json.loads(filterparams)
+    print(filters)
+    hourlog = dbcontext.GetTimeSheetDetailReport(filters['startdate'], filters['enddate'], str(filters['project_id']), str(filters['task_id']) , str(filters['category_id']), str(filters['status']),str(filters['emp_id']))
     dbcontext.Disconnect()
     response = json.dumps({'data': hourlog})
     return response

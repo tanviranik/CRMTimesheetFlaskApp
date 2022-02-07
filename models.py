@@ -259,15 +259,26 @@ class DataContext:
         except Exception as e:
             print('Exception occured : ', e, '. For Datarow: ', datarow)
 
-    def GetDateRangeData(self, start_date, end_date, emp_id):
+    def GetTimeSheetDetailReport(self, start_date, end_date, project_id, task_id, category_id, status, emp_id):
         cursor = self.connection.cursor()
+
+        where_clause = ''
+        if project_id != '0':
+            where_clause = where_clause + "and proj.project_id = " + project_id + " "
+        if task_id != '0':
+            where_clause = where_clause + "and h.task_id = " + task_id + " "
+        if category_id != '0':
+            where_clause = where_clause + "and h.category_id = " + category_id + " "
+        # if status != '0':
+        #     where_clause = where_clause + "and h.status = " + status + " "
+
         query = """select h.hourlog_id,h.employee_id,emp.employee_name, h.task_id, tsk.task_name, proj.project_id, proj.project_name,h.category_id, cat.category_name, h.notes, CONVERT(VARCHAR(30), h.insert_date, 23) insert_date, CONVERT(VARCHAR(30), h.entry_date, 23) entry_date, CONVERT(VARCHAR(30), h.start_time, 24) start_time, CONVERT(VARCHAR(30), h.end_time, 24) end_time, h.total_hours  from HourLogs h
  inner join Employee emp on emp.employee_id = h.employee_id
  inner join Task tsk on tsk.task_id = h.task_id
  inner join Project proj on proj.project_id = tsk.project_id
  inner join Category cat on cat.category_id = h.category_id
- where h.employee_id= """+emp_id+""" and h.entry_date>='"""+start_date+"""' and h.entry_date <= '"""+end_date+"""' order by entry_date asc"""
-
+ where h.employee_id = """+ emp_id +""" and h.entry_date>='"""+start_date+"""' and h.entry_date <= '"""+end_date+"""' """ + where_clause + """ order by entry_date asc"""
+        print(query)
         cursor.execute(query)
         data = self.dictfetchall(cursor)
         cursor.close()

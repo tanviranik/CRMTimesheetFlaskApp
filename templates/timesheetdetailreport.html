@@ -257,8 +257,8 @@
                 data = JSON.stringify(self.filterby);
                 helper.get(self.reportUrl, {filterby: data}, function (response) {
                     self.reportdata = response.data;
+                    self.grandhours = '0:00';
                     if(self.reportdata.length > 0){
-                        self.grandhours = '0:00';
                         self.employee_name = self.reportdata[0].employee_name;
                         self.reportdata.forEach(element => {
                             self.grandhours = calculatingTotalHours(self.grandhours, element.total_hours);

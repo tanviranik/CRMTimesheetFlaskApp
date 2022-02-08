@@ -264,11 +264,12 @@
                 helper.get(self.getHourLogUrl, {startdate: startdateParam, enddate: enddateParam, emp_id: 1}, function (response) {
                     console.log('live data');
                     console.log(response.data)
-                    self.workinglog = response.data;
+                    self.workinglog = (response.data == null) ? [] : response.data;
+                    // self.workinglog = response.data;
                     if(self.isDay){
-                        self.daywiseProcessWorkingLog(response.data);
+                        self.daywiseProcessWorkingLog(self.workinglog);
                     }else{
-                        self.weekwiseProcessWorkingLog(response.data);
+                        self.weekwiseProcessWorkingLog(self.workinglog);
                     }
                     self.getcurrentdateWorklog();
                     stoploading();
@@ -308,12 +309,14 @@
                         grandworkinghour: '0:00',
                         workinglog: []
                     };
-                    displaylog.workinglog = worklog.filter(function (element) {
-                        if (element.entry_date === startingday) {
-                            grandhours = self.calculatingTotalHours(grandhours, element.total_hours);
-                        }                    
-                        return element.entry_date === startingday;
-                    });
+                    if(worklog !== null){
+                        displaylog.workinglog = worklog.filter(function (element) {
+                            if (element.entry_date === startingday) {
+                                grandhours = self.calculatingTotalHours(grandhours, element.total_hours);
+                            }                    
+                            return element.entry_date === startingday;
+                        });
+                    }
                     displaylog.grandworkinghour = grandhours;
                     self.weeklytotal = self.calculatingTotalHours(self.weeklytotal, grandhours);
                     self.daywiseDisplaylogList.push(displaylog);

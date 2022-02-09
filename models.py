@@ -5,6 +5,26 @@ from datetime import date
 CONN_STR = "Driver={ODBC Driver 17 for SQL Server};Server=13.68.246.119;Database=CRM;uid=sa;pwd=dataport;Trusted_Connection=no;"
 #CONN_STR = "Driver={ODBC Driver 17 for SQL Server};Server=SABBIR\SQLEXPRESS;Database=CRM;uid=sa;pwd=sabbir@12#;Trusted_Connection=no;"
 
+def dictfetchall(cur):
+    dataset = cur.fetchall()
+    columns = [col[0] for col in cur.description]        
+    return [
+        dict(zip(columns, row))
+        for row in dataset
+        ]
+
+def ValidateLogin(username, password):
+    conn = pyodbc.connect(CONN_STR)
+    cursor = conn.cursor()
+    query = """SELECT  *
+                  FROM [dbo].[Employee]
+              where  [email] = '""" + username + "' and password = '" + password + "'"
+    cursor.execute(query)
+    data = dictfetchall(cursor)
+    cursor.close()
+    conn.close()
+    return data
+
 class DataContext:
     def __init__(self,servername,databasename,username,password):
         self.servername = servername
@@ -36,7 +56,7 @@ class DataContext:
         if value is None or value == '':
             return ''
 
-    def GetEmplyees():
+    def GetEmplyees(self):
         cursor = self.connection.cursor()
         query = """SELECT [employee_id]
                     ,[employee_name]
@@ -51,7 +71,7 @@ class DataContext:
         cursor.execute(query)
         data = dictfetchall(cursor)
         cursor.close()
-        conn.close()
+        self.connection.close()
         return data
 
     def GetAll(self, tablename, whereclause='', groupby='',orderby=''):
@@ -295,8 +315,58 @@ class DataContext:
  inner join Project proj on proj.project_id = tsk.project_id
  inner join Category cat on cat.category_id = h.category_id
  where h.employee_id = """+ emp_id +""" and h.entry_date>='"""+start_date+"""' and h.entry_date <= '"""+end_date+"""' """ + where_clause + """ order by entry_date asc"""
+        print(query)
         cursor.execute(query)
         data = self.dictfetchall(cursor)
         cursor.close()
-        return data
-            
+        return data          
+
+def GetContextEmployeePayStub(employee_id, startdate, enddate):
+    conn = pyodbc.connect(CONN_STR)
+    cursor = conn.cursor()
+    query = """SELECT E.[employee_id]
+                ,E.[employee_name]
+                ,E.[employee_address]
+                ,E.[city]
+                ,E.[province]
+                ,E.[postalcode]
+                ,E.[bank_account]
+                ,B.paydate
+                ,B.startdate
+                ,B.enddate
+                ,AVG(E.[hourly_rate]) as [hourly_rate]
+                ,sum((CAST(LEFT([total_hours], charindex(':', [total_hours]) - 1) as NUMERIC(18,4)) * 60
+                + CAST(RIGHT([total_hours], charindex(':', [total_hours]) - 1) as NUMERIC(18,4))) / 60) as [total_hours]
+                ,sum((CAST(LEFT([total_hours], charindex(':', [total_hours]) - 1) as NUMERIC(18,4)) * 60
+                + CAST(RIGHT([total_hours], charindex(':', [total_hours]) - 1) as NUMERIC(18,4))) / 60) * AVG(E.[hourly_rate])  as [total_pay]
+            FROM [dbo].[HourLogs]  A
+            INNER JOIN [dbo].[WeekPayStub] B ON A.entry_date >= B.startdate and A.entry_date <= B.enddate
+            INNER JOIN [dbo].[Employee] E ON A.employee_id = E.employee_id
+            WHERE E.employee_id = """ + str(employee_id) + """
+            AND B.startdate = '""" + startdate + "' and B.enddate = '" + enddate + """'
+            GROUP BY
+                E.[employee_id]
+                ,E.[employee_name]
+                ,E.[employee_address]
+                ,E.[city]
+                ,E.[province]
+                ,E.[postalcode]
+                ,E.[bank_account]
+                ,B.paydate
+                ,B.startdate
+                ,B.enddate"""
+    cursor.execute(query)
+    data = dictfetchall(cursor)
+    cursor.close()
+    conn.close()
+    return data
+
+def GetEmployeeEmailAddress(employee_id):
+    conn = pyodbc.connect(CONN_STR)
+    cursor = conn.cursor()
+    query = """SELECT * from [dbo].[Employee] where employee_id = """ + str(employee_id)
+    cursor.execute(query)
+    data = dictfetchall(cursor)
+    cursor.close()
+    conn.close()
+    return data

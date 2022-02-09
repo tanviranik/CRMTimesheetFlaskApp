@@ -109,6 +109,14 @@
                         </select>
                     </div> -->
                     <div class="form-group">
+                        <label>Employee</label>
+                        <select name="filterby.employee_id" id="employee_id" class="form-control search-select">
+                            <option value="0">Select</option>
+                            <option v-for="emp in employeelist" :value="emp.employee_id">[[emp.employee_name]]</option>                            
+                        </select>
+                    </div>
+
+                    <div class="form-group">
                         <label>Project</label>
                         <select name="filterby.project_id" id="project_id" class="form-control search-select">
                             <option value="0">Select</option>
@@ -143,6 +151,15 @@
                     <div class="form-group">                                            
                         <button class="btn btn-success" @click="LoadReport">Preview</button>
                     </div>
+
+                    <div class="form-group">                                            
+                        <button class="btn btn-success" @click="GetPayStub">Paystub</button>
+                    </div>
+
+                    <div class="form-group">                                            
+                        <button class="btn btn-success" @click="SendPayStubEmail">Send PayStub Email</button>
+                    </div>
+
                 </div>
             </template>
         </div>
@@ -155,7 +172,7 @@
     const reportapp = {
         data() {
             return {
-                pagetitle: 'Report - Time Sheet Detail',
+                pagetitle: 'Timesheet - Report - Detail',
                 isFilter: true,
                 reportdataheader: ['Date', 'Project Name', 'Task Name','Start Time', 'End Time', 'Duration'],
                 employee_name: '',
@@ -176,7 +193,7 @@
                     task_id:'0',
                     category_id:'0',
                     status: '',
-                    emp_id: 1
+                    employee_id: 1
                 },
                 weeklist: [],
                 selectedweek: {},
@@ -204,6 +221,10 @@
             $('select#project_id').on('change', function() {
                 console.log('project_id onchange fired');
                 self.filterby.project_id = parseInt($("select#project_id option").filter(":selected").val());
+            });
+            $('select#employee_id').on('change', function() {
+                console.log('employee_id onchange fired = ' + parseInt($("select#employee_id option").filter(":selected").val()));
+                self.filterby.employee_id = parseInt($("select#employee_id option").filter(":selected").val());
             });
             $( "#startdate").datepicker({
                 showAnim: 'slideDown',
@@ -234,6 +255,7 @@
                     self.categorylist = response.data.categorylist;
                     self.tasklist = response.data.tasklist;
                     self.projectlist = response.data.projectlist;
+                    self.employeelist = response.data.employeelist;
                 }, true);
                 self.selectedDayArr = self.selectedDay.toString('en-us').split(' ');
                 self.stubstartdateStr = '';
@@ -258,6 +280,8 @@
                 helper.get(self.reportUrl, {filterby: data}, function (response) {
                     self.reportdata = response.data;
                     self.grandhours = '0:00';
+                    console.log('Hi');
+                    console.log(self.reportdata);
                     if(self.reportdata.length > 0){
                         self.employee_name = self.reportdata[0].employee_name;
                         self.reportdata.forEach(element => {
@@ -298,7 +322,15 @@
             },
             printReport(){
                 printDivPortrait('print-area', reportcsslink);
-            }            
+            },
+            GetPayStub() {
+                let self = this;
+                window.location.href = '/GeneratePayStubFile?employee_id=' + self.filterby.employee_id + '&startdate=' + self.filterby.startdate + '&enddate=' +  self.filterby.enddate + '&sendemail=0'  ;
+            },
+            SendPayStubEmail(){
+                let self = this;
+                window.location.href = '/GeneratePayStubFile?employee_id=' + self.filterby.employee_id + '&startdate=' + self.filterby.startdate + '&enddate=' +  self.filterby.enddate + '&sendemail=1' ;
+            }
         }
     }
     Vue.createApp(reportapp).mount('#report-page')

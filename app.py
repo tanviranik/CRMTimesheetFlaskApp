@@ -1,16 +1,20 @@
-from flask import Flask, render_template, session, request, redirect, url_for, jsonify
+from flask import Flask, render_template, session, request, redirect, url_for, jsonify, send_from_directory
 from modules import convert_to_dict, make_ordinal
-# from models import GetProjects, GetEmplyees, insert_employee_data, GetTasks, GetCategories, insert_hour_logs
-
+from models import ValidateLogin, GetEmployeeEmailAddress
+from flask_session import Session  # https://pythonhosted.org/Flask-Session
 from models import DataContext
 from flask_cors import CORS
 import json
 import datetime
+from paystubutils import generate_document, send_employee_paystub_attaced
+import os
 
 # app = Flask(__name__, template_folder='template')
 app = Flask(__name__)
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+app.config['SESSION_TYPE'] = 'filesystem'
 application = app
-
+Session(app)
 CORS(app)
 
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -41,26 +45,62 @@ weekpaystub_table = '[dbo].[WeekPayStub]'
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template('index.html', pairs=pairs_list, the_title="Presidents Index")
+    print('On index')
+    if not session.get("username"):
+        return redirect(url_for("login"))
+    return render_template('index.html', pairs=pairs_list, the_title="Get Started")
+
+@app.route("/login")
+def login():
+    print('On Login')
+    message=None
+    return render_template("login.html", message = message)
+
+@app.route("/login", methods=['POST'])
+def loginconfirm():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        result = ValidateLogin(username, password)
+        if len(result) > 0:
+            print('Login Validated for ', username, password)
+            session["username"] = username
+            session["password"] = password
+            session["employee_id"] = result[0]['employee_id']
+            session["employee_name"] = result[0]['employee_name']
+            session["is_admin"] = result[0]['is_admin']
+            message="Authenticated"
+            return render_template('index.html', pairs=pairs_list, the_title="Get Started")
+        else:
+            message="Incorrect username or password"
+    return render_template("login.html", message = message)
 
 @app.route('/timesheet')
 def timesheet():
-    return render_template('timesheet.html', the_title="Ai DOM - Time Sheet", weektitle="")
+    if not session.get("username"):
+        return redirect(url_for("login"))
+    return render_template('timesheet.html', the_title="Timesheet - Day View", weektitle="")
 
 @app.route('/newtimesheet')
 def newtimesheet():
+    if not session.get("username"):
+        return redirect(url_for("login"))
     selecteddate = request.args.get('selecteddate')
     hourlog_id = 0
-    return render_template('new_timesheet_entry.html', the_title="Ai DOM - New Entry", start_date=selecteddate, hourlog_id=hourlog_id)
+    return render_template('new_timesheet_entry.html', the_title="Timesheet Entry", start_date=selecteddate, hourlog_id=hourlog_id)
 
 @app.route('/edittimesheet')
 def edittimesheet():
+    if not session.get("username"):
+        return redirect(url_for("login"))
     selecteddate = ''
     hourlog_id = request.args.get('hourlog_id')
-    return render_template('new_timesheet_entry.html', the_title="Ai DOM - Edit Entry", start_date=selecteddate, hourlog_id=hourlog_id)
+    return render_template('new_timesheet_entry.html', the_title="Timesheet Edit", start_date=selecteddate, hourlog_id=hourlog_id)
 
 @app.route('/save_timesheet', methods=['POST', 'GET'])
 def save_timesheet():
+    if not session.get("username"):
+        return redirect(url_for("login"))
     dbcontext = DataContext('x','x','x','x')
     dbcontext.Connect()
     global data
@@ -100,6 +140,8 @@ def save_timesheet():
 
 @app.route('/edit_timesheet', methods=['POST', 'GET'])
 def edit_timesheet():
+    if not session.get("username"):
+        return redirect(url_for("login"))
     dbcontext = DataContext('x','x','x','x')
     dbcontext.Connect()
     global data
@@ -137,6 +179,8 @@ def edit_timesheet():
 
 @app.route('/deletetimesheet', methods=['GET'])
 def deletetimesheet():
+    if not session.get("username"):
+        return redirect(url_for("login"))
     hourlog_id = request.args.get('hourlog_id')
     dbcontext = DataContext('x','x','x','x')
     dbcontext.Connect()
@@ -150,15 +194,20 @@ def deletetimesheet():
 
 @app.route('/report')
 def reportpage():
-    return render_template('report.html', the_title="Ai DOM - Reports", weektitle="")
+    if not session.get("username"):
+        return redirect(url_for("login"))
+    if session.get("is_admin") != 1:
+        return render_template('index.html', the_title="Get Started")
 
-@app.route('/rpthourlogdetail')
-def timesheetdetailreport():    
+    return render_template('report.html', the_title="Timesheet - Reports", weektitle="")
+
+@app.route('/timesheetdetailreport')
+def timesheetdetailreport(): 
     return render_template('timesheetdetailreport.html', the_title="Reports - Time Sheet Details", weektitle="")
 
 @app.route('/paystub')
 def paystub():
-    return render_template('paystub.html', the_title="Reports - Pay Stub", weektitle="")
+    return render_template('paystub.html', the_title="Timesheet - Reports - Pay Stub", weektitle="")
 
 @app.route("/gettimesheetdetail", methods=['GET'])
 def gettimesheetdetail():
@@ -166,8 +215,8 @@ def gettimesheetdetail():
     dbcontext.Connect()
     filterparams = request.args.get('filterby')
     filters = json.loads(filterparams)
-    print(filters)
-    hourlog = dbcontext.GetTimeSheetDetailReport(filters['startdate'], filters['enddate'], str(filters['project_id']), str(filters['task_id']) , str(filters['category_id']), str(filters['status']),str(filters['emp_id']))
+    print(filters, str(filters['employee_id']))
+    hourlog = dbcontext.GetTimeSheetDetailReport(filters['startdate'], filters['enddate'], str(filters['project_id']), str(filters['task_id']) , str(filters['category_id']), str(filters['status']),str(filters['employee_id']))
     dbcontext.Disconnect()
     response = json.dumps({'data': hourlog})
     return response
@@ -201,7 +250,7 @@ def get_hour_log():
     # context['HourLogs'] =
     inventory_selectparam = "[inventory_tracker_id],[inventory_name],CONVERT(VARCHAR(30), [quantity]) quantity,[unit],[hourlog_id]"
     context['InventoryTracker'] = dbcontext.GetByFilterWithSelect('[dbo].[InventoryTracker]', 0, inventory_selectparam , where_clause)
-    print(context)
+    #print(context)
     dbcontext.Disconnect()
     # print(context)
     response = json.dumps({'status_code' : 200, 'data': context})
@@ -212,11 +261,12 @@ def get_hour_log():
 def get_supporting_data():
     dbcontext = DataContext('x','x','x','x')
     dbcontext.Connect()
-    context = {"projectlist": [], 'tasklist': [], 'categorylist': []}    
+    context = {"projectlist": [], 'tasklist': [], 'categorylist': [], 'employeelist': []}    
     context['projectlist'] = dbcontext.GetAll('Project')
     context['tasklist'] = dbcontext.GetAll('Task')
     context['categorylist'] = dbcontext.GetAll('Category')
-    dbcontext.Disconnect()
+    context['employeelist'] = dbcontext.GetEmplyees()
+    #dbcontext.Disconnect()
     # print(context)
     response = jsonify({'status_code' : 200, 'data': context})
     response.headers.add('Access-Control-Allow-Origin', '*')
@@ -245,6 +295,21 @@ def GetWeeklyHourLogs():
     response = jsonify({'status_code' : 200, 'data': hourlog})
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
+
+@app.route("/GeneratePayStubFile", methods=['GET'])
+def generate_paystub_pdf():
+    start_date = request.args.get('startdate')
+    end_date = request.args.get('enddate')
+    employee_id = request.args.get('employee_id')
+    is_send_email = int(request.args.get('sendemail'))
+    print('******', start_date, end_date, employee_id)
+    filename = generate_document('paystub_templates', 'EmployeePayStubTemplate.docx', employee_id, start_date, end_date)
+    response = jsonify({'status_code' : 200, 'data': [], 'paystub_filename': filename})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    if is_send_email == 1:
+        data = GetEmployeeEmailAddress(employee_id)
+        send_employee_paystub_attaced(data[0]['email'], filename)
+    return send_from_directory(os.path.join(os.getcwd(), 'paystub_templates'), filename)
 
 @app.route("/insert_employee", methods=['GET'])
 def insert_employee():
@@ -286,6 +351,13 @@ def GetResponseMessage(msgtype):
         responseMessage['MessageType'] = 3
         responseMessage['Message'] = "Something went wrong"
     return responseMessage
+
+@app.route("/logout")
+def logout():
+    session.clear() 
+    print('On Logout')
+    return redirect(url_for("login"))
+
 
 # keep this as is
 if __name__ == '__main__':

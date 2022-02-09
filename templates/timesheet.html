@@ -5,7 +5,7 @@
     <nav class="navbar navbar-fixed-top custom-nav-pad" role="navigation" style="margin-bottom: 0;">
         <div class="navbar-header flex flex-start">
             <!-- <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a> -->
-            <div class="m-auto page-title"> {{the_title}} </div>
+            <div class="m-auto page-title"> Timesheets </div>
         </div>
         <ul class="nav navbar-top-links navbar-right">
             <li>
@@ -193,6 +193,8 @@
         $('#' + element).show();
     }
     
+    let session = {{session|tojson}};
+    console.log(session['employee_id']);
     const timesheetapp = {
         data() {
             return {
@@ -261,7 +263,7 @@
                 // enable this code on server
                 console.log(startdateParam);
                 console.log(enddateParam);
-                helper.get(self.getHourLogUrl, {startdate: startdateParam, enddate: enddateParam, emp_id: 1}, function (response) {
+                helper.get(self.getHourLogUrl, {startdate: startdateParam, enddate: enddateParam, emp_id: parseInt(session['employee_id'])}, function (response) {
                     console.log('live data');
                     console.log(response.data)
                     self.workinglog = (response.data == null) ? [] : response.data;

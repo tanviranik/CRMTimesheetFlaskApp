@@ -4,7 +4,7 @@
 	<meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{ the_title }}</title>
-    <link rel="shortcut icon" href="#">
+    <link rel="shortcut icon" type="image/jpg" href="{{ url_for('static', filename='images/906341.png') }}">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />    
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet"/>
     <link href="{{ url_for('static', filename='css/jquery-ui.min.css') }}" rel="stylesheet"/>
@@ -43,12 +43,12 @@
                     <li class="nav-header">
                         <div class="dropdown profile-element">
                             <span>
-                                <img alt="image" class="img-circle" src="{{ url_for('static', filename='images/hero-logo.png') }}" width="40" height="40" />
+                                <img alt="image" class="img-circle" src="{{ url_for('static', filename='images/906341.png') }}" width="40" height="40" />
                             </span>
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                                 <span class="clear">
                                     <span class="block m-t-xs">
-                                        <strong class="font-bold">David Williams</strong>
+                                        <strong class="font-bold">Timesheet</strong>
                                     </span>
                                 </span>
                             </a>
@@ -70,9 +70,15 @@
                     <li>
                         <a href="timesheet"><i class="fas fa-calendar-alt"></i> <span class="nav-label">TimeSheet</span>  </a>
                     </li> 
+                    {% if session['is_admin'] == 1 %}
                     <li>
                         <a href="report"><i class="fa fa-database"></i> <span class="nav-label">Report</span></a>
-                    </li>                    
+                    </li> 
+                    {% endif %}
+                       
+                    <li>
+                        <a href="logout"><i class="fa fa-sign-out-alt"></i> <span class="nav-label">Logout</span></a>
+                    </li>                   
                 </ul>
                 <div class="sidebar-toggler">
                     <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-arrow-left"></i> </a>

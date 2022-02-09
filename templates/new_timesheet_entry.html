@@ -5,11 +5,11 @@
     <nav class="navbar navbar-fixed-top custom-nav-pad" role="navigation" style="margin-bottom: 0;">
         <div class="navbar-header flex flex-start">
             <!-- <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a> -->
-            <div class="m-auto page-title"> {{the_title}} </div>
+            <div class="m-auto page-title"> New timesheet entry</div>
         </div>
         <ul class="nav navbar-top-links navbar-right">
             <li>
-                <a href="login.html">
+                <a href="logout">
                     <i class="fas fa-sign-out-alt"></i>
                 </a>
             </li>            
@@ -134,6 +134,8 @@
 
 
 <script>
+    let session = {{session|tojson}};
+    console.log(session['employee_id']);
     const timeentryapp = {
         data() {
             return {
@@ -143,7 +145,7 @@
                 timeentry:{
                     HourLogs: {
                         hourlog_id: 0,
-                        employee_id: 1, // change employee_id: 1 to 0 on live server
+                        employee_id: parseInt(session['employee_id']), // change employee_id: 1 to 0 on live server
                         task_id: 0,
                         category_id: 0,
                         notes: '',

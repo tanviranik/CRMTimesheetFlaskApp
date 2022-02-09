@@ -27,11 +27,8 @@ $(document).ready(function () {
         $('body').addClass('mini-navbar');
         console.log('called');
         var button = $('.navbar-minimalize').find('svg.svg-inline--fa');
-        console.log(button);
-        setTimeout(()=>{
-            button.addClass('fa-arrow-right');
-            button.removeClass('fa-arrow-left');
-        }, 500);
+        button.addClass('fa-arrow-right');
+        button.removeClass('fa-arrow-left');
         $(".footer").toggleClass("mini-navbar-footer");
     }
 });

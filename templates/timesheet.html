@@ -18,7 +18,7 @@
 </div>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div id="timesheet-page" class="section-content m-1">
-        <div class="flex align-between">
+        <div class="flex align-between flex-wrap">
             <div class="event-date">
                 <template v-if="isDay">
                     <p style="font-size: 18px;"><b>[[showWeekend]]</b>  [[showDate]]</p>
@@ -182,7 +182,7 @@
         });
 
         $("body").mouseup(function(){ 
-            if(! mouse_is_inside) $('.ui-datepicker').hide();
+            if(!mouse_is_inside) $('.ui-datepicker').hide();
         });
     });
 

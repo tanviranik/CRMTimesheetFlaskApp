@@ -1654,7 +1654,7 @@ a.list-group-item.active:focus {
 .stat-percent,.float-right {
   float: right;
 }
-.mini-navbar .fa-chevron-left, .mini-navbar .fa-chevron-down {
+.mini-navbar .carat-change .fa-chevron-left, .mini-navbar .carat-change .fa-chevron-down {
     position: absolute;
     right: 8px;
     font-size: 12px;

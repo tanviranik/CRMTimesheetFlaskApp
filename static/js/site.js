@@ -7,11 +7,11 @@
 $(document).ready(function () {
     $('.navbar-minimalize').on('click', function () {
         console.log('clicked');
-
         //$(this).find('svg.svg-inline--fa').toggleClass('fa-arrow-left fa-arrow-right');
         var button = $(this).find('svg.svg-inline--fa');
         //console.log(button);
         button.toggleClass('fa-arrow-left').toggleClass('fa-arrow-right');
+        $(".footer").toggleClass("mini-navbar-footer");
     });
     var path = window.location.pathname;
     path = path.split('/')[1].toLowerCase();
@@ -23,6 +23,17 @@ $(document).ready(function () {
       }
     })
     $('.clockpicker').clockpicker();
+    if (screen.width < 821) {
+        $('body').addClass('mini-navbar');
+        console.log('called');
+        var button = $('.navbar-minimalize').find('svg.svg-inline--fa');
+        console.log(button);
+        setTimeout(()=>{
+            button.addClass('fa-arrow-right');
+            button.removeClass('fa-arrow-left');
+        }, 500);
+        $(".footer").toggleClass("mini-navbar-footer");
+    }
 });
 const showloading = function(){
   $('.loading').css('display','flex');

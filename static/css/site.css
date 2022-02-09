@@ -187,7 +187,7 @@ textarea {
 .report-control{
     border: 1px solid #ccc;
     position: fixed;
-    left: -20px;
+    left: 0px;
     top: 50px;
     right: -15px;
     padding: 0px 40px;
@@ -277,3 +277,4 @@ textarea {
 .agile-list>li:nth-child(5) {
     border-left: 3px solid #963c2c;
 }
+

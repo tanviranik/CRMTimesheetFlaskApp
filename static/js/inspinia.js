@@ -107,7 +107,8 @@ $(document).ready(function () {
     // Minimalize menu
     $('.navbar-minimalize').on('click', function () {
         $("body").toggleClass("mini-navbar");
-        $(".footer").toggleClass("mini-navbar-footer");
+        
+        // $(".footer").toggleClass("mini-navbar-footer");
         SmoothlyMenu();        
     });
 

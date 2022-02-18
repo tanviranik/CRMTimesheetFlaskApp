@@ -72,30 +72,4 @@ def generate_document(template_source_path, template_filename, employee_id, star
     return generated_pdf_filename
 
 def send_employee_paystub_attaced(to_email, filename):
-    message = Mail(
-        from_email='noreply@aidom.ca',
-        to_emails=to_email,
-        subject='Paystub Attached',
-        html_content='<strong>Hi,<br>Please find your paystub attached.</strong>')
-
-    file_path = os.path.join(os.getcwd(), 'paystub_templates', filename)
-    print(to_email, file_path)
-    with open(file_path, 'rb') as f:
-        data = f.read()
-        f.close()
-    encoded = base64.b64encode(data).decode()
-    attachment = Attachment()
-    attachment.file_content = FileContent(encoded)
-    attachment.file_type = FileType('application/pdf')
-    attachment.file_name = FileName(filename)
-    attachment.disposition = Disposition('attachment')
-    attachment.content_id = ContentId('000001')
-    message.attachment = attachment
-    try:
-        sendgrid_client = SendGridAPIClient('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')
-        response = sendgrid_client.send(message)
-        print(response.status_code)
-        print(response.body)
-        print(response.headers)
-    except Exception as e:
-        print('Exception occured: ', e)
+    return
